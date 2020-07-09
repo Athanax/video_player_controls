@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_player_controls/bloc/show_controls/showcontrols_bloc.dart';
+import 'package:video_player_controls/bloc/video_duration/video_duration_bloc.dart';
+import 'package:video_player_controls/bloc/video_position/video_position_bloc.dart';
 import 'package:video_player_controls/src/player_top_bar.dart';
 import 'package:video_player_controls/src/progress_bar.dart';
 
@@ -27,31 +29,20 @@ class VideoPlayerControls extends StatefulWidget {
 }
 
 class _VideoPlayerControlsState extends State<VideoPlayerControls> {
-  VideoPlayerController _videoPlayerController;
-  void listener() {
-    if (_videoPlayerController != null) {
-      print('listenning');
-      print(_videoPlayerController.value.position.inSeconds);
-    }
-  }
-
-  @override
-  void initState() {
-    _videoPlayerController = widget.videoPlayerController;
-    widget.videoPlayerController.addListener(() => listener());
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _videoPlayerController.removeListener(() => listener());
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<ShowcontrolsBloc>(
-      create: (context) => ShowcontrolsBloc(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<ShowcontrolsBloc>(
+          create: (context) => ShowcontrolsBloc(),
+        ),
+        BlocProvider<VideoPositionBloc>(
+          create: (context) => VideoPositionBloc(),
+        ),
+        BlocProvider<VideoDurationBloc>(
+          create: (context) => VideoDurationBloc(),
+        ),
+      ],
       child: new VideoPlayerInterface(
         videoPlayerController: widget.videoPlayerController,
         chewie: widget.chewie,
@@ -73,6 +64,29 @@ class VideoPlayerInterface extends StatefulWidget {
 }
 
 class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
+  VideoPlayerController _videoPlayerController;
+  void listener() {
+    if (_videoPlayerController != null) {
+      BlocProvider.of<VideoPositionBloc>(context)
+          .add(VideoPositionEventLoad(_videoPlayerController.value.position));
+      BlocProvider.of<VideoDurationBloc>(context)
+          .add(VideoDurationEventLoad(_videoPlayerController.value.duration));
+    }
+  }
+
+  @override
+  void initState() {
+    _videoPlayerController = widget.videoPlayerController;
+    widget.videoPlayerController.addListener(() => listener());
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _videoPlayerController.removeListener(() => listener());
+    super.dispose();
+  }
+
   bool showControls = false;
   Timer timer;
   @override

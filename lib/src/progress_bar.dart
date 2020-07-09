@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_player_controls/bloc/show_controls/showcontrols_bloc.dart';
 import 'package:video_player_controls/src/play_button.dart';
-import 'package:video_player_controls/src/video_peroid.dart';
+import 'package:video_player_controls/src/video_period.dart';
 
 class ProgressBar extends StatefulWidget {
   final VideoPlayerController videoPlayerController;
