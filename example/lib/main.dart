@@ -44,6 +44,7 @@ class _ChewieDemoState extends State<ChewieDemo> {
       autoPlay: true,
       looping: true,
       allowMuting: false,
+      startAt: new Duration(minutes: 20),
       allowFullScreen: true,
       allowedScreenSleep: false,
       showControls: false,

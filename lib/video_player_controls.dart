@@ -6,6 +6,9 @@ import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:video_player/video_player.dart';
+import 'package:video_player_controls/bloc/pause_video/pause_video_bloc.dart';
+import 'package:video_player_controls/bloc/play_video/play_video_bloc.dart';
+import 'package:video_player_controls/bloc/seek_video/seek_video_bloc.dart';
 import 'package:video_player_controls/bloc/show_controls/showcontrols_bloc.dart';
 import 'package:video_player_controls/bloc/video_duration/video_duration_bloc.dart';
 import 'package:video_player_controls/bloc/video_position/video_position_bloc.dart';
@@ -42,6 +45,15 @@ class _VideoPlayerControlsState extends State<VideoPlayerControls> {
         BlocProvider<VideoDurationBloc>(
           create: (context) => VideoDurationBloc(),
         ),
+        BlocProvider<PlayVideoBloc>(
+          create: (context) => PlayVideoBloc(),
+        ),
+        BlocProvider<PauseVideoBloc>(
+          create: (context) => PauseVideoBloc(),
+        ),
+        BlocProvider<SeekVideoBloc>(
+          create: (context) => SeekVideoBloc(),
+        ),
       ],
       child: new VideoPlayerInterface(
         videoPlayerController: widget.videoPlayerController,
@@ -64,16 +76,15 @@ class VideoPlayerInterface extends StatefulWidget {
 }
 
 class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
+  // video player controller
   VideoPlayerController _videoPlayerController;
-  void listener() {
-    if (_videoPlayerController != null) {
-      BlocProvider.of<VideoPositionBloc>(context)
-          .add(VideoPositionEventLoad(_videoPlayerController.value.position));
-      BlocProvider.of<VideoDurationBloc>(context)
-          .add(VideoDurationEventLoad(_videoPlayerController.value.duration));
-    }
-  }
 
+  // control the opacity of the controls
+  bool showControls = false;
+  // control the player controls timeout
+  Timer timer;
+
+  // init state method
   @override
   void initState() {
     _videoPlayerController = widget.videoPlayerController;
@@ -81,14 +92,13 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
     super.initState();
   }
 
+  // distructor
   @override
   void dispose() {
     _videoPlayerController.removeListener(() => listener());
     super.dispose();
   }
 
-  bool showControls = false;
-  Timer timer;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -99,22 +109,45 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
       child: Stack(
         children: <Widget>[
           new Positioned(
-            bottom: 0,
-            top: 0,
-            left: 0,
-            right: 0,
-            child: new Center(
-              child: widget.chewie,
-            ),
-          ),
+              bottom: 0,
+              top: 0,
+              left: 0,
+              right: 0,
+              child: MultiBlocListener(
+                child: new Center(
+                  child: widget.chewie,
+                ),
+                listeners: [
+                  BlocListener<PlayVideoBloc, PlayVideoState>(
+                      listener: (context, state) {
+                    if (state is PlayVideoLoaded) {
+                      playVideo();
+                    }
+                  }),
+                  BlocListener<PauseVideoBloc, PauseVideoState>(
+                      listener: (context, state) {
+                    if (state is PauseVideoLoaded) {
+                      pauseVideo();
+                    }
+                  }),
+                  BlocListener<SeekVideoBloc, SeekVideoState>(
+                      listener: (context, state) {
+                    //
+                    if (state is SeekVideoLoaded) {
+                      seek(state.time);
+                    }
+                  })
+                ],
+              )),
           _buildControls(context),
         ],
       ),
     );
   }
 
-  // start timer tom show co
+  // start timer to show controls
   void startTimer() {
+    //
     setState(() {
       showControls = true;
     });
@@ -125,7 +158,9 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
     });
   }
 
+  // start or restart the timer if
   void cancelAndRestartTimer() {
+    //
     if (timer != null) {
       timer.cancel();
       startTimer();
@@ -134,7 +169,46 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
     }
   }
 
+  // fast-foward and fastbackward in a video
+  void seek(Duration time) {
+    //
+    _videoPlayerController.seekTo(time);
+  }
+
+  // Listen to changes in the video player controller
+  void listener() {
+    //
+    if (_videoPlayerController != null) {
+      BlocProvider.of<VideoPositionBloc>(context)
+          .add(VideoPositionEventLoad(_videoPlayerController.value.position));
+      BlocProvider.of<VideoDurationBloc>(context)
+          .add(VideoDurationEventLoad(_videoPlayerController.value.duration));
+    }
+  }
+
+  // pause video
+  void pauseVideo() {
+    //
+    if (_videoPlayerController != null) {
+      if (_videoPlayerController.value.isPlaying == true) {
+        _videoPlayerController.pause();
+      }
+    }
+  }
+
+  // play video
+  void playVideo() {
+    //
+    if (_videoPlayerController != null) {
+      if (_videoPlayerController.value.isPlaying == false) {
+        _videoPlayerController.play();
+      }
+    }
+  }
+
+  // controls widget
   Widget _buildControls(context) {
+    //
     return new Positioned(
       bottom: 0,
       top: 0,
@@ -167,9 +241,7 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
               children: <Widget>[
                 PlayerTopBar(),
                 new Expanded(child: new Container()),
-                new ProgressBar(
-                  videoPlayerController: widget.videoPlayerController,
-                )
+                new ProgressBar()
               ],
             ),
           ),

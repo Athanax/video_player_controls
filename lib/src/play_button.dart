@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:video_player/video_player.dart';
+import 'package:video_player_controls/bloc/pause_video/pause_video_bloc.dart';
+import 'package:video_player_controls/bloc/play_video/play_video_bloc.dart';
 import 'package:video_player_controls/bloc/show_controls/showcontrols_bloc.dart';
 
 class PlayButton extends StatefulWidget {
-  final VideoPlayerController videoPlayerController;
-
   const PlayButton({
     Key key,
-    this.videoPlayerController,
   }) : super(key: key);
   @override
   _PlayButtonState createState() => _PlayButtonState();
@@ -18,7 +16,7 @@ class _PlayButtonState extends State<PlayButton>
     with SingleTickerProviderStateMixin {
   Animation animation;
   AnimationController animationController;
-  bool isPlay = true;
+  bool isPlaying = true;
   @override
   void initState() {
     //
@@ -33,23 +31,45 @@ class _PlayButtonState extends State<PlayButton>
     return new Row(
       children: <Widget>[
         new Container(
-            child: new IconButton(
+          child: BlocListener<PlayVideoBloc, PlayVideoState>(
+            listener: (context, state) {
+              if (state is PlayVideoLoaded) {
+                animationController.reverse();
+                setState(() {
+                  isPlaying = true;
+                });
+              }
+            },
+            child: BlocListener<PauseVideoBloc, PauseVideoState>(
+              listener: (context, state) {
+                if (state is PauseVideoLoaded) {
+                  animationController.forward();
+                  setState(() {
+                    isPlaying = false;
+                  });
+                }
+              },
+              child: new IconButton(
                 color: Colors.white,
                 iconSize: 30,
                 icon: new AnimatedIcon(
-                    icon: AnimatedIcons.play_pause,
+                    icon: AnimatedIcons.pause_play,
                     progress: animationController),
                 onPressed: () {
                   BlocProvider.of<ShowcontrolsBloc>(this.context)
                       .add(ShowcontrolsEventStart());
-                  if (widget.videoPlayerController.value.isPlaying == true) {
-                    animationController.forward();
-                    widget.videoPlayerController.pause();
+                  if (isPlaying == true) {
+                    BlocProvider.of<PauseVideoBloc>(context)
+                        .add(PauseVideoEventLoad());
                   } else {
-                    animationController.reverse();
-                    widget.videoPlayerController.play();
+                    BlocProvider.of<PlayVideoBloc>(context)
+                        .add(PlayVideoEventLoad());
                   }
-                })),
+                },
+              ),
+            ),
+          ),
+        )
       ],
     );
   }
