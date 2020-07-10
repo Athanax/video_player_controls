@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:video_player/video_player.dart';
 import 'package:video_player_controls/bloc/video_duration/video_duration_bloc.dart';
 import 'package:video_player_controls/bloc/video_position/video_position_bloc.dart';
 
 class VideoPeriod extends StatefulWidget {
+  final VideoPlayerController videoPlayerController;
+
+  const VideoPeriod({Key key, this.videoPlayerController}) : super(key: key);
   @override
   _VideoPeriodState createState() => _VideoPeriodState();
 }
@@ -37,7 +41,7 @@ class _VideoPeriodState extends State<VideoPeriod> {
             children: <Widget>[
               new Container(
                 child: new Text(
-                  '${formatDuration(_time)} / ${formatDuration(_duration)}',
+                  '${formatDuration(_time)} / ${formatDuration(widget.videoPlayerController.value.duration)}',
                   style: new TextStyle(color: Colors.white),
                 ),
               ),

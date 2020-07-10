@@ -36,7 +36,7 @@ class _ChewieDemoState extends State<ChewieDemo> {
       DeviceOrientation.landscapeLeft,
     ]);
     _videoPlayerController1 = VideoPlayerController.network(
-        'https://a.blackbird.press/series/Abstract%3A%20The%20Art%20of%20Design%20%282019%29/S01/S01E03.mkv');
+        'http://s8.bitdl.ir/Movie/Moana.2016/Moana.2016.720p.ShAaNiG.Bia2HD.mkv');
 
     _chewieController = ChewieController(
       videoPlayerController: _videoPlayerController1,
@@ -44,7 +44,6 @@ class _ChewieDemoState extends State<ChewieDemo> {
       autoPlay: true,
       looping: true,
       allowMuting: false,
-      startAt: new Duration(minutes: 20),
       allowFullScreen: true,
       allowedScreenSleep: false,
       showControls: false,

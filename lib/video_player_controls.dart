@@ -89,6 +89,7 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
   void initState() {
     _videoPlayerController = widget.videoPlayerController;
     widget.videoPlayerController.addListener(() => listener());
+
     super.initState();
   }
 
@@ -179,10 +180,15 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
   void listener() {
     //
     if (_videoPlayerController != null) {
-      BlocProvider.of<VideoPositionBloc>(context)
-          .add(VideoPositionEventLoad(_videoPlayerController.value.position));
       BlocProvider.of<VideoDurationBloc>(context)
           .add(VideoDurationEventLoad(_videoPlayerController.value.duration));
+      // print('Position ' +
+      //     _videoPlayerController.value.position.inSeconds.toString());
+      // print('Duration ' +
+      //     _videoPlayerController.value.duration.inSeconds.toString());
+
+      BlocProvider.of<VideoPositionBloc>(context)
+          .add(VideoPositionEventLoad(_videoPlayerController.value.position));
     }
   }
 
@@ -241,7 +247,9 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
               children: <Widget>[
                 PlayerTopBar(),
                 new Expanded(child: new Container()),
-                new ProgressBar()
+                new ProgressBar(
+                  videoPlayerController: _videoPlayerController,
+                )
               ],
             ),
           ),

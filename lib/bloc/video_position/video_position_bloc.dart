@@ -14,6 +14,7 @@ class VideoPositionBloc extends Bloc<VideoPositionEvent, VideoPositionState> {
     //
     yield VideoPositionLoading();
     if (event is VideoPositionEventLoad) {
+      print('Position ' + event.duration.inSeconds.toString());
       yield VideoPositionLoaded(event.duration);
     }
   }
