@@ -2,9 +2,6 @@ import 'package:chewie/chewie.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:subtitle_wrapper_package/models/style/subtitle_style.dart';
-import 'package:subtitle_wrapper_package/subtitle_controller.dart';
-import 'package:subtitle_wrapper_package/subtitle_wrapper_package.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_player_controls/video_player_controls.dart';
 
@@ -79,26 +76,16 @@ class _ChewieDemoState extends State<ChewieDemo> {
       home: Scaffold(
         backgroundColor: Colors.black,
         body: Center(
-          child: SubTitleWrapper(
+          child: VideoPlayerControls(
+            hasSubtitles: true,
+            chewie: Chewie(
+              controller: _chewieController,
+            ),
             videoPlayerController: _videoPlayerController1,
-            subtitleController: SubtitleController(
-              subtitleUrl:
-                  "https://wecast.ch/storage/subtitles/episodes/0577acca-5d62-4ea3-a538-2e0d18f200b8.srt",
-              showSubtitles: true,
-            ),
-            subtitleStyle:
-                SubtitleStyle(textColor: Colors.white, hasBorder: true),
-            videoChild: VideoPlayerControls(
-              hasSubtitles: true,
-              chewie: Chewie(
-                controller: _chewieController,
-              ),
-              videoPlayerController: _videoPlayerController1,
-              showSubtitles: () {
-                //
-                print('show subtitles');
-              },
-            ),
+            showSubtitles: () {
+              //
+              print('show subtitles');
+            },
           ),
         ),
       ),
