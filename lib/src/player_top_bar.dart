@@ -1,24 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:video_player_controls/src/subtitle_button.dart';
 
-class PlayerTopBar extends StatefulWidget {
-  @override
-  _PlayerTopBarState createState() => _PlayerTopBarState();
-}
+class PlayerTopBar extends StatelessWidget {
+  final String title;
+  final Function showSubtitles;
+  final bool hasSubtitles;
 
-class _PlayerTopBarState extends State<PlayerTopBar> {
+  const PlayerTopBar(
+      {Key key, this.title, this.showSubtitles, this.hasSubtitles})
+      : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Row(
       children: <Widget>[
-        SubtitleButton(),
+        hasSubtitles == true
+            ? SubtitleButton(showSubtitles: showSubtitles)
+            : new Container(),
         new Expanded(
             child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: new Container(
             margin: EdgeInsets.only(left: 30),
             child: new Text(
-              'Blacklist',
+              title != null ? title : '',
               overflow: TextOverflow.ellipsis,
               style: TextStyle(color: Colors.white, fontSize: 20),
             ),

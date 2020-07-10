@@ -10,28 +10,31 @@ import 'package:video_player_controls/bloc/pause_video/pause_video_bloc.dart';
 import 'package:video_player_controls/bloc/play_video/play_video_bloc.dart';
 import 'package:video_player_controls/bloc/seek_video/seek_video_bloc.dart';
 import 'package:video_player_controls/bloc/show_controls/showcontrols_bloc.dart';
-import 'package:video_player_controls/bloc/video_duration/video_duration_bloc.dart';
 import 'package:video_player_controls/bloc/video_position/video_position_bloc.dart';
 import 'package:video_player_controls/src/player_top_bar.dart';
 import 'package:video_player_controls/src/progress_bar.dart';
 
-class VideoPlayerControls extends StatefulWidget {
+class VideoPlayerControls extends StatelessWidget {
   final Chewie chewie;
+  final String title;
+  final bool hasSubtitles;
+  final showSubtitles;
 
   final VideoPlayerController videoPlayerController;
 
-  const VideoPlayerControls({Key key, this.chewie, this.videoPlayerController})
+  const VideoPlayerControls(
+      {Key key,
+      this.chewie,
+      this.videoPlayerController,
+      this.title,
+      this.hasSubtitles = false,
+      this.showSubtitles})
       : assert(
           videoPlayerController != null,
           'Video player controller must be provided in this instance',
         ),
         super(key: key);
 
-  @override
-  _VideoPlayerControlsState createState() => _VideoPlayerControlsState();
-}
-
-class _VideoPlayerControlsState extends State<VideoPlayerControls> {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -41,9 +44,6 @@ class _VideoPlayerControlsState extends State<VideoPlayerControls> {
         ),
         BlocProvider<VideoPositionBloc>(
           create: (context) => VideoPositionBloc(),
-        ),
-        BlocProvider<VideoDurationBloc>(
-          create: (context) => VideoDurationBloc(),
         ),
         BlocProvider<PlayVideoBloc>(
           create: (context) => PlayVideoBloc(),
@@ -56,8 +56,11 @@ class _VideoPlayerControlsState extends State<VideoPlayerControls> {
         ),
       ],
       child: new VideoPlayerInterface(
-        videoPlayerController: widget.videoPlayerController,
-        chewie: widget.chewie,
+        videoPlayerController: videoPlayerController,
+        chewie: chewie,
+        title: title,
+        hasSubtitles: hasSubtitles,
+        showSubtitles: showSubtitles,
       ),
     );
   }
@@ -67,9 +70,18 @@ class VideoPlayerInterface extends StatefulWidget {
   final VideoPlayerController videoPlayerController;
   final ChewieController chewieController;
   final Widget chewie;
+  final String title;
+  final Function showSubtitles;
+  final bool hasSubtitles;
 
   const VideoPlayerInterface(
-      {Key key, this.videoPlayerController, this.chewieController, this.chewie})
+      {Key key,
+      this.videoPlayerController,
+      this.chewieController,
+      this.chewie,
+      this.title,
+      this.showSubtitles,
+      this.hasSubtitles})
       : super(key: key);
   @override
   _VideoPlayerInterfaceState createState() => _VideoPlayerInterfaceState();
@@ -180,8 +192,6 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
   void listener() {
     //
     if (_videoPlayerController != null) {
-      BlocProvider.of<VideoDurationBloc>(context)
-          .add(VideoDurationEventLoad(_videoPlayerController.value.duration));
       // print('Position ' +
       //     _videoPlayerController.value.position.inSeconds.toString());
       // print('Duration ' +
@@ -245,7 +255,11 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
             child: new Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                PlayerTopBar(),
+                PlayerTopBar(
+                  title: widget.title,
+                  showSubtitles: widget.showSubtitles,
+                  hasSubtitles: widget.hasSubtitles,
+                ),
                 new Expanded(child: new Container()),
                 new ProgressBar(
                   videoPlayerController: _videoPlayerController,

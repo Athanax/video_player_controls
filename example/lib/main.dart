@@ -36,7 +36,7 @@ class _ChewieDemoState extends State<ChewieDemo> {
       DeviceOrientation.landscapeLeft,
     ]);
     _videoPlayerController1 = VideoPlayerController.network(
-        'http://s8.bitdl.ir/Movie/Moana.2016/Moana.2016.720p.ShAaNiG.Bia2HD.mkv');
+        'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4');
 
     _chewieController = ChewieController(
       videoPlayerController: _videoPlayerController1,
@@ -44,6 +44,7 @@ class _ChewieDemoState extends State<ChewieDemo> {
       autoPlay: true,
       looping: true,
       allowMuting: false,
+      startAt: new Duration(seconds: 4),
       allowFullScreen: true,
       allowedScreenSleep: false,
       showControls: false,
@@ -88,10 +89,15 @@ class _ChewieDemoState extends State<ChewieDemo> {
             subtitleStyle:
                 SubtitleStyle(textColor: Colors.white, hasBorder: true),
             videoChild: VideoPlayerControls(
+              hasSubtitles: true,
               chewie: Chewie(
                 controller: _chewieController,
               ),
               videoPlayerController: _videoPlayerController1,
+              showSubtitles: () {
+                //
+                print('show subtitles');
+              },
             ),
           ),
         ),
