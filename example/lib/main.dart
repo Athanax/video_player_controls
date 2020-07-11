@@ -45,9 +45,7 @@ class _ChewieDemoState extends State<ChewieDemo> {
       allowFullScreen: true,
       allowedScreenSleep: false,
       showControls: false,
-      placeholder: Container(
-        color: Colors.grey,
-      ),
+      placeholder: Container(color: Colors.grey),
       autoInitialize: true,
     );
 

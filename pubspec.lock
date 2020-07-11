@@ -23,7 +23,7 @@ packages:
     source: hosted
     version: "2.4.1"
   bloc:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: bloc
       url: "https://pub.dartlang.org"
@@ -196,13 +196,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.9.3"
-  step_progress_indicator:
-    dependency: "direct main"
-    description:
-      name: step_progress_indicator
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.3+6"
   stream_channel:
     dependency: transitive
     description:

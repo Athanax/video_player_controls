@@ -1,8 +1,7 @@
 name: video_player_controls
-description: A new Flutter package project.
-version: 0.0.1
-author:
-homepage: github.com
+description: This si a video player packege built on chewie, video_player and the flutter_bloc. It has better state management and user interface.
+version: 1.0.0
+homepage: https://github.com/Athanax/video_player_controls
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -12,9 +11,9 @@ dependencies:
     sdk: flutter
   chewie: ^0.9.10
   video_player: ^0.10.11+2
-  step_progress_indicator: ^0.2.3+6
   flutter_bloc: ^5.0.1
   equatable: ^1.2.0
+  bloc: ^5.0.1
 
 dev_dependencies:
   flutter_test:
