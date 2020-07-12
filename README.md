@@ -1,5 +1,7 @@
 # video_player_controls
 
+**This package is still under development**
+
 This si a video player packege built on chewie, video_player and the flutter_bloc. It has better state management and user interface.
 
 # Installation
