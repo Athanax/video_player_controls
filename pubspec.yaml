@@ -9,7 +9,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  chewie: ^0.9.10
   video_player: ^0.10.11+2
   flutter_bloc: ^5.0.1
   equatable: ^1.2.0

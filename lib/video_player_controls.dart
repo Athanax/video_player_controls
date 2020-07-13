@@ -1,37 +1,32 @@
 library video_player_controls;
 
-import 'dart:async';
+export 'package:video_player_controls/data/controller.dart';
 
-import 'package:chewie/chewie.dart';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:video_player/video_player.dart';
+import 'package:video_player_controls/bloc/fast_foward/fast_foward_bloc.dart';
+import 'package:video_player_controls/bloc/fast_rewind/fast_rewind_bloc.dart';
+import 'package:video_player_controls/bloc/next_video/next_video_bloc.dart';
 import 'package:video_player_controls/bloc/pause_video/pause_video_bloc.dart';
 import 'package:video_player_controls/bloc/play_video/play_video_bloc.dart';
+import 'package:video_player_controls/bloc/previous_video/previous_video_bloc.dart';
 import 'package:video_player_controls/bloc/seek_video/seek_video_bloc.dart';
 import 'package:video_player_controls/bloc/show_controls/showcontrols_bloc.dart';
 import 'package:video_player_controls/bloc/video_position/video_position_bloc.dart';
+import 'package:video_player_controls/data/controller.dart';
 import 'package:video_player_controls/src/player_top_bar.dart';
 import 'package:video_player_controls/src/progress_bar.dart';
 
 class VideoPlayerControls extends StatelessWidget {
-  final Chewie chewie;
-  final String title;
-  final bool hasSubtitles;
-  final showSubtitles;
-
-  final VideoPlayerController videoPlayerController;
-
-  const VideoPlayerControls(
-      {Key key,
-      this.chewie,
-      this.videoPlayerController,
-      this.title,
-      this.hasSubtitles = false,
-      this.showSubtitles})
-      : assert(
-          videoPlayerController != null,
-          'Video player controller must be provided in this instance',
+  final Controller controller;
+  const VideoPlayerControls({
+    Key key,
+    this.controller,
+  })  : assert(
+          controller != null,
+          'A controller must be provided in this instance',
         ),
         super(key: key);
 
@@ -41,6 +36,18 @@ class VideoPlayerControls extends StatelessWidget {
       providers: [
         BlocProvider<ShowcontrolsBloc>(
           create: (context) => ShowcontrolsBloc(),
+        ),
+        BlocProvider<PreviousVideoBloc>(
+          create: (context) => PreviousVideoBloc(),
+        ),
+        BlocProvider<NextVideoBloc>(
+          create: (context) => NextVideoBloc(),
+        ),
+        BlocProvider<FastFowardBloc>(
+          create: (context) => FastFowardBloc(),
+        ),
+        BlocProvider<FastRewindBloc>(
+          create: (context) => FastRewindBloc(),
         ),
         BlocProvider<VideoPositionBloc>(
           create: (context) => VideoPositionBloc(),
@@ -56,33 +63,18 @@ class VideoPlayerControls extends StatelessWidget {
         ),
       ],
       child: new VideoPlayerInterface(
-        videoPlayerController: videoPlayerController,
-        chewie: chewie,
-        title: title,
-        hasSubtitles: hasSubtitles,
-        showSubtitles: showSubtitles,
+        controller: controller,
       ),
     );
   }
 }
 
 class VideoPlayerInterface extends StatefulWidget {
-  final VideoPlayerController videoPlayerController;
-  final ChewieController chewieController;
-  final Widget chewie;
-  final String title;
-  final Function showSubtitles;
-  final bool hasSubtitles;
-
-  const VideoPlayerInterface(
-      {Key key,
-      this.videoPlayerController,
-      this.chewieController,
-      this.chewie,
-      this.title,
-      this.showSubtitles,
-      this.hasSubtitles})
-      : super(key: key);
+  final Controller controller;
+  const VideoPlayerInterface({
+    Key key,
+    this.controller,
+  }) : super(key: key);
   @override
   _VideoPlayerInterfaceState createState() => _VideoPlayerInterfaceState();
 }
@@ -90,6 +82,9 @@ class VideoPlayerInterface extends StatefulWidget {
 class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
   // video player controller
   VideoPlayerController _videoPlayerController;
+
+  // Controller
+  Controller _controller;
 
   // control the opacity of the controls
   bool showControls = false;
@@ -99,9 +94,9 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
   // init state method
   @override
   void initState() {
-    _videoPlayerController = widget.videoPlayerController;
-    widget.videoPlayerController.addListener(() => listener());
-
+    _controller = widget.controller;
+    _videoPlayerController = _controller.videoPlayerController;
+    _videoPlayerController.addListener(() => listener());
     super.initState();
   }
 
@@ -109,6 +104,7 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
   @override
   void dispose() {
     _videoPlayerController.removeListener(() => listener());
+    widget.controller.videoPlayerController.dispose();
     super.dispose();
   }
 
@@ -119,42 +115,71 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
         BlocProvider.of<ShowcontrolsBloc>(this.context)
             .add(ShowcontrolsEventStart());
       },
-      child: Stack(
-        children: <Widget>[
-          new Positioned(
-              bottom: 0,
-              top: 0,
-              left: 0,
-              right: 0,
-              child: MultiBlocListener(
-                child: new Center(
-                  child: widget.chewie,
-                ),
-                listeners: [
-                  BlocListener<PlayVideoBloc, PlayVideoState>(
-                      listener: (context, state) {
-                    if (state is PlayVideoLoaded) {
-                      playVideo();
-                    }
-                  }),
-                  BlocListener<PauseVideoBloc, PauseVideoState>(
-                      listener: (context, state) {
-                    if (state is PauseVideoLoaded) {
-                      pauseVideo();
-                    }
-                  }),
-                  BlocListener<SeekVideoBloc, SeekVideoState>(
-                      listener: (context, state) {
-                    //
-                    if (state is SeekVideoLoaded) {
-                      seek(state.time);
-                    }
-                  })
-                ],
-              )),
-          _buildControls(context),
-        ],
-      ),
+      child: _videoPlayerController == null
+          ? new CircularProgressIndicator()
+          : Stack(
+              children: <Widget>[
+                new Positioned(
+                    bottom: 0,
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    child: MultiBlocListener(
+                      child: new Center(
+                        child: AspectRatio(
+                          aspectRatio: 16 / 9,
+                          child: VideoPlayer(_videoPlayerController),
+                        ),
+                      ),
+                      listeners: [
+                        BlocListener<NextVideoBloc, NextVideoState>(
+                            listener: (context, state) {
+                          if (state is NextVideoLoaded) {
+                            nextVideo();
+                          }
+                        }),
+                        BlocListener<PreviousVideoBloc, PreviousVideoState>(
+                            listener: (context, state) {
+                          if (state is PreviousVideoLoaded) {
+                            previousVideo();
+                          }
+                        }),
+                        BlocListener<FastFowardBloc, FastFowardState>(
+                            listener: (context, state) {
+                          if (state is FastFowardLoaded) {
+                            fastFoward();
+                          }
+                        }),
+                        BlocListener<FastRewindBloc, FastRewindState>(
+                            listener: (context, state) {
+                          if (state is FastRewindLoaded) {
+                            fastRewind();
+                          }
+                        }),
+                        BlocListener<PlayVideoBloc, PlayVideoState>(
+                            listener: (context, state) {
+                          if (state is PlayVideoLoaded) {
+                            playVideo();
+                          }
+                        }),
+                        BlocListener<PauseVideoBloc, PauseVideoState>(
+                            listener: (context, state) {
+                          if (state is PauseVideoLoaded) {
+                            pauseVideo();
+                          }
+                        }),
+                        BlocListener<SeekVideoBloc, SeekVideoState>(
+                            listener: (context, state) {
+                          //
+                          if (state is SeekVideoLoaded) {
+                            seek(state.time);
+                          }
+                        })
+                      ],
+                    )),
+                _buildControls(context),
+              ],
+            ),
     );
   }
 
@@ -164,14 +189,14 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
     setState(() {
       showControls = true;
     });
-    timer = new Timer(new Duration(seconds: 3), () {
+    timer = new Timer(new Duration(seconds: 20), () {
       setState(() {
         showControls = false;
       });
     });
   }
 
-  // start or restart the timer if
+  // start or restart the timer if its already running
   void cancelAndRestartTimer() {
     //
     if (timer != null) {
@@ -180,6 +205,55 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
     } else {
       startTimer();
     }
+  }
+
+  void fastFoward() {
+    //
+    int time = _videoPlayerController.value.position.inSeconds + 20;
+    this.seek(new Duration(seconds: time));
+  }
+
+  void fastRewind() {
+    //
+    int time = _videoPlayerController.value.position.inSeconds - 10;
+    this.seek(new Duration(seconds: time));
+  }
+
+  void nextVideo() {
+    //
+    print('called');
+    print(widget.controller.urls.length.toString());
+    print(widget.controller.playingIndex.toString());
+    if (widget.controller.playingIndex < widget.controller.urls.length) {
+      int index = widget.controller.playingIndex + 1;
+      String link = widget.controller.urls[index];
+      changeVideo(link);
+    } else {
+      print('condition met');
+    }
+  }
+
+  void previousVideo() {
+    //
+
+    if (widget.controller.playingIndex != 0) {
+      int index = widget.controller.playingIndex - 1;
+      String link = widget.controller.urls[index];
+      changeVideo(link);
+    }
+  }
+
+  void changeVideo(String link) async {
+    // _videoPlayerController.removeListener(() => listener());
+    setState(() {
+      widget.controller.videoPlayerController = null;
+      _videoPlayerController = null;
+    });
+    setState(() {
+      widget.controller.videoPlayerController =
+          _videoPlayerController = new VideoPlayerController.network(link);
+      _videoPlayerController = widget.controller.videoPlayerController;
+    });
   }
 
   // fast-foward and fastbackward in a video
@@ -192,11 +266,6 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
   void listener() {
     //
     if (_videoPlayerController != null) {
-      // print('Position ' +
-      //     _videoPlayerController.value.position.inSeconds.toString());
-      // print('Duration ' +
-      //     _videoPlayerController.value.duration.inSeconds.toString());
-
       BlocProvider.of<VideoPositionBloc>(context)
           .add(VideoPositionEventLoad(_videoPlayerController.value.position));
     }
@@ -245,10 +314,10 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Colors.black45,
+                  Colors.black,
                   Colors.transparent,
                   Colors.transparent,
-                  Colors.black45,
+                  Colors.black,
                 ],
               ),
             ),
@@ -256,9 +325,7 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 PlayerTopBar(
-                  title: widget.title,
-                  showSubtitles: widget.showSubtitles,
-                  hasSubtitles: widget.hasSubtitles,
+                  controller: widget.controller,
                 ),
                 new Expanded(child: new Container()),
                 new ProgressBar(

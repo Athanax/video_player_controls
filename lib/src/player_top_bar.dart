@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:video_player_controls/data/controller.dart';
 import 'package:video_player_controls/src/subtitle_button.dart';
 
 class PlayerTopBar extends StatelessWidget {
-  final String title;
-  final Function showSubtitles;
-  final bool hasSubtitles;
+  final Controller controller;
 
-  const PlayerTopBar(
-      {Key key, this.title, this.showSubtitles, this.hasSubtitles})
-      : super(key: key);
+  const PlayerTopBar({Key key, this.controller}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: <Widget>[
-        hasSubtitles == true
-            ? SubtitleButton(showSubtitles: showSubtitles)
+        controller.hasSubtitles == true
+            ? SubtitleButton(controller: controller)
             : new Container(),
         new Expanded(
             child: Padding(
@@ -23,7 +20,7 @@ class PlayerTopBar extends StatelessWidget {
           child: new Container(
             margin: EdgeInsets.only(left: 30),
             child: new Text(
-              title != null ? title : '',
+              controller.title != null ? controller.title : '',
               overflow: TextOverflow.ellipsis,
               style: TextStyle(color: Colors.white, fontSize: 20),
             ),
