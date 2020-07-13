@@ -121,6 +121,4 @@ class Controller extends Equatable {
       await videoPlayerController.seekTo(startAt);
     }
   }
-
-  
 }
