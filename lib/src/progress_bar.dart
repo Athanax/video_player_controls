@@ -31,18 +31,18 @@ class _ProgressBarState extends State<ProgressBar> {
   void initState() {
     //
     _videoPlayerController = widget.videoPlayerController;
-    // _videoPlayerController.addListener(() => listener());
+    _videoPlayerController.addListener(() => listener());
     super.initState();
   }
 
-  // void listener() {
-  //   if (_videoPlayerController != null) {
-  //     setState(() {
-  //       _position =
-  //           _videoPlayerController.value.position.inMilliseconds.toDouble();
-  //     });
-  //   }
-  // }
+  void listener() {
+    if (_videoPlayerController != null) {
+      setState(() {
+        _position =
+            _videoPlayerController.value.position.inMilliseconds.toDouble();
+      });
+    }
+  }
 
   @override
   void dispose() {
