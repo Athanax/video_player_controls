@@ -12,6 +12,10 @@ dependencies:
 
 ```
 
+# Screenshot
+
+![Philadelphia's Magic Gardens. This place was so cool!](https://wecast.ch/storage/images/screenshot.png "Demo screenshot")
+
 # Features
 
 * Able to play a list of videos from the first to the last.
@@ -94,6 +98,20 @@ controller = new Controller(
     print('position: ' + playerItem.position.inSeconds.toString());
     print('Duration: ' + playerItem.duration.inSeconds.toString());
   });
+```
+
+The video source property of the Controller class is an enum datatype which cao either be:
+
+``` dart
+  // use a network video
+  VideoSource.NETWORK
+```
+
+or
+
+``` dart
+  // use an asset video
+  VideoSource.ASSET
 ```
 
 # Example in code
