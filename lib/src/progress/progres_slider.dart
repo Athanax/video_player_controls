@@ -32,7 +32,7 @@ class _ProgressSliderState extends State<ProgressSlider> {
         inactiveColor: Colors.white38,
         value: position,
         onChanged: (value) {
-          // 
+          //
           BlocProvider.of<ShowcontrolsBloc>(context)
               .add(ShowcontrolsEventStart());
           BlocProvider.of<SeekVideoBloc>(context)
@@ -40,12 +40,12 @@ class _ProgressSliderState extends State<ProgressSlider> {
         },
         onChangeEnd: (duration) {
           // set the video duration to the time
-          // 
+          //
           BlocProvider.of<PlayVideoBloc>(context).add(PlayVideoEventLoad());
         },
         onChangeStart: (duration) {
           // pause the video
-          // 
+          //
           BlocProvider.of<PauseVideoBloc>(context).add(PauseVideoEventLoad());
         },
         min: 0,

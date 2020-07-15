@@ -40,12 +40,19 @@ class Controller extends Equatable {
   /// Defines if the controls should be for live stream video
   final bool isLive;
 
+  /// Displays seek buttons if true alse hides them,
+  /// The buttons will show by default if not specified
+  final bool showSeekButtons;
+
+  /// Displays skip next and previous buttons if true alse hides them,
+  /// The buttons will show by default if not specified
+  final bool showSkipButtons;
+
   /// if true, the subtitles button i9s shown
   final bool hasSubtitles;
 
   /// Defines whether to show controls and progress indicator, it is set to true by default
   final bool showControls;
-
 
   /// Returns with true if the playing else false
   final ValueChanged<bool> isPlaying;
@@ -62,6 +69,8 @@ class Controller extends Equatable {
     this.showControls = true,
     this.videoSource = VideoSource.NETWORK,
     this.items,
+    this.showSeekButtons = true,
+    this.showSkipButtons = true,
     this.isPlaying,
     this.onError,
     this.playerItem,

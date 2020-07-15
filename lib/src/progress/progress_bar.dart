@@ -12,12 +12,15 @@ import 'package:video_player_controls/src/buttons/play_button.dart';
 import 'package:video_player_controls/src/buttons/previous_button.dart';
 import 'package:video_player_controls/src/progress/progres_slider.dart';
 import 'package:video_player_controls/src/progress/video_period.dart';
+import 'package:video_player_controls/video_player_controls.dart';
 
 class ProgressBar extends StatefulWidget {
   final VideoPlayerController videoPlayerController;
+  final Controller controller;
   const ProgressBar({
     Key key,
     this.videoPlayerController,
+    this.controller,
   }) : super(key: key);
   @override
   _ProgressBarState createState() => _ProgressBarState();
@@ -25,9 +28,11 @@ class ProgressBar extends StatefulWidget {
 
 class _ProgressBarState extends State<ProgressBar> {
   double duration = 1.0;
+  Controller _controller;
 
   @override
   void initState() {
+    _controller = widget.controller;
     duration = widget.videoPlayerController.value.duration.inSeconds.toDouble();
     super.initState();
   }
@@ -58,11 +63,19 @@ class _ProgressBarState extends State<ProgressBar> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        new FastRewindButton(),
-                        new PreviousButton(),
+                        _controller.showSeekButtons == false
+                            ? new Container()
+                            : new FastRewindButton(),
+                        _controller.showSkipButtons == false
+                            ? new Container()
+                            : new PreviousButton(),
                         new PlayButton(),
-                        new NextButton(),
-                        new FastFowardButton(),
+                        _controller.showSkipButtons == false
+                            ? new Container()
+                            : new NextButton(),
+                        _controller.showSeekButtons == false
+                            ? new Container()
+                            : new FastFowardButton(),
                       ],
                     ),
                   ],

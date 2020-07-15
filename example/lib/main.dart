@@ -49,11 +49,13 @@ class _ChewieDemoState extends State<ChewieDemo> {
         isLooping: false,
         videoSource: VideoSource.NETWORK,
         aspectRatio: 16 / 9,
-        // startAt: Duration(seconds: 1000),
+        // showSeekButtons: false,
+        // showSkipButtons: false,
+        // startAt: Duration(seconds: 2),
         allowedScreenSleep: false,
-        hasSubtitles: true,
+        // hasSubtitles: true,
         placeholder: new Container(
-          color: Colors.white,
+          color: Colors.grey,
         ),
         isPlaying: (isPlaying) {
           //

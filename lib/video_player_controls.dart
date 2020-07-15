@@ -12,6 +12,7 @@ import 'package:video_player_controls/bloc/fast_rewind/fast_rewind_bloc.dart';
 import 'package:video_player_controls/bloc/next_video/next_video_bloc.dart';
 import 'package:video_player_controls/bloc/pause_video/pause_video_bloc.dart';
 import 'package:video_player_controls/bloc/play_video/play_video_bloc.dart';
+import 'package:video_player_controls/bloc/player_item/player_item_bloc.dart';
 import 'package:video_player_controls/bloc/previous_video/previous_video_bloc.dart';
 import 'package:video_player_controls/bloc/seek_video/seek_video_bloc.dart';
 import 'package:video_player_controls/bloc/show_controls/showcontrols_bloc.dart';
@@ -36,6 +37,9 @@ class VideoPlayerControls extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider<PlayerItemBloc>(
+          create: (context) => PlayerItemBloc(),
+        ),
         BlocProvider<ShowcontrolsBloc>(
           create: (context) => ShowcontrolsBloc(),
         ),
@@ -142,8 +146,9 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
       duration = _videoPlayerController.value.duration.inSeconds;
       _playerItem.duration = _videoPlayerController.value.duration;
     });
-
-    cancelAndRestartTimer();
+    BlocProvider.of<PlayerItemBloc>(context)
+        .add(PlayerItemEventLoad(_playerItem));
+    // cancelAndRestartTimer();
   }
 
   // distructor
@@ -226,7 +231,9 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
                   })
                 ],
               )),
-          _buildControls(context),
+          _controller.showControls == true
+              ? _buildControls(context)
+              : new Container(),
         ],
       ),
     );
@@ -308,7 +315,9 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
     setState(() {
       showControls = true;
     });
-    timer = new Timer(new Duration(minutes: 20), () {
+    BlocProvider.of<PlayerItemBloc>(context)
+        .add(PlayerItemEventLoad(_playerItem));
+    timer = new Timer(new Duration(seconds: 4), () {
       setState(() {
         showControls = false;
       });
@@ -442,6 +451,7 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
                 ),
                 new Expanded(child: new Container()),
                 new ProgressBar(
+                  controller: _controller,
                   videoPlayerController: _videoPlayerController,
                 )
               ],

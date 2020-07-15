@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:video_player_controls/bloc/show_controls/showcontrols_bloc.dart';
-import 'package:video_player_controls/data/controller.dart';
 
 class SubtitleButton extends StatelessWidget {
-  final Controller controller;
-
-  const SubtitleButton({Key key, this.controller}) : super(key: key);
+  const SubtitleButton({
+    Key key,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Container(

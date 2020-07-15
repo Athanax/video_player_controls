@@ -1,11 +1,8 @@
 # video_player_controls
 
-**This package is still under development**
-
-This si a video player packege built on chewie, video_player and the flutter_bloc. It has better state management and user interface.
+This si a video player package built on video_player and the flutter_bloc. It has better state management and user interface.
 
 # Installation
-
 
 ``` yaml
 dependencies:
@@ -14,28 +11,96 @@ dependencies:
     video_player_controls:
 
 ```
-# Documentation
+
+# Features
+
+* Able to play a list of videos from the first to the last.
+* Play and pause button
+* Next and Previous button
+* Fast rewind and fast forward buttons
+* [Flutter_bloc](https://pub.dev/packages/flutter_bloc) state management
+* Ability to listen to player state, isPlaying, through a simple interface, which returns with true if the video is playing, else false
+
+* 
 
 ``` dart
-VideoPlayerControls(
-    hasSubtitles: true,
-    chewie: Chewie(
-        controller: _chewieController,
+
+  isPlaying: (isPlaying) {
+    //
+    print(isPlaying);
+  },
+  ```
+
+* Ability to listen to the playing player item, see it's position, duration, and the other specified properties
+
+``` dart
+playerItem: (playerItem) {
+  print('Player title: ' + playerItem.title); // specified title of the video
+  print('position: ' + playerItem.position.inSeconds.toString()); // current position of the video
+  print('Duration: ' + playerItem.duration.inSeconds.toString());  // Duration of the playing video
+});
+  ```
+
+# Documentation
+
+## Import the controller
+
+``` dart
+import 'package:video_player_controls/video_player_controls.dart';
+  ```
+
+## Initialize the Controller
+
+``` dart
+controller = new Controller(
+  items: [
+    new PlayerItem(
+      title: 'video 1',
+      url:
+          'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
     ),
-    videoPlayerController: _videoPlayerController1,
-    showSubtitles: () {
-        print('show subtitles');
-    },
-),
+    new PlayerItem(
+      title: 'video 2',
+      url:
+          'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+    ),
+    new PlayerItem(
+      title: 'video 3',
+      url:
+          'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+    ),
+  ],
+  autoPlay: true,
+  autoInitialize: true,
+  isLooping: false,
+  videoSource: VideoSource.NETWORK,
+  aspectRatio: 16 / 9,
+
+  //optional parameters
+  // showSeekButtons: false,
+  // showSkipButtons: false,
+  // startAt: Duration(seconds: 2),
+  // allowedScreenSleep: false,
+  // hasSubtitles: true,
+  placeholder: new Container(
+    color: Colors.grey,
+  ),
+  isPlaying: (isPlaying) {
+    //
+    print(isPlaying);
+  },
+  playerItem: (playerItem) {
+    print('Player title: ' + playerItem.title);
+    print('position: ' + playerItem.position.inSeconds.toString());
+    print('Duration: ' + playerItem.duration.inSeconds.toString());
+  });
 ```
 
 # Example in code
 
 ``` dart
-import 'package:chewie/chewie.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_player_controls/video_player_controls.dart';
 
@@ -58,44 +123,55 @@ class ChewieDemo extends StatefulWidget {
 
 class _ChewieDemoState extends State<ChewieDemo> {
   VideoPlayerController _videoPlayerController1;
-  ChewieController _chewieController;
-
+  Controller controller;
   @override
   void initState() {
     super.initState();
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-    ]);
-    _videoPlayerController1 = VideoPlayerController.network(
-        'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4');
-
-    _chewieController = ChewieController(
-      videoPlayerController: _videoPlayerController1,
-      aspectRatio: 1280 / 532,
-      autoPlay: true,
-      looping: true,
-      allowMuting: false,
-      startAt: new Duration(seconds: 4),
-      allowFullScreen: true,
-      allowedScreenSleep: false,
-      showControls: false,
-      placeholder: Container(color: Colors.grey),
-      autoInitialize: true,
-    );
-
-    _chewieController.enterFullScreen();
+    controller = new Controller(
+        items: [
+          new PlayerItem(
+            title: 'video 1',
+            url:
+                'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+          ),
+          new PlayerItem(
+            title: 'video 2',
+            url:
+                'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+          ),
+          new PlayerItem(
+            title: 'video 3',
+            url:
+                'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+          ),
+        ],
+        autoPlay: true,
+        autoInitialize: true,
+        isLooping: false,
+        videoSource: VideoSource.NETWORK,
+        aspectRatio: 16 / 9,
+        // showSeekButtons: false,
+        // showSkipButtons: false,
+        // startAt: Duration(seconds: 2),
+        allowedScreenSleep: false,
+        // hasSubtitles: true,
+        placeholder: new Container(
+          color: Colors.grey,
+        ),
+        isPlaying: (isPlaying) {
+          //
+          print(isPlaying);
+        },
+        playerItem: (playerItem) {
+          print('Player title: ' + playerItem.title);
+          print('position: ' + playerItem.position.inSeconds.toString());
+          print('Duration: ' + playerItem.duration.inSeconds.toString());
+        });
   }
 
   @override
   void dispose() {
-    _chewieController.exitFullScreen();
-
     _videoPlayerController1.dispose();
-    _chewieController.dispose();
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
-
     super.dispose();
   }
 
@@ -109,29 +185,20 @@ class _ChewieDemoState extends State<ChewieDemo> {
         backgroundColor: Colors.black,
         body: Center(
           child: VideoPlayerControls(
-            hasSubtitles: true,
-            chewie: Chewie(
-              controller: _chewieController,
-            ),
-            videoPlayerController: _videoPlayerController1,
-            showSubtitles: () {
-              //
-              print('show subtitles');
-            },
+            controller: controller,
           ),
         ),
       ),
     );
   }
 }
+
 ```
-
-
 
 ## Getting Started with flutter
 
 This project is a starting point for a Dart
-[package](https://flutter.dev/developing-packages/),
+[package](https://flutter.dev/developing-packages/), 
 a library module containing code that can be shared easily across
 multiple Flutter or Dart projects.
 
