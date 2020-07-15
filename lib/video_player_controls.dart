@@ -1,6 +1,7 @@
 library video_player_controls;
 
 export 'package:video_player_controls/data/controller.dart';
+export 'package:video_player_controls/data/player_item.dart';
 
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ import 'package:video_player_controls/bloc/seek_video/seek_video_bloc.dart';
 import 'package:video_player_controls/bloc/show_controls/showcontrols_bloc.dart';
 import 'package:video_player_controls/bloc/video_position/video_position_bloc.dart';
 import 'package:video_player_controls/data/controller.dart';
+import 'package:video_player_controls/data/player_item.dart';
 import 'package:video_player_controls/src/progress/player_top_bar.dart';
 import 'package:video_player_controls/src/progress/progress_bar.dart';
 
@@ -90,6 +92,8 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
   // Controller
   Controller _controller;
 
+  PlayerItem _playerItem;
+
   int duration;
 
   // control the opacity of the controls
@@ -102,7 +106,7 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
   void initState() {
     _controller = widget.controller;
     _index = _controller.index;
-    initializeVideo(widget.controller.urls[widget.controller.index]);
+    initializeVideo(widget.controller.items[widget.controller.index].url);
     // _videoPlayerController.addListener(() => listener());
     super.initState();
   }
@@ -116,6 +120,9 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
         ..addListener(() => listener());
     }
 
+    //
+
+    //
     await _videoPlayerController.setLooping(_controller.isLooping);
 
     if ((_controller.autoInitialize || _controller.autoPlay) &&
@@ -131,8 +138,11 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
       await _videoPlayerController.seekTo(_controller.startAt);
     }
     setState(() {
+      _playerItem = _controller.items[_index];
       duration = _videoPlayerController.value.duration.inSeconds;
+      _playerItem.duration = _videoPlayerController.value.duration;
     });
+
     cancelAndRestartTimer();
   }
 
@@ -247,7 +257,7 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
     if (skip == Skip.NEXT) {
       // add one to index if the link isn't the last element in the urls array
 
-      if (_index < _controller.urls.length) {
+      if (_index < _controller.items.length) {
         // add one to the controller index
         _index = _index + 1;
         print('object' + _controller.index.toString());
@@ -328,19 +338,21 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
     this.seek(new Duration(seconds: time));
   }
 
+  /// play the next video
   void nextVideo() {
     //
-    if (_index < _controller.urls.length) {
+    if (_index < _controller.items.length) {
       int index = _index + 1;
-      String link = _controller.urls[index];
+      String link = _controller.items[index].url;
       changeVideo(link, Skip.NEXT);
     }
   }
 
+  /// play the previous video
   void previousVideo() {
     if (_index > 0) {
       int index = _index - 1;
-      String link = _controller.urls[index];
+      String link = _controller.items[index].url;
       changeVideo(link, Skip.PREVIOUS);
     }
   }
@@ -357,6 +369,11 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
     if (_videoPlayerController != null) {
       BlocProvider.of<VideoPositionBloc>(context).add(VideoPositionEventLoad(
           _videoPlayerController.value.position.inSeconds));
+      widget.controller.isPlaying(_videoPlayerController.value.isPlaying);
+      setState(() {
+        _playerItem.position = _videoPlayerController.value.position;
+      });
+      widget.controller.playerItem(_playerItem);
       if (duration != null) {
         if (_videoPlayerController.value.position.inSeconds == duration) {
           if (_controller.isLooping == false) {

@@ -20,7 +20,7 @@ class PlayerTopBar extends StatelessWidget {
           child: new Container(
             margin: EdgeInsets.only(left: 30),
             child: new Text(
-              controller.title != null ? controller.title : '',
+              'Title',
               overflow: TextOverflow.ellipsis,
               style: TextStyle(color: Colors.white, fontSize: 20),
             ),

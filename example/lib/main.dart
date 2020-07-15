@@ -27,23 +27,43 @@ class _ChewieDemoState extends State<ChewieDemo> {
   void initState() {
     super.initState();
     controller = new Controller(
-      urls: [
-        'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-        'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-        'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-      ],
-      autoPlay: true,
-      autoInitialize: true,
-      isLooping: false,
-      videoSource: VideoSource.NETWORK,
-      aspectRatio: 16 / 9,
-      // startAt: Duration(seconds: 1000),
-      allowedScreenSleep: false,
-      hasSubtitles: true,
-      placeholder: new Container(
-        color: Colors.white,
-      ),
-    );
+        items: [
+          new PlayerItem(
+            title: 'video 1',
+            url:
+                'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+          ),
+          new PlayerItem(
+            title: 'video 2',
+            url:
+                'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+          ),
+          new PlayerItem(
+            title: 'video 3',
+            url:
+                'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+          ),
+        ],
+        autoPlay: true,
+        autoInitialize: true,
+        isLooping: false,
+        videoSource: VideoSource.NETWORK,
+        aspectRatio: 16 / 9,
+        // startAt: Duration(seconds: 1000),
+        allowedScreenSleep: false,
+        hasSubtitles: true,
+        placeholder: new Container(
+          color: Colors.white,
+        ),
+        isPlaying: (isPlaying) {
+          //
+          print(isPlaying);
+        },
+        playerItem: (playerItem) {
+          print('Player title: ' + playerItem.title);
+          print('position: ' + playerItem.position.inSeconds.toString());
+          print('Duration: ' + playerItem.duration.inSeconds.toString());
+        });
   }
 
   @override

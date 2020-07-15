@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:video_player_controls/data/player_item.dart';
 
 enum VideoSource { NETWORK, ASSET }
 
@@ -12,7 +13,7 @@ class Controller extends Equatable {
   final bool autoPlay;
 
   /// List of urls to play
-  final List<String> urls;
+  final List<PlayerItem> items;
 
   /// Defines the video source of the video, the VideoSource in set to VideoSource.NETWORK by default
   final VideoSource videoSource;
@@ -26,9 +27,6 @@ class Controller extends Equatable {
   /// Whether or not the video should loop
   final bool isLooping;
 
-  /// The Aspect Ratio of the Video. Important to get the correct size of the
-  /// video!
-  ///
   /// Will fallback to fitting within the space allowed.
   final double aspectRatio;
 
@@ -42,28 +40,33 @@ class Controller extends Equatable {
   /// Defines if the controls should be for live stream video
   final bool isLive;
 
-  /// this is the title of the video
-  final String title;
-
   /// if true, the subtitles button i9s shown
   final bool hasSubtitles;
 
   /// Defines whether to show controls and progress indicator, it is set to true by default
   final bool showControls;
 
-  /// this is a callback funtion which returns void
-  final Function showSubtitles;
+
+  /// Returns with true if the playing else false
+  final ValueChanged<bool> isPlaying;
+
+  /// Called with error if an error occurs
+  final ValueChanged onError;
+
+  /// returns the PlayerItem that is currently playing
+  final ValueChanged<PlayerItem> playerItem;
 
   // int playingIndex;
 
   Controller({
     this.showControls = true,
     this.videoSource = VideoSource.NETWORK,
-    this.urls,
+    this.items,
+    this.isPlaying,
+    this.onError,
+    this.playerItem,
     this.index = 0,
-    this.title = '',
     this.hasSubtitles = false,
-    this.showSubtitles,
     this.autoInitialize = true,
     this.autoPlay = true,
     this.startAt,
@@ -72,7 +75,8 @@ class Controller extends Equatable {
     this.placeholder,
     this.allowedScreenSleep = false,
     this.isLive = false,
-  }) : assert(urls != null, "urls must be provided in the controller instance");
+  }) : assert(
+            items != null, "urls must be provided in the controller instance");
   @override
   //
   List<Object> get props => [
@@ -84,9 +88,7 @@ class Controller extends Equatable {
         placeholder,
         allowedScreenSleep,
         isLive,
-        title,
         hasSubtitles,
-        showSubtitles,
         index
       ];
 }

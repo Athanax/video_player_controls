@@ -21,7 +21,6 @@ class SubtitleButton extends StatelessWidget {
             //
             BlocProvider.of<ShowcontrolsBloc>(context)
                 .add(ShowcontrolsEventStart());
-            controller.showSubtitles();
           }),
     );
   }
