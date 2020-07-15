@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:video_player/video_player.dart';
-import 'package:video_player_controls/bloc/pause_video/pause_video_bloc.dart';
-import 'package:video_player_controls/bloc/play_video/play_video_bloc.dart';
-import 'package:video_player_controls/bloc/seek_video/seek_video_bloc.dart';
-import 'package:video_player_controls/bloc/show_controls/showcontrols_bloc.dart';
 import 'package:video_player_controls/src/buttons/fast_foward_button.dart';
 import 'package:video_player_controls/src/buttons/fast_rewind_button.dart';
 import 'package:video_player_controls/src/buttons/next_button.dart';
