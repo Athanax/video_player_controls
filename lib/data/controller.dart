@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
 
 enum VideoSource { NETWORK, ASSET }
 
@@ -19,7 +18,7 @@ class Controller extends Equatable {
   final VideoSource videoSource;
 
   /// This is the index url to be played in the [List<String> urls] , if not specified, the first url plays by default
-  final int index;
+  int index;
 
   /// Start video at a certain position
   final Duration startAt;
@@ -55,10 +54,7 @@ class Controller extends Equatable {
   /// this is a callback funtion which returns void
   final Function showSubtitles;
 
-  /// The controller for the video you want to play
-  VideoPlayerController videoPlayerController;
-
-  int playingIndex;
+  // int playingIndex;
 
   Controller({
     this.showControls = true,
@@ -76,14 +72,10 @@ class Controller extends Equatable {
     this.placeholder,
     this.allowedScreenSleep = false,
     this.isLive = false,
-  }) : assert(
-            urls != null, "urls must be provided in the controller instance") {
-    _initialize();
-  }
+  }) : assert(urls != null, "urls must be provided in the controller instance");
   @override
   //
   List<Object> get props => [
-        videoPlayerController,
         autoInitialize,
         autoPlay,
         startAt,
@@ -95,30 +87,6 @@ class Controller extends Equatable {
         title,
         hasSubtitles,
         showSubtitles,
+        index
       ];
-
-  Future _initialize() async {
-    if (videoSource == VideoSource.NETWORK) {
-      videoPlayerController = VideoPlayerController.network(urls[index]);
-    } else {
-      videoPlayerController = VideoPlayerController.asset(urls[index]);
-    }
-
-    playingIndex = index;
-
-    await videoPlayerController.setLooping(isLooping);
-
-    if ((autoInitialize || autoPlay) &&
-        !videoPlayerController.value.initialized) {
-      await videoPlayerController.initialize();
-    }
-
-    if (autoPlay) {
-      await videoPlayerController.play();
-    }
-
-    if (startAt != null) {
-      await videoPlayerController.seekTo(startAt);
-    }
-  }
 }

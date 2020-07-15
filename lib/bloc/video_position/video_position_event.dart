@@ -5,7 +5,7 @@ abstract class VideoPositionEvent extends Equatable {
 }
 
 class VideoPositionEventLoad extends VideoPositionEvent {
-  final Duration duration;
+  final int duration;
 
   const VideoPositionEventLoad(this.duration);
   @override

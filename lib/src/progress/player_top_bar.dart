@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:video_player_controls/data/controller.dart';
-import 'package:video_player_controls/src/subtitle_button.dart';
+import 'package:video_player_controls/src/buttons/subtitle_button.dart';
 
 class PlayerTopBar extends StatelessWidget {
   final Controller controller;

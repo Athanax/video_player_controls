@@ -17,7 +17,7 @@ class VideoPositionLoading extends VideoPositionState {
 }
 
 class VideoPositionLoaded extends VideoPositionState {
-  final Duration duration;
+  final int duration;
   VideoPositionLoaded(this.duration);
   @override
   List<Object> get props => [duration];

@@ -12,7 +12,14 @@ class VideoPeriod extends StatefulWidget {
 }
 
 class _VideoPeriodState extends State<VideoPeriod> {
-  Duration _time = new Duration();
+  int _time = 0;
+  Duration duration = new Duration();
+  @override
+  void initState() {
+    //
+    duration = widget.videoPlayerController.value.duration;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,14 +33,22 @@ class _VideoPeriodState extends State<VideoPeriod> {
         }
       },
       child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 22),
         child: new Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             new Container(
               child: new Text(
-                '${formatDuration(_time)} / ${formatDuration(widget.videoPlayerController.value.duration)}',
+                '${formatDuration(new Duration(seconds: _time))}  ',
                 style: new TextStyle(color: Colors.white),
               ),
             ),
+            new Container(
+              child: new Text(
+                '${formatDuration(duration)}',
+                style: new TextStyle(color: Colors.white),
+              ),
+            )
           ],
         ),
       ),
