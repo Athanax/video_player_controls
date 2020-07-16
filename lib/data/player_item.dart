@@ -20,7 +20,15 @@ class PlayerItem extends Equatable {
   /// Duration returns th duration of the playing item
   Duration duration;
 
-  PlayerItem({this.title = '', this.url, this.subtitleUrl, this.customInfo})
+  /// Start video at a certain position
+  final Duration startAt;
+
+  PlayerItem(
+      {this.title = '',
+      this.url,
+      this.startAt,
+      this.subtitleUrl,
+      this.customInfo})
       : assert(url != null, 'url must be provided in the PlayerItem class');
 
   @override

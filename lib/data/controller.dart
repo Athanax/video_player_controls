@@ -18,11 +18,17 @@ class Controller extends Equatable {
   /// Defines the video source of the video, the VideoSource in set to VideoSource.NETWORK by default
   final VideoSource videoSource;
 
-  /// This is the index url to be played in the [List<String> urls] , if not specified, the first url plays by default
+  /// This is the index url to be played in the [items] , if not specified, the first url plays by default
   int index;
 
-  /// Start video at a certain position
-  final Duration startAt;
+  /// If true, the video plays in fullscreen mode and either landscape mode both left and right
+  /// this property if false by default
+  final bool fullScreenByDefault;
+
+  /// This property is true by default.
+  /// If true, a toggle enter-fullscreen exit fullscreen button is available on the screen.
+  /// the button won't display if [fullScreenByDefault] is true. You know the reason.
+  final bool allowFullScreen;
 
   /// Whether or not the video should loop
   final bool isLooping;
@@ -35,6 +41,7 @@ class Controller extends Equatable {
   final Widget placeholder;
 
   /// Defines if the player will sleep in fullscreen or not
+  /// If false, the screen doesn't sleep until the player disposed
   final bool allowedScreenSleep;
 
   /// Defines if the controls should be for live stream video
@@ -69,6 +76,8 @@ class Controller extends Equatable {
     this.showControls = true,
     this.videoSource = VideoSource.NETWORK,
     this.items,
+    this.fullScreenByDefault = false,
+    this.allowFullScreen = true,
     this.showSeekButtons = true,
     this.showSkipButtons = true,
     this.isPlaying,
@@ -78,11 +87,10 @@ class Controller extends Equatable {
     this.hasSubtitles = false,
     this.autoInitialize = true,
     this.autoPlay = true,
-    this.startAt,
     this.isLooping,
     this.aspectRatio,
     this.placeholder,
-    this.allowedScreenSleep = false,
+    this.allowedScreenSleep = true,
     this.isLive = false,
   }) : assert(
             items != null, "urls must be provided in the controller instance");
@@ -91,7 +99,6 @@ class Controller extends Equatable {
   List<Object> get props => [
         autoInitialize,
         autoPlay,
-        startAt,
         isLooping,
         aspectRatio,
         placeholder,

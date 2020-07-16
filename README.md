@@ -1,6 +1,6 @@
 # video_player_controls
 
-This si a video player package built on video_player and the flutter_bloc. It has better state management and user interface.
+This is a video player package built on [Video player](https://pub.dev/packages/video_player) and the [Flutter bloc](https://pub.dev/packages/flutter_bloc). It has better state management and user interface.
 
 # Installation
 
@@ -25,8 +25,6 @@ dependencies:
 * [Flutter_bloc](https://pub.dev/packages/flutter_bloc) state management
 * Ability to listen to player state, isPlaying, through a simple interface, which returns with true if the video is playing, else false
 
-* 
-
 ``` dart
 
   isPlaying: (isPlaying) {
@@ -36,6 +34,8 @@ dependencies:
   ```
 
 * Ability to listen to the playing player item, see it's position, duration, and the other specified properties
+* Allow video player to play in fullscreen mode (optional)
+* Allow the video player to toggle full screen mode
 
 ``` dart
 playerItem: (playerItem) {
@@ -57,47 +57,48 @@ import 'package:video_player_controls/video_player_controls.dart';
 
 ``` dart
 controller = new Controller(
-  items: [
-    new PlayerItem(
-      title: 'video 1',
-      url:
-          'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-    ),
-    new PlayerItem(
-      title: 'video 2',
-      url:
-          'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-    ),
-    new PlayerItem(
-      title: 'video 3',
-      url:
-          'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-    ),
-  ],
-  autoPlay: true,
-  autoInitialize: true,
-  isLooping: false,
-  videoSource: VideoSource.NETWORK,
-  aspectRatio: 16 / 9,
-
-  //optional parameters
-  // showSeekButtons: false,
-  // showSkipButtons: false,
-  // startAt: Duration(seconds: 2),
-  // allowedScreenSleep: false,
-  // hasSubtitles: true,
-  placeholder: new Container(
-    color: Colors.grey,
-  ),
-  isPlaying: (isPlaying) {
-    //
-    print(isPlaying);
-  },
-  playerItem: (playerItem) {
-    print('Player title: ' + playerItem.title);
-    print('position: ' + playerItem.position.inSeconds.toString());
-    print('Duration: ' + playerItem.duration.inSeconds.toString());
-  });
+        items: [
+          new PlayerItem(
+            title: 'video 1',
+            url:
+                'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+          ),
+          new PlayerItem(
+            startAt: Duration(seconds: 2),
+            title: 'video 2',
+            url:
+                'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+          ),
+          new PlayerItem(
+            title: 'video 3',
+            url:
+                'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+          ),
+        ],
+        autoPlay: true,
+        autoInitialize: true,
+        // isLooping: false,
+        aspectRatio: 16 / 9,
+        allowedScreenSleep: false,
+        // showControls: false,
+        // hasSubtitles: true,
+        // isLive: false,
+        // showSeekButtons: false,
+        // showSkipButtons: false,
+        // allowFullScreen: false,
+        // fullScreenByDefault: true,
+        placeholder: new Container(
+          color: Colors.grey,
+        ),
+        isPlaying: (isPlaying) {
+          //
+          print(isPlaying);
+        },
+        playerItem: (playerItem) {
+          print('Player title: ' + playerItem.title);
+          print('position: ' + playerItem.position.inSeconds.toString());
+          print('Duration: ' + playerItem.duration.inSeconds.toString());
+        });
 ```
 
 The video source property of the Controller class is an enum datatype which cao either be:
@@ -153,6 +154,7 @@ class _ChewieDemoState extends State<ChewieDemo> {
                 'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
           ),
           new PlayerItem(
+            startAt: Duration(seconds: 2),
             title: 'video 2',
             url:
                 'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
@@ -165,14 +167,16 @@ class _ChewieDemoState extends State<ChewieDemo> {
         ],
         autoPlay: true,
         autoInitialize: true,
-        isLooping: false,
-        videoSource: VideoSource.NETWORK,
+        // isLooping: false,
         aspectRatio: 16 / 9,
+        allowedScreenSleep: false,
+        // showControls: false,
+        // hasSubtitles: true,
+        // isLive: false,
         // showSeekButtons: false,
         // showSkipButtons: false,
-        // startAt: Duration(seconds: 2),
-        allowedScreenSleep: false,
-        // hasSubtitles: true,
+        // allowFullScreen: false,
+        // fullScreenByDefault: true,
         placeholder: new Container(
           color: Colors.grey,
         ),

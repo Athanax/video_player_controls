@@ -5,8 +5,11 @@ export 'package:video_player_controls/data/player_item.dart';
 
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:video_player/video_player.dart';
+import 'package:video_player_controls/bloc/enter_full_screen/enter_full_screen_bloc.dart';
+import 'package:video_player_controls/bloc/exit_full_screen/exit_full_screen_bloc.dart';
 import 'package:video_player_controls/bloc/fast_foward/fast_foward_bloc.dart';
 import 'package:video_player_controls/bloc/fast_rewind/fast_rewind_bloc.dart';
 import 'package:video_player_controls/bloc/next_video/next_video_bloc.dart';
@@ -21,6 +24,7 @@ import 'package:video_player_controls/data/controller.dart';
 import 'package:video_player_controls/data/player_item.dart';
 import 'package:video_player_controls/src/progress/player_top_bar.dart';
 import 'package:video_player_controls/src/progress/progress_bar.dart';
+import 'package:wakelock/wakelock.dart';
 
 class VideoPlayerControls extends StatelessWidget {
   final Controller controller;
@@ -67,6 +71,12 @@ class VideoPlayerControls extends StatelessWidget {
         BlocProvider<SeekVideoBloc>(
           create: (context) => SeekVideoBloc(),
         ),
+        BlocProvider<EnterFullScreenBloc>(
+          create: (context) => EnterFullScreenBloc(),
+        ),
+        BlocProvider<ExitFullScreenBloc>(
+          create: (context) => ExitFullScreenBloc(),
+        ),
       ],
       child: new VideoPlayerInterface(
         controller: controller,
@@ -109,6 +119,13 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
   @override
   void initState() {
     _controller = widget.controller;
+    if (_controller.allowedScreenSleep == false) {
+      Wakelock.enable();
+    }
+    if (_controller.fullScreenByDefault == true) {
+      enterFullScreen();
+    }
+
     _index = _controller.index;
     initializeVideo(widget.controller.items[widget.controller.index].url);
     // _videoPlayerController.addListener(() => listener());
@@ -134,12 +151,16 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
       await _videoPlayerController.initialize();
     }
 
+    if (!_controller.autoPlay && !_videoPlayerController.value.initialized) {
+      await _videoPlayerController.initialize();
+    }
+
     if (_controller.autoPlay) {
       await _videoPlayerController.play();
     }
 
-    if (_controller.startAt != null) {
-      await _videoPlayerController.seekTo(_controller.startAt);
+    if (_controller.items[_index].startAt != null) {
+      await _videoPlayerController.seekTo(_controller.items[_index].startAt);
     }
     setState(() {
       _playerItem = _controller.items[_index];
@@ -156,6 +177,13 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
   void dispose() {
     _videoPlayerController.removeListener(() => listener());
     _videoPlayerController.dispose();
+    if (_controller.fullScreenByDefault == true) {
+      exitFullScreen();
+    }
+    if (_controller.allowedScreenSleep == false) {
+      Wakelock.disable();
+    }
+
     super.dispose();
   }
 
@@ -168,6 +196,7 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
       },
       onDoubleTap: () {
         // mute video
+        print(_index.toString());
       },
       child: Stack(
         children: <Widget>[
@@ -186,6 +215,20 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
                   ),
                 ),
                 listeners: [
+                  BlocListener<EnterFullScreenBloc, EnterFullScreenState>(
+                      listener: (context, state) {
+                    if (state is EnterFullScreenLoaded) {
+                      //
+                      enterFullScreen();
+                    }
+                  }),
+                  BlocListener<ExitFullScreenBloc, ExitFullScreenState>(
+                      listener: (context, state) {
+                    if (state is ExitFullScreenLoaded) {
+                      //
+                      exitFullScreen();
+                    }
+                  }),
                   BlocListener<NextVideoBloc, NextVideoState>(
                       listener: (context, state) {
                     if (state is NextVideoLoaded) {
@@ -231,12 +274,30 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
                   })
                 ],
               )),
-          _controller.showControls == true
+          _controller.showControls == true && _controller.isLive == false
               ? _buildControls(context)
               : new Container(),
         ],
       ),
     );
+  }
+
+  void enterFullScreen() {
+    //
+    SystemChrome.setEnabledSystemUIOverlays([]);
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+  }
+
+  void exitFullScreen() {
+    //
+    SystemChrome.restoreSystemUIOverlays();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
   }
 
   void initialize(String link, Skip skip) async {
@@ -268,8 +329,6 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
         // add one to the controller index
         _index = _index + 1;
         print('object' + _controller.index.toString());
-      } else {
-        print('uko nje buda');
       }
     } else {
       // subtract one to index if the video isn't the first in the array
@@ -352,8 +411,11 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
     //
     if (_index < _controller.items.length) {
       int index = _index + 1;
-      String link = _controller.items[index].url;
-      changeVideo(link, Skip.NEXT);
+      // this solved the RangeIndex() Exception
+      if (index != _controller.items.length) {
+        String link = _controller.items[index].url;
+        changeVideo(link, Skip.NEXT);
+      }
     }
   }
 
