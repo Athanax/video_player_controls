@@ -1,3 +1,3 @@
-## [2.0.4] - Mon July 20, 2020
+## [2.0.5] - Mon July 20, 2020
 
-* small change
+* Perfect the play button
