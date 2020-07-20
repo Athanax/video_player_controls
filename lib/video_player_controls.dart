@@ -21,6 +21,7 @@ import 'package:video_player_controls/bloc/previous_video/previous_video_bloc.da
 import 'package:video_player_controls/bloc/seek_video/seek_video_bloc.dart';
 import 'package:video_player_controls/bloc/show_controls/showcontrols_bloc.dart';
 import 'package:video_player_controls/bloc/video_duration/video_duration_bloc.dart';
+import 'package:video_player_controls/bloc/video_playing/video_playing_bloc.dart';
 import 'package:video_player_controls/bloc/video_position/video_position_bloc.dart';
 import 'package:video_player_controls/data/controller.dart';
 import 'package:video_player_controls/data/player_item.dart';
@@ -82,6 +83,9 @@ class VideoPlayerControls extends StatelessWidget {
         BlocProvider<ExitFullScreenBloc>(
           create: (context) => ExitFullScreenBloc(),
         ),
+        BlocProvider<VideoPlayingBloc>(
+          create: (context) => VideoPlayingBloc(),
+        ),
       ],
       child: new VideoPlayerInterface(
         controller: controller,
@@ -100,7 +104,7 @@ class VideoPlayerInterface extends StatefulWidget {
   _VideoPlayerInterfaceState createState() => _VideoPlayerInterfaceState();
 }
 
-enum Skip { NEXT, PREVIOUS }
+enum Skip { NEXT, PREVIOUS, RESTART }
 
 class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
   // video player controller
@@ -324,8 +328,10 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
 
     if (skip == Skip.NEXT) {
       changeIndex(Skip.NEXT);
-    } else {
+    } else if (skip == Skip.PREVIOUS) {
       changeIndex(Skip.PREVIOUS);
+    } else {
+      changeIndex(Skip.RESTART);
     }
 
     initializeVideo(link);
@@ -343,12 +349,14 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
         _index = _index + 1;
         print('object' + _controller.index.toString());
       }
-    } else {
+    } else if (skip == Skip.PREVIOUS) {
       // subtract one to index if the video isn't the first in the array
       if (_index > 0) {
         // add one to the controller index
         _index = _index - 1;
       }
+    } else {
+      _index = 0;
     }
   }
 
@@ -358,8 +366,10 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
       // If there was no controller, just create a new one
       if (skip == Skip.NEXT) {
         initialize(link, Skip.NEXT);
-      } else {
+      } else if (skip == Skip.PREVIOUS) {
         initialize(link, Skip.PREVIOUS);
+      } else {
+        initialize(link, Skip.RESTART);
       }
     } else {
       // If there was a controller, we need to dispose of the old one first
@@ -370,8 +380,10 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
         // Initing new controller
         if (skip == Skip.NEXT) {
           initialize(link, Skip.NEXT);
-        } else {
+        } else if (skip == Skip.PREVIOUS) {
           initialize(link, Skip.PREVIOUS);
+        } else {
+          initialize(link, Skip.RESTART);
         }
       });
 
@@ -445,6 +457,8 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
   void seek(Duration time) {
     //
     _videoPlayerController.seekTo(time);
+    // ignore: unnecessary_statements
+    // _videoPlayerController.value.buffered;
   }
 
   // Listen to changes in the video player controller
@@ -459,6 +473,8 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
           _videoPlayerController.value.position.inSeconds));
 
       widget.controller.isPlaying(_videoPlayerController.value.isPlaying);
+      BlocProvider.of<VideoPlayingBloc>(context)
+          .add(VideoPlayingEventLoad(_videoPlayerController.value.isPlaying));
       setState(() {
         _playerItem.position = _videoPlayerController.value.position;
       });
@@ -488,9 +504,21 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
     //
     if (_videoPlayerController != null) {
       if (_videoPlayerController.value.isPlaying == false) {
-        _videoPlayerController.play();
+        if (_videoPlayerController.value.position ==
+            _videoPlayerController.value.duration) {
+          // restart video
+          restartPlaylist();
+        } else {
+          _videoPlayerController.play();
+        }
       }
     }
+  }
+
+  void restartPlaylist() {
+    //
+    String link = _controller.items[0].url;
+    changeVideo(link, Skip.RESTART);
   }
 
   // controls widget

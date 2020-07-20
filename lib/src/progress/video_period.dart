@@ -28,9 +28,7 @@ class _VideoPeriodState extends State<VideoPeriod> {
         //
         if (state is VideoPositionLoaded) {
           setState(() {
-            if (_time < _duration) {
-              _time = state.duration;
-            }
+            _time = state.duration;
           });
         }
       },
