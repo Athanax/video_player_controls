@@ -1,5 +1,5 @@
 name: video_player_controls
-description: This is a video player package built on Video player and the Flutter bloc. It has better state management and user interface; with buttons control buttons, progress indicators and more
+description: Video player controls in a flutter video player package with more custom user interface and state management via flutter bloc
 version: 2.0.3
 homepage: https://github.com/Athanax/video_player_controls
 

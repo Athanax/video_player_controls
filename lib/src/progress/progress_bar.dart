@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
 import 'package:video_player_controls/src/buttons/fast_foward_button.dart';
 import 'package:video_player_controls/src/buttons/fast_rewind_button.dart';
 import 'package:video_player_controls/src/buttons/full_screen_button.dart';
