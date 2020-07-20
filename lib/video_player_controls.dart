@@ -2,6 +2,7 @@ library video_player_controls;
 
 export 'package:video_player_controls/data/controller.dart';
 export 'package:video_player_controls/data/player_item.dart';
+export 'package:video_player_controls/data/progress_colors.dart';
 
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -19,6 +20,7 @@ import 'package:video_player_controls/bloc/player_item/player_item_bloc.dart';
 import 'package:video_player_controls/bloc/previous_video/previous_video_bloc.dart';
 import 'package:video_player_controls/bloc/seek_video/seek_video_bloc.dart';
 import 'package:video_player_controls/bloc/show_controls/showcontrols_bloc.dart';
+import 'package:video_player_controls/bloc/video_duration/video_duration_bloc.dart';
 import 'package:video_player_controls/bloc/video_position/video_position_bloc.dart';
 import 'package:video_player_controls/data/controller.dart';
 import 'package:video_player_controls/data/player_item.dart';
@@ -61,6 +63,9 @@ class VideoPlayerControls extends StatelessWidget {
         ),
         BlocProvider<VideoPositionBloc>(
           create: (context) => VideoPositionBloc(),
+        ),
+        BlocProvider<VideoDurationBloc>(
+          create: (context) => VideoDurationBloc(),
         ),
         BlocProvider<PlayVideoBloc>(
           create: (context) => PlayVideoBloc(),
@@ -169,6 +174,10 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
     });
     BlocProvider.of<PlayerItemBloc>(context)
         .add(PlayerItemEventLoad(_playerItem));
+
+    /// Show controls when the video starts
+    BlocProvider.of<ShowcontrolsBloc>(context).add(ShowcontrolsEventStart());
+
     // cancelAndRestartTimer();
   }
 
@@ -191,11 +200,15 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        BlocProvider.of<ShowcontrolsBloc>(this.context)
-            .add(ShowcontrolsEventStart());
+        if (_videoPlayerController.value.hasError == false) {
+          BlocProvider.of<ShowcontrolsBloc>(this.context)
+              .add(ShowcontrolsEventStart());
+        }
       },
       onDoubleTap: () {
         // mute video
+        BlocProvider.of<VideoDurationBloc>(context).add(VideoDurationEventLoad(
+            _videoPlayerController.value.duration.inSeconds));
         print(_index.toString());
       },
       child: Stack(
@@ -438,8 +451,13 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
   void listener() {
     //
     if (_videoPlayerController != null) {
+      widget.controller
+          .onError({'hasError': _videoPlayerController.value.hasError});
+      BlocProvider.of<VideoDurationBloc>(context).add(VideoDurationEventLoad(
+          _videoPlayerController.value.duration.inSeconds));
       BlocProvider.of<VideoPositionBloc>(context).add(VideoPositionEventLoad(
           _videoPlayerController.value.position.inSeconds));
+
       widget.controller.isPlaying(_videoPlayerController.value.isPlaying);
       setState(() {
         _playerItem.position = _videoPlayerController.value.position;
@@ -508,13 +526,11 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
             child: new Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                PlayerTopBar(
-                  controller: _controller,
-                ),
+                PlayerTopBar(),
                 new Expanded(child: new Container()),
                 new ProgressBar(
                   controller: _controller,
-                  videoPlayerController: _videoPlayerController,
+                  duration: duration,
                 )
               ],
             ),

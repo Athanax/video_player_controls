@@ -12,11 +12,11 @@ import 'package:video_player_controls/src/progress/video_period.dart';
 import 'package:video_player_controls/video_player_controls.dart';
 
 class ProgressBar extends StatefulWidget {
-  final VideoPlayerController videoPlayerController;
+  final int duration;
   final Controller controller;
   const ProgressBar({
     Key key,
-    this.videoPlayerController,
+    this.duration,
     this.controller,
   }) : super(key: key);
   @override
@@ -30,7 +30,7 @@ class _ProgressBarState extends State<ProgressBar> {
   @override
   void initState() {
     _controller = widget.controller;
-    duration = widget.videoPlayerController.value.duration.inSeconds.toDouble();
+    duration = widget.duration.toDouble();
     super.initState();
   }
 
@@ -50,10 +50,10 @@ class _ProgressBarState extends State<ProgressBar> {
               child: new Column(
                 children: <Widget>[
                   VideoPeriod(
-                    videoPlayerController: widget.videoPlayerController,
+                    duration: widget.duration,
                   ),
                   new ProgressSlider(
-                    duration: duration,
+                    progressColors: _controller.progressColors,
                   ),
                   Row(
                     children: <Widget>[

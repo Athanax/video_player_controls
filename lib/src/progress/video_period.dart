@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:video_player/video_player.dart';
+import 'package:video_player_controls/bloc/video_duration/video_duration_bloc.dart';
 import 'package:video_player_controls/bloc/video_position/video_position_bloc.dart';
 
 class VideoPeriod extends StatefulWidget {
-  final VideoPlayerController videoPlayerController;
+  final int duration;
 
-  const VideoPeriod({Key key, this.videoPlayerController}) : super(key: key);
+  const VideoPeriod({Key key, this.duration}) : super(key: key);
   @override
   _VideoPeriodState createState() => _VideoPeriodState();
 }
 
 class _VideoPeriodState extends State<VideoPeriod> {
   int _time = 0;
-  Duration duration = new Duration();
+  int _duration = 1;
   @override
   void initState() {
     //
-    duration = widget.videoPlayerController.value.duration;
+    // duration = new Duration(seconds: widget.duration).inSeconds;
     super.initState();
   }
 
@@ -28,28 +28,41 @@ class _VideoPeriodState extends State<VideoPeriod> {
         //
         if (state is VideoPositionLoaded) {
           setState(() {
-            _time = state.duration;
+            if (_time < _duration) {
+              _time = state.duration;
+            }
           });
         }
       },
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 22),
-        child: new Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            new Container(
-              child: new Text(
-                '${formatDuration(new Duration(seconds: _time))}  ',
-                style: new TextStyle(color: Colors.white),
+      child: BlocListener<VideoDurationBloc, VideoDurationState>(
+        listener: (context, state) {
+          //
+          if (state is VideoDurationLoaded) {
+            setState(() {
+              _duration = state.duration;
+            });
+            print(state.duration);
+          }
+        },
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 22),
+          child: new Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              new Container(
+                child: new Text(
+                  '${formatDuration(new Duration(seconds: _time))}  ',
+                  style: new TextStyle(color: Colors.white),
+                ),
               ),
-            ),
-            new Container(
-              child: new Text(
-                '${formatDuration(duration)}',
-                style: new TextStyle(color: Colors.white),
-              ),
-            )
-          ],
+              new Container(
+                child: new Text(
+                  '${formatDuration(new Duration(seconds: _duration))}',
+                  style: new TextStyle(color: Colors.white),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

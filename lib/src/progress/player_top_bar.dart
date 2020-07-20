@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:video_player_controls/bloc/player_item/player_item_bloc.dart';
-import 'package:video_player_controls/data/controller.dart';
 
 class PlayerTopBar extends StatefulWidget {
-  final Controller controller;
-
-  const PlayerTopBar({Key key, this.controller}) : super(key: key);
+  const PlayerTopBar({
+    Key key,
+  }) : super(key: key);
 
   @override
   _PlayerTopBarState createState() => _PlayerTopBarState();
@@ -29,7 +28,9 @@ class _PlayerTopBarState extends State<PlayerTopBar> {
                   listener: (context, state) {
                     if (state is PlayerItemLoaded) {
                       setState(() {
-                        title = state.playerItem.title;
+                        if (state.playerItem != null) {
+                          title = state.playerItem.title;
+                        }
                       });
                     }
                   },

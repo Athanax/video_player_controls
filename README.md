@@ -14,7 +14,7 @@ dependencies:
 
 # Screenshot
 
-![Philadelphia's Magic Gardens. This place was so cool!](https://wecast.ch/storage/images/screenshot.png "Demo screenshot")
+![Demo video](https://wecast.ch/storage/images/video.gif "Demo video")
 
 # Features
 

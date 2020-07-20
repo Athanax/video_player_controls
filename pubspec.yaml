@@ -1,6 +1,6 @@
 name: video_player_controls
 description: This is a video player package built on Video player and the Flutter bloc. It has better state management and user interface; with buttons control buttons, progress indicators and more
-version: 2.0.2
+version: 2.0.3
 homepage: https://github.com/Athanax/video_player_controls
 
 environment:
@@ -14,6 +14,7 @@ dependencies:
   equatable: ^1.2.0
   bloc: ^5.0.1
   wakelock: ^0.1.4+2
+  http: ^0.12.2
 
 dev_dependencies:
   flutter_test:

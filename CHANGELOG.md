@@ -1,6 +1,5 @@
-## [2.0.2] - Wed July 16, 2020
+## [2.0.3] - Mon July 20, 2020
 
-* Correct RangeError(index) exception
-* Add allowScreenSleep functionality
-* Add fullScreenDefault feature
-* Add fullscreen buttons
+* Correct Slider min>=value<=max Error
+* Add custom progress colors
+* Add custom loader

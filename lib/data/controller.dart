@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:video_player_controls/data/progress_colors.dart';
 import 'package:video_player_controls/data/player_item.dart';
 
 enum VideoSource { NETWORK, ASSET }
@@ -64,13 +65,16 @@ class Controller extends Equatable {
   /// Returns with true if the playing else false
   final ValueChanged<bool> isPlaying;
 
-  /// Called with error if an error occurs
-  final ValueChanged onError;
-
-  /// returns the PlayerItem that is currently playing
+  /// Returns the PlayerItem that is currently playing
   final ValueChanged<PlayerItem> playerItem;
 
+  /// Returns a Map with true the error message if an error occurs
+  final ValueChanged<Map<String, dynamic>> onError;
   // int playingIndex;
+
+  final Widget loader;
+
+  final ProgressColors progressColors;
 
   Controller({
     this.showControls = true,
@@ -83,11 +87,13 @@ class Controller extends Equatable {
     this.isPlaying,
     this.onError,
     this.playerItem,
+    this.progressColors,
+    this.loader,
     this.index = 0,
     this.hasSubtitles = false,
     this.autoInitialize = true,
     this.autoPlay = true,
-    this.isLooping,
+    this.isLooping = false,
     this.aspectRatio,
     this.placeholder,
     this.allowedScreenSleep = true,
@@ -105,6 +111,7 @@ class Controller extends Equatable {
         allowedScreenSleep,
         isLive,
         hasSubtitles,
-        index
+        index,
+        progressColors
       ];
 }

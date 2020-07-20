@@ -31,7 +31,7 @@ class _ChewieDemoState extends State<ChewieDemo> {
           new PlayerItem(
             title: 'video 1',
             url:
-                'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+                'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
           ),
           new PlayerItem(
             startAt: Duration(seconds: 2),
@@ -45,6 +45,7 @@ class _ChewieDemoState extends State<ChewieDemo> {
                 'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
           ),
         ],
+        progressColors: ProgressColors(playedColor: Colors.redAccent),
         autoPlay: true,
         autoInitialize: true,
         // isLooping: false,
@@ -62,12 +63,17 @@ class _ChewieDemoState extends State<ChewieDemo> {
         ),
         isPlaying: (isPlaying) {
           //
-          print(isPlaying);
+          // print(isPlaying);
+        },
+        onError: (error) {
+          //
+          // print(error['hasError']);
+          // print(error['message']);
         },
         playerItem: (playerItem) {
-          print('Player title: ' + playerItem.title);
-          print('position: ' + playerItem.position.inSeconds.toString());
-          print('Duration: ' + playerItem.duration.inSeconds.toString());
+          // print('Player title: ' + playerItem.title);
+          // print('position: ' + playerItem.position.inSeconds.toString());
+          // print('Duration: ' + playerItem.duration.inSeconds.toString());
         });
   }
 
