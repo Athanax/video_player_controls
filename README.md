@@ -1,6 +1,6 @@
 # video_player_controls
 
-This is a video player package built on [Video player](https://pub.dev/packages/video_player) and the [Flutter bloc](https://pub.dev/packages/flutter_bloc). It has better state management and user interface.
+Video player controls is a flutter [Video player package](https://pub.dev/packages/video_player)  with more custom user interface and state management via [Flutter bloc](https://pub.dev/packages/flutter_bloc).
 
 # Installation
 

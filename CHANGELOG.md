@@ -1,5 +1,3 @@
-## [2.0.3] - Mon July 20, 2020
+## [2.0.4] - Mon July 20, 2020
 
-* Correct Slider min>=value<=max Error
-* Add custom progress colors
-* Add custom loader
+* small change
