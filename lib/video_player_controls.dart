@@ -13,6 +13,7 @@ import 'package:video_player_controls/bloc/enter_full_screen/enter_full_screen_b
 import 'package:video_player_controls/bloc/exit_full_screen/exit_full_screen_bloc.dart';
 import 'package:video_player_controls/bloc/fast_foward/fast_foward_bloc.dart';
 import 'package:video_player_controls/bloc/fast_rewind/fast_rewind_bloc.dart';
+import 'package:video_player_controls/bloc/load_player/load_player_bloc.dart';
 import 'package:video_player_controls/bloc/next_video/next_video_bloc.dart';
 import 'package:video_player_controls/bloc/pause_video/pause_video_bloc.dart';
 import 'package:video_player_controls/bloc/play_video/play_video_bloc.dart';
@@ -44,6 +45,9 @@ class VideoPlayerControls extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider<LoadPlayerBloc>(
+          create: (context) => LoadPlayerBloc(),
+        ),
         BlocProvider<PlayerItemBloc>(
           create: (context) => PlayerItemBloc(),
         ),
@@ -124,21 +128,31 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
   // control the player controls timeout
   Timer timer;
 
+  @override
+  void didChangeDependencies() {
+    //
+
+    super.didChangeDependencies();
+  }
+
   // init state method
   @override
   void initState() {
+    super.initState();
     _controller = widget.controller;
-    if (_controller.allowedScreenSleep == false) {
-      Wakelock.enable();
-    }
-    if (_controller.fullScreenByDefault == true) {
-      enterFullScreen();
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      //
+      if (_controller.allowedScreenSleep == false) {
+        Wakelock.enable();
+      }
+      if (_controller.fullScreenByDefault == true) {
+        enterFullScreen();
+      }
+      BlocProvider.of<LoadPlayerBloc>(context).add(LoadPlayerEventLoad());
+    });
 
     _index = _controller.index;
-    initializeVideo(widget.controller.items[widget.controller.index].url);
     // _videoPlayerController.addListener(() => listener());
-    super.initState();
   }
 
   Future initializeVideo(String url) async {
@@ -188,14 +202,14 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
   // distructor
   @override
   void dispose() {
-    _videoPlayerController.removeListener(() => listener());
-    _videoPlayerController.dispose();
     if (_controller.fullScreenByDefault == true) {
       exitFullScreen();
     }
     if (_controller.allowedScreenSleep == false) {
       Wakelock.disable();
     }
+    _videoPlayerController.removeListener(() => listener());
+    _videoPlayerController.dispose();
 
     super.dispose();
   }
@@ -232,6 +246,14 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
                   ),
                 ),
                 listeners: [
+                  BlocListener<LoadPlayerBloc, LoadPlayerState>(
+                      listener: (context, state) {
+                    if (state is LoadPlayerLoaded) {
+                      //
+                      initializeVideo(
+                          widget.controller.items[widget.controller.index].url);
+                    }
+                  }),
                   BlocListener<EnterFullScreenBloc, EnterFullScreenState>(
                       listener: (context, state) {
                     if (state is EnterFullScreenLoaded) {
@@ -465,25 +487,29 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
   void listener() {
     //
     if (_videoPlayerController != null) {
-      widget.controller
-          .onError({'hasError': _videoPlayerController.value.hasError});
-      BlocProvider.of<VideoDurationBloc>(context).add(VideoDurationEventLoad(
-          _videoPlayerController.value.duration.inSeconds));
-      BlocProvider.of<VideoPositionBloc>(context).add(VideoPositionEventLoad(
-          _videoPlayerController.value.position.inSeconds));
+      listenables();
+    }
+  }
 
-      widget.controller.isPlaying(_videoPlayerController.value.isPlaying);
-      BlocProvider.of<VideoPlayingBloc>(context)
-          .add(VideoPlayingEventLoad(_videoPlayerController.value.isPlaying));
-      setState(() {
-        _playerItem.position = _videoPlayerController.value.position;
-      });
-      widget.controller.playerItem(_playerItem);
-      if (duration != null) {
-        if (_videoPlayerController.value.position.inSeconds == duration) {
-          if (_controller.isLooping == false) {
-            nextVideo();
-          }
+  void listenables() {
+    widget.controller
+        .onError({'hasError': _videoPlayerController.value.hasError});
+    BlocProvider.of<VideoDurationBloc>(context).add(VideoDurationEventLoad(
+        _videoPlayerController.value.duration.inSeconds));
+    BlocProvider.of<VideoPositionBloc>(context).add(VideoPositionEventLoad(
+        _videoPlayerController.value.position.inSeconds));
+
+    widget.controller.isPlaying(_videoPlayerController.value.isPlaying);
+    BlocProvider.of<VideoPlayingBloc>(context)
+        .add(VideoPlayingEventLoad(_videoPlayerController.value.isPlaying));
+    setState(() {
+      _playerItem.position = _videoPlayerController.value.position;
+    });
+    widget.controller.playerItem(_playerItem);
+    if (duration != null) {
+      if (_videoPlayerController.value.position.inSeconds == duration) {
+        if (_controller.isLooping == false) {
+          nextVideo();
         }
       }
     }

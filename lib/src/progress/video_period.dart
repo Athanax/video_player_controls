@@ -14,12 +14,6 @@ class VideoPeriod extends StatefulWidget {
 class _VideoPeriodState extends State<VideoPeriod> {
   int _time = 0;
   int _duration = 1;
-  @override
-  void initState() {
-    //
-    // duration = new Duration(seconds: widget.duration).inSeconds;
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {

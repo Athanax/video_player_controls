@@ -30,7 +30,9 @@ dependencies:
   video_player: ^0.10.11+2
   video_player_controls:
     path: ../
-
+  flutter_bloc: ^6.0.0
+  equatable: ^1.2.0
+  bloc: ^6.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

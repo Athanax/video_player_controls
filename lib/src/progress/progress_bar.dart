@@ -28,9 +28,9 @@ class _ProgressBarState extends State<ProgressBar> {
 
   @override
   void initState() {
+    super.initState();
     _controller = widget.controller;
     duration = widget.duration.toDouble();
-    super.initState();
   }
 
   @override
