@@ -584,7 +584,6 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
                 new Expanded(child: new Container()),
                 new ProgressBar(
                   controller: _controller,
-                  duration: duration,
                 )
               ],
             ),

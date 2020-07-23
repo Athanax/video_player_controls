@@ -4,9 +4,9 @@ import 'package:video_player_controls/bloc/video_duration/video_duration_bloc.da
 import 'package:video_player_controls/bloc/video_position/video_position_bloc.dart';
 
 class VideoPeriod extends StatefulWidget {
-  final int duration;
-
-  const VideoPeriod({Key key, this.duration}) : super(key: key);
+  const VideoPeriod({
+    Key key,
+  }) : super(key: key);
   @override
   _VideoPeriodState createState() => _VideoPeriodState();
 }
