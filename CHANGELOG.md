@@ -1,3 +1,3 @@
-## [2.0.5] - Mon July 20, 2020
+## [2.1.0] - Mon July 23, 2020
 
-* Perfect the play button
+* Correct 'Failed assertion: '_dependents.isEmpty': is not true.' error

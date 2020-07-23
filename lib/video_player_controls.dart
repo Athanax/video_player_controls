@@ -131,8 +131,12 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
   @override
   void didChangeDependencies() {
     //
-
+    BlocProvider.of<LoadPlayerBloc>(context).add(LoadPlayerEventLoad());
     super.didChangeDependencies();
+  }
+
+  void startPlayer() {
+    initializeVideo(widget.controller.items[widget.controller.index].url);
   }
 
   // init state method
@@ -140,17 +144,13 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
   void initState() {
     super.initState();
     _controller = widget.controller;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      //
-      if (_controller.allowedScreenSleep == false) {
-        Wakelock.enable();
-      }
-      if (_controller.fullScreenByDefault == true) {
-        enterFullScreen();
-      }
-      BlocProvider.of<LoadPlayerBloc>(context).add(LoadPlayerEventLoad());
-    });
-
+    //
+    if (_controller.allowedScreenSleep == false) {
+      Wakelock.enable();
+    }
+    if (_controller.fullScreenByDefault == true) {
+      enterFullScreen();
+    }
     _index = _controller.index;
     // _videoPlayerController.addListener(() => listener());
   }
@@ -250,8 +250,7 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
                       listener: (context, state) {
                     if (state is LoadPlayerLoaded) {
                       //
-                      initializeVideo(
-                          widget.controller.items[widget.controller.index].url);
+                      startPlayer();
                     }
                   }),
                   BlocListener<EnterFullScreenBloc, EnterFullScreenState>(
