@@ -45,6 +45,15 @@ playerItem: (playerItem) {
 });
   ```
 
+* Callback when the final player item plays
+
+``` dart
+videosCompleted: (isCompleted) {
+  print(isCompleted);
+});
+  ```
+* Ability 
+
 # Documentation
 
 ## Import the controller

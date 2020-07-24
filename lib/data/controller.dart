@@ -34,9 +34,6 @@ class Controller extends Equatable {
   /// Whether or not the video should loop
   final bool isLooping;
 
-  /// Will fallback to fitting within the space allowed.
-  final double aspectRatio;
-
   /// The placeholder is displayed underneath the Video before it is initialized
   /// or played.
   final Widget placeholder;
@@ -72,6 +69,10 @@ class Controller extends Equatable {
   final ValueChanged<Map<String, dynamic>> onError;
   // int playingIndex;
 
+  /// This is a callback function called when the last video is played
+  final ValueChanged<bool> videosCompleted;
+
+  /// this is a custom loading indicator widget
   final Widget loader;
 
   final ProgressColors progressColors;
@@ -85,6 +86,7 @@ class Controller extends Equatable {
     this.showSeekButtons = true,
     this.showSkipButtons = true,
     this.isPlaying,
+    this.videosCompleted,
     this.onError,
     this.playerItem,
     this.progressColors,
@@ -94,7 +96,6 @@ class Controller extends Equatable {
     this.autoInitialize = true,
     this.autoPlay = true,
     this.isLooping = false,
-    this.aspectRatio,
     this.placeholder,
     this.allowedScreenSleep = true,
     this.isLive = false,
@@ -106,7 +107,6 @@ class Controller extends Equatable {
         autoInitialize,
         autoPlay,
         isLooping,
-        aspectRatio,
         placeholder,
         allowedScreenSleep,
         isLive,

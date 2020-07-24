@@ -225,93 +225,93 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
       },
       onDoubleTap: () {
         // mute video
-        BlocProvider.of<VideoDurationBloc>(context).add(VideoDurationEventLoad(
-            _videoPlayerController.value.duration.inSeconds));
-        print(_index.toString());
+        // BlocProvider.of<VideoDurationBloc>(context).add(VideoDurationEventLoad(
+        //     _videoPlayerController.value.duration.inSeconds));
       },
       child: Stack(
         children: <Widget>[
           new Positioned(
-              bottom: 0,
-              top: 0,
-              left: 0,
-              right: 0,
-              child: MultiBlocListener(
-                child: new Center(
-                  child: AspectRatio(
-                    aspectRatio: 16 / 9,
-                    child: _videoPlayerController == null
-                        ? _controller.placeholder
-                        : VideoPlayer(_videoPlayerController),
-                  ),
+            bottom: 0,
+            top: 0,
+            left: 0,
+            right: 0,
+            child: MultiBlocListener(
+              child: new Center(
+                child: AspectRatio(
+                  aspectRatio: _controller.items[_index].aspectRatio ?? 16 / 9,
+                  child: _videoPlayerController == null
+                      ? _controller.placeholder
+                      : VideoPlayer(_videoPlayerController),
                 ),
-                listeners: [
-                  BlocListener<LoadPlayerBloc, LoadPlayerState>(
-                      listener: (context, state) {
-                    if (state is LoadPlayerLoaded) {
-                      //
-                      startPlayer();
-                    }
-                  }),
-                  BlocListener<EnterFullScreenBloc, EnterFullScreenState>(
-                      listener: (context, state) {
-                    if (state is EnterFullScreenLoaded) {
-                      //
-                      enterFullScreen();
-                    }
-                  }),
-                  BlocListener<ExitFullScreenBloc, ExitFullScreenState>(
-                      listener: (context, state) {
-                    if (state is ExitFullScreenLoaded) {
-                      //
-                      exitFullScreen();
-                    }
-                  }),
-                  BlocListener<NextVideoBloc, NextVideoState>(
-                      listener: (context, state) {
-                    if (state is NextVideoLoaded) {
-                      nextVideo();
-                    }
-                  }),
-                  BlocListener<PreviousVideoBloc, PreviousVideoState>(
-                      listener: (context, state) {
-                    if (state is PreviousVideoLoaded) {
-                      previousVideo();
-                    }
-                  }),
-                  BlocListener<FastFowardBloc, FastFowardState>(
-                      listener: (context, state) {
-                    if (state is FastFowardLoaded) {
-                      fastFoward();
-                    }
-                  }),
-                  BlocListener<FastRewindBloc, FastRewindState>(
-                      listener: (context, state) {
-                    if (state is FastRewindLoaded) {
-                      fastRewind();
-                    }
-                  }),
-                  BlocListener<PlayVideoBloc, PlayVideoState>(
-                      listener: (context, state) {
-                    if (state is PlayVideoLoaded) {
-                      playVideo();
-                    }
-                  }),
-                  BlocListener<PauseVideoBloc, PauseVideoState>(
-                      listener: (context, state) {
-                    if (state is PauseVideoLoaded) {
-                      pauseVideo();
-                    }
-                  }),
-                  BlocListener<SeekVideoBloc, SeekVideoState>(
-                      listener: (context, state) {
+              ),
+              listeners: [
+                BlocListener<LoadPlayerBloc, LoadPlayerState>(
+                    listener: (context, state) {
+                  if (state is LoadPlayerLoaded) {
                     //
-                    if (state is SeekVideoLoaded) {
-                      seek(state.time);
-                    }
-                  })
-                ],
-              )),
+                    startPlayer();
+                  }
+                }),
+                BlocListener<EnterFullScreenBloc, EnterFullScreenState>(
+                    listener: (context, state) {
+                  if (state is EnterFullScreenLoaded) {
+                    //
+                    enterFullScreen();
+                  }
+                }),
+                BlocListener<ExitFullScreenBloc, ExitFullScreenState>(
+                    listener: (context, state) {
+                  if (state is ExitFullScreenLoaded) {
+                    //
+                    exitFullScreen();
+                  }
+                }),
+                BlocListener<NextVideoBloc, NextVideoState>(
+                    listener: (context, state) {
+                  if (state is NextVideoLoaded) {
+                    nextVideo();
+                  }
+                }),
+                BlocListener<PreviousVideoBloc, PreviousVideoState>(
+                    listener: (context, state) {
+                  if (state is PreviousVideoLoaded) {
+                    previousVideo();
+                  }
+                }),
+                BlocListener<FastFowardBloc, FastFowardState>(
+                    listener: (context, state) {
+                  if (state is FastFowardLoaded) {
+                    fastFoward();
+                  }
+                }),
+                BlocListener<FastRewindBloc, FastRewindState>(
+                    listener: (context, state) {
+                  if (state is FastRewindLoaded) {
+                    fastRewind();
+                  }
+                }),
+                BlocListener<PlayVideoBloc, PlayVideoState>(
+                    listener: (context, state) {
+                  if (state is PlayVideoLoaded) {
+                    playVideo();
+                  }
+                }),
+                BlocListener<PauseVideoBloc, PauseVideoState>(
+                    listener: (context, state) {
+                  if (state is PauseVideoLoaded) {
+                    pauseVideo();
+                  }
+                }),
+                BlocListener<SeekVideoBloc, SeekVideoState>(
+                    listener: (context, state) {
+                  //
+                  if (state is SeekVideoLoaded) {
+                    seek(state.time);
+                  }
+                })
+              ],
+            ),
+          ),
           _controller.showControls == true && _controller.isLive == false
               ? _buildControls(context)
               : new Container(),
@@ -345,7 +345,6 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
     });
     _controller = widget.controller;
     // _controller.index = 1;
-    print('index: ' + _controller.index.toString());
 
     if (skip == Skip.NEXT) {
       changeIndex(Skip.NEXT);
@@ -368,7 +367,6 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
       if (_index < _controller.items.length) {
         // add one to the controller index
         _index = _index + 1;
-        print('object' + _controller.index.toString());
       }
     } else if (skip == Skip.PREVIOUS) {
       // subtract one to index if the video isn't the first in the array
@@ -510,6 +508,11 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
         if (_controller.isLooping == false) {
           nextVideo();
         }
+        if (_controller.items.length - 1 == _index) {
+          if (widget.controller.videosCompleted != null) {
+            widget.controller.videosCompleted(true);
+          }
+        }
       }
     }
   }
@@ -549,6 +552,7 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
   // controls widget
   Widget _buildControls(context) {
     //
+
     return new Positioned(
       bottom: 0,
       top: 0,
@@ -560,33 +564,35 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
             cancelAndRestartTimer();
           }
         },
-        child: AnimatedOpacity(
-          duration: new Duration(milliseconds: 300),
-          opacity: showControls == true ? 1.0 : 0.0,
-          child: new Container(
-            decoration: new BoxDecoration(
-              gradient: new LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Colors.black,
-                  Colors.transparent,
-                  Colors.transparent,
-                  Colors.black,
-                ],
-              ),
-            ),
-            child: new Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                PlayerTopBar(),
-                new Expanded(child: new Container()),
-                new ProgressBar(
-                  controller: _controller,
-                )
-              ],
-            ),
-          ),
+        child: AnimatedContainer(
+          duration: new Duration(milliseconds: 200),
+          curve: Curves.decelerate,
+          child: showControls == false
+              ? new Container()
+              : new Container(
+                  decoration: new BoxDecoration(
+                    gradient: new LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.black,
+                        Colors.transparent,
+                        Colors.transparent,
+                        Colors.black,
+                      ],
+                    ),
+                  ),
+                  child: new Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      PlayerTopBar(),
+                      new Expanded(child: new Container()),
+                      new ProgressBar(
+                        controller: _controller,
+                      )
+                    ],
+                  ),
+                ),
         ),
       ),
     );

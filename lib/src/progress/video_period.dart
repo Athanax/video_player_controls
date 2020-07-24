@@ -33,7 +33,6 @@ class _VideoPeriodState extends State<VideoPeriod> {
             setState(() {
               _duration = state.duration;
             });
-            print(state.duration);
           }
         },
         child: Container(

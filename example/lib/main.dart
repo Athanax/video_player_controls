@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:video_player_controls/video_player_controls.dart';
 
 void main() => runApp(MyApp());
@@ -7,10 +8,15 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData.dark(),
-        home: new HomePage());
+    return Shortcuts(
+        shortcuts: {
+          LogicalKeySet(LogicalKeyboardKey.select):
+              const Intent(ActivateAction.key)
+        },
+        child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData.dark(),
+            home: new HomePage()));
   }
 }
 
@@ -38,11 +44,13 @@ class _HomePageState extends State<HomePage> {
           new PlayerItem(
             startAt: Duration(seconds: 2),
             title: 'video 2',
+            aspectRatio: 16 / 4,
             url:
                 'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
           ),
           new PlayerItem(
             title: 'video 3',
+            aspectRatio: 16 / 9,
             url:
                 'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
           ),
@@ -52,7 +60,6 @@ class _HomePageState extends State<HomePage> {
         // index: 2,
         autoInitialize: true,
         // isLooping: false,
-        aspectRatio: 16 / 9,
         allowedScreenSleep: false,
         // showControls: false,
         // hasSubtitles: true,
@@ -77,6 +84,9 @@ class _HomePageState extends State<HomePage> {
           // print('Player title: ' + playerItem.title);
           // print('position: ' + playerItem.position.inSeconds.toString());
           // print('Duration: ' + playerItem.duration.inSeconds.toString());
+        },
+        videosCompleted: (isCompleted) {
+          print(isCompleted);
         });
   }
 

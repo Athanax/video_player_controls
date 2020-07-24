@@ -39,7 +39,6 @@ class _ProgressSliderState extends State<ProgressSlider> {
             setState(() {
               _duration = state.duration.toDouble();
             });
-            print(state.duration);
           }
         },
         child: Slider(

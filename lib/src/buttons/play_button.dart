@@ -67,6 +67,8 @@ class _PlayButtonState extends State<PlayButton>
             //       }
             //     },
             child: new IconButton(
+              autofocus: true,
+              focusColor: Colors.redAccent,
               color: Colors.white,
               iconSize: 30,
               icon: new AnimatedIcon(

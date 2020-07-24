@@ -1,3 +1,4 @@
-## [2.1.0] - Mon July 23, 2020
+## [2.1.1] - Mon July 24, 2020
 
-* Correct 'Failed assertion: '_dependents.isEmpty': is not true.' error
+* Add aspect PlayerItem class
+* Add completed callback

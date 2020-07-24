@@ -11,6 +11,9 @@ class PlayerItem extends Equatable {
   /// Subtitles url of the video
   final String subtitleUrl;
 
+  /// Will fallback to fitting within the space allowed.
+  final double aspectRatio;
+
   /// Any other information the you can use to identify the playing video
   final customInfo;
 
@@ -27,6 +30,7 @@ class PlayerItem extends Equatable {
       {this.title = '',
       this.url,
       this.startAt,
+      this.aspectRatio,
       this.subtitleUrl,
       this.customInfo})
       : assert(url != null, 'url must be provided in the PlayerItem class');
