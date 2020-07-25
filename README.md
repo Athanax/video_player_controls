@@ -52,7 +52,9 @@ videosCompleted: (isCompleted) {
   print(isCompleted);
 });
   ```
-* Ability 
+
+* Added android tv controls
+* Listen to D-Pad media controls
 
 # Documentation
 

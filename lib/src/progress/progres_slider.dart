@@ -25,17 +25,12 @@ class _ProgressSliderState extends State<ProgressSlider>
     with SingleTickerProviderStateMixin {
   double position = 0;
   double _duration = 1;
-  Animation _animation;
-  AnimationController animationController;
   FocusNode _node;
 
   @override
   void initState() {
     //
     super.initState();
-    animationController = new AnimationController(
-        vsync: this, duration: Duration(milliseconds: 200));
-    _animation = Tween<double>(begin: 0, end: 1).animate(animationController);
     _node = FocusNode(onKey: (node, event) {
       //
       if (event is RawKeyDownEvent) {
@@ -52,10 +47,7 @@ class _ProgressSliderState extends State<ProgressSlider>
 
   void _onFocusChange() {
     if (_node.hasFocus) {
-      animationController.forward();
       BlocProvider.of<ShowcontrolsBloc>(context).add(ShowcontrolsEventStart());
-    } else {
-      animationController.reverse();
     }
   }
 
