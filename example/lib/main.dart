@@ -35,59 +35,60 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     controller = new Controller(
-        items: [
-          new PlayerItem(
-            title: 'video 1',
-            url:
-                'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
-          ),
-          new PlayerItem(
-            startAt: Duration(seconds: 2),
-            title: 'video 2',
-            aspectRatio: 16 / 4,
-            url:
-                'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-          ),
-          new PlayerItem(
-            title: 'video 3',
-            aspectRatio: 16 / 9,
-            url:
-                'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-          ),
-        ],
-        progressColors: ProgressColors(playedColor: Colors.redAccent),
-        autoPlay: true,
-        // index: 2,
-        autoInitialize: true,
-        // isLooping: false,
-        allowedScreenSleep: false,
-        // showControls: false,
-        // hasSubtitles: true,
-        // isLive: false,
-        // showSeekButtons: false,
-        // showSkipButtons: false,
-        // allowFullScreen: false,
-        // fullScreenByDefault: true,
-        placeholder: new Container(
-          color: Colors.grey,
+      items: [
+        new PlayerItem(
+          title: 'video 1',
+          url:
+              'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
         ),
-        isPlaying: (isPlaying) {
-          //
-          // print(isPlaying);
-        },
-        onError: (error) {
-          //
-          // print(error['hasError']);
-          // print(error['message']);
-        },
-        playerItem: (playerItem) {
-          // print('Player title: ' + playerItem.title);
-          // print('position: ' + playerItem.position.inSeconds.toString());
-          // print('Duration: ' + playerItem.duration.inSeconds.toString());
-        },
-        videosCompleted: (isCompleted) {
-          print(isCompleted);
-        });
+        new PlayerItem(
+          startAt: Duration(seconds: 2),
+          title: 'video 2',
+          aspectRatio: 16 / 4,
+          url:
+              'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+        ),
+        new PlayerItem(
+          title: 'video 3',
+          aspectRatio: 16 / 9,
+          url:
+              'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+        ),
+      ],
+      progressColors: ProgressColors(playedColor: Colors.redAccent),
+      autoPlay: true,
+      // index: 2,
+      autoInitialize: true,
+      // isLooping: false,
+      allowedScreenSleep: false,
+      // showControls: false,
+      // hasSubtitles: true,
+      // isLive: false,
+      // showSeekButtons: false,
+      // showSkipButtons: false,
+      // allowFullScreen: false,
+      // fullScreenByDefault: true,
+      placeholder: new Container(
+        color: Colors.grey,
+      ),
+      isPlaying: (isPlaying) {
+        //
+        // print(isPlaying);
+      },
+      onError: (error) {
+        //
+        // print(error['hasError']);
+        // print(error['message']);
+      },
+      playerItem: (playerItem) {
+        // print('Player title: ' + playerItem.title);
+        // print('position: ' + playerItem.position.inSeconds.toString());
+        // print('Duration: ' + playerItem.duration.inSeconds.toString());
+      },
+      videosCompleted: (isCompleted) {
+        print(isCompleted);
+      },
+    );
   }
 
   @override
