@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:video_player_controls/bloc/enter_full_screen/enter_full_screen_bloc.dart';
 import 'package:video_player_controls/bloc/exit_full_screen/exit_full_screen_bloc.dart';
 import 'package:video_player_controls/bloc/show_controls/showcontrols_bloc.dart';
+import 'package:video_player_controls/src/buttons/cover.dart';
 
 class FullScreenButton extends StatefulWidget {
   @override
@@ -36,22 +37,18 @@ class _FullScreenButtonState extends State<FullScreenButton> {
           }),
         ],
         child: isFullScreen == true
-            ? new IconButton(
-                color: Colors.white,
-                iconSize: 30,
-                icon: new Icon(Icons.fullscreen_exit),
-                onPressed: () {
+            ? new Cover(
+                icon: Icons.fullscreen_exit,
+                onTap: () {
                   BlocProvider.of<ShowcontrolsBloc>(context)
                       .add(ShowcontrolsEventStart());
                   BlocProvider.of<ExitFullScreenBloc>(context)
                       .add(ExitFullScreenEventLoad());
                 },
               )
-            : new IconButton(
-                color: Colors.white,
-                iconSize: 30,
-                icon: new Icon(Icons.fullscreen),
-                onPressed: () {
+            : new Cover(
+                icon: Icons.fullscreen,
+                onTap: () {
                   BlocProvider.of<ShowcontrolsBloc>(context)
                       .add(ShowcontrolsEventStart());
                   BlocProvider.of<EnterFullScreenBloc>(context)

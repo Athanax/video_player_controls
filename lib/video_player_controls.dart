@@ -489,20 +489,28 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
   }
 
   void listenables() {
-    widget.controller
-        .onError({'hasError': _videoPlayerController.value.hasError});
+    if (widget.controller.onError != null) {
+      widget.controller
+          .onError({'hasError': _videoPlayerController.value.hasError});
+    }
+
     BlocProvider.of<VideoDurationBloc>(context).add(VideoDurationEventLoad(
         _videoPlayerController.value.duration.inSeconds));
     BlocProvider.of<VideoPositionBloc>(context).add(VideoPositionEventLoad(
         _videoPlayerController.value.position.inSeconds));
 
-    widget.controller.isPlaying(_videoPlayerController.value.isPlaying);
+    if (widget.controller.isPlaying != null) {
+      widget.controller.isPlaying(_videoPlayerController.value.isPlaying);
+    }
     BlocProvider.of<VideoPlayingBloc>(context)
         .add(VideoPlayingEventLoad(_videoPlayerController.value.isPlaying));
     setState(() {
       _playerItem.position = _videoPlayerController.value.position;
     });
-    widget.controller.playerItem(_playerItem);
+    if (widget.controller.playerItem != null) {
+      widget.controller.playerItem(_playerItem);
+    }
+
     if (duration != null) {
       if (_videoPlayerController.value.position.inSeconds == duration) {
         if (_controller.isLooping == false) {
@@ -564,35 +572,36 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
             cancelAndRestartTimer();
           }
         },
-        child: AnimatedContainer(
+        child: AnimatedOpacity(
           duration: new Duration(milliseconds: 200),
           curve: Curves.decelerate,
-          child: showControls == false
-              ? new Container()
-              : new Container(
-                  decoration: new BoxDecoration(
-                    gradient: new LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.black,
-                        Colors.transparent,
-                        Colors.transparent,
-                        Colors.black,
-                      ],
-                    ),
-                  ),
-                  child: new Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      PlayerTopBar(),
-                      new Expanded(child: new Container()),
-                      new ProgressBar(
-                        controller: _controller,
-                      )
-                    ],
-                  ),
+          opacity: showControls == false ? 0 : 1,
+          child: Container(
+            child: new Container(
+              decoration: new BoxDecoration(
+                gradient: new LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.black,
+                    Colors.transparent,
+                    Colors.transparent,
+                    Colors.black,
+                  ],
                 ),
+              ),
+              child: new Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  PlayerTopBar(),
+                  new Expanded(child: new Container()),
+                  new ProgressBar(
+                    controller: _controller,
+                  )
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );

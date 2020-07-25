@@ -4,6 +4,7 @@ import 'package:video_player_controls/bloc/pause_video/pause_video_bloc.dart';
 import 'package:video_player_controls/bloc/play_video/play_video_bloc.dart';
 import 'package:video_player_controls/bloc/show_controls/showcontrols_bloc.dart';
 import 'package:video_player_controls/bloc/video_playing/video_playing_bloc.dart';
+import 'package:video_player_controls/src/buttons/key_events.dart';
 
 class PlayButton extends StatefulWidget {
   const PlayButton({
@@ -18,6 +19,21 @@ class _PlayButtonState extends State<PlayButton>
   Animation animation;
   AnimationController animationController;
   bool isPlaying = true;
+  FocusNode _node;
+
+  @override
+  void dispose() {
+    _node.dispose();
+    super.dispose();
+  }
+
+  void _onFocusChange() {
+    if (_node.hasFocus) {
+      //
+      BlocProvider.of<ShowcontrolsBloc>(context).add(ShowcontrolsEventStart());
+    }
+  }
+
   @override
   void initState() {
     //
@@ -25,6 +41,15 @@ class _PlayButtonState extends State<PlayButton>
     animationController = new AnimationController(
         vsync: this, duration: Duration(milliseconds: 200));
     animation = Tween<double>(begin: 0, end: 1).animate(animationController);
+    _node = FocusNode(onKey: (node, event) {
+      //
+      BlocProvider.of<ShowcontrolsBloc>(context).add(ShowcontrolsEventStart());
+      handleKeyEvent(node, event, context);
+
+      return false;
+    });
+    _node.addListener(_onFocusChange);
+    // super.initState();
   }
 
   @override
@@ -68,8 +93,9 @@ class _PlayButtonState extends State<PlayButton>
             //     },
             child: new IconButton(
               autofocus: true,
-              focusColor: Colors.redAccent,
-              color: Colors.white,
+              focusNode: _node,
+              color: _node.hasFocus ? Colors.redAccent : Colors.white,
+              focusColor: Colors.transparent,
               iconSize: 30,
               icon: new AnimatedIcon(
                   icon: AnimatedIcons.pause_play,
