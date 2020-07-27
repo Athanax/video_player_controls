@@ -68,48 +68,61 @@ import 'package:video_player_controls/video_player_controls.dart';
 
 ``` dart
 controller = new Controller(
-        items: [
-          new PlayerItem(
-            title: 'video 1',
-            url:
-                'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-          ),
-          new PlayerItem(
-            startAt: Duration(seconds: 2),
-            title: 'video 2',
-            url:
-                'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-          ),
-          new PlayerItem(
-            title: 'video 3',
-            url:
-                'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-          ),
-        ],
-        autoPlay: true,
-        autoInitialize: true,
-        // isLooping: false,
-        aspectRatio: 16 / 9,
-        allowedScreenSleep: false,
-        // showControls: false,
-        // hasSubtitles: true,
-        // isLive: false,
-        // showSeekButtons: false,
-        // showSkipButtons: false,
-        // allowFullScreen: false,
-        // fullScreenByDefault: true,
-        placeholder: new Container(
-          color: Colors.grey,
+      items: [
+        new PlayerItem(
+          title: 'video 1',
+          url:
+              'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
         ),
-        isPlaying: (isPlaying) {
-          //
-          print(isPlaying);
-        },
-        playerItem: (playerItem) {
-          print('Player title: ' + playerItem.title);
-          print('position: ' + playerItem.position.inSeconds.toString());
-          print('Duration: ' + playerItem.duration.inSeconds.toString());
-        });
+        new PlayerItem(
+          startAt: Duration(seconds: 2),
+          title: 'video 2',
+          aspectRatio: 16 / 4,
+          url:
+              'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+        ),
+        new PlayerItem(
+          title: 'video 3',
+          aspectRatio: 16 / 9,
+          url:
+              'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+        ),
+      ],
+      progressColors: ProgressColors(playedColor: Colors.redAccent),
+      autoPlay: true,
+      errorBuilder: (context, message) {
+        return new Container(
+          child: new Text(message),
+        );
+      },
+      // index: 2,
+      autoInitialize: true,
+      // isLooping: false,
+      allowedScreenSleep: false,
+      // showControls: false,
+      // hasSubtitles: true,
+      // isLive: true,
+      // showSeekButtons: false,
+      // showSkipButtons: false,
+      // allowFullScreen: false,
+      fullScreenByDefault: true,
+      // placeholder: new Container(
+      //   color: Colors.grey,
+      // ),
+      isPlaying: (isPlaying) {
+        //
+        // print(isPlaying);
+      },
+
+      playerItem: (playerItem) {
+        // print('Player title: ' + playerItem.title);
+        // print('position: ' + playerItem.position.inSeconds.toString());
+        // print('Duration: ' + playerItem.duration.inSeconds.toString());
+      },
+      videosCompleted: (isCompleted) {
+        print(isCompleted);
+      },
+    );
 ```
 
 The video source property of the Controller class is an enum datatype which cao either be:
@@ -131,95 +144,110 @@ or
 ``` dart
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
+import 'package:flutter/services.dart';
 import 'package:video_player_controls/video_player_controls.dart';
 
-void main() {
-  runApp(
-    ChewieDemo(),
-  );
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Shortcuts(
+        shortcuts: {
+          LogicalKeySet(LogicalKeyboardKey.select):
+              const Intent(ActivateAction.key)
+        },
+        child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData.dark(),
+            home: new HomePage()));
+  }
 }
 
-class ChewieDemo extends StatefulWidget {
-  ChewieDemo({this.title = 'Chewie Demo'});
+class HomePage extends StatefulWidget {
+  HomePage({this.title = 'Video player controls'});
 
   final String title;
 
   @override
-  State<StatefulWidget> createState() {
-    return _ChewieDemoState();
-  }
+  State<StatefulWidget> createState() => _HomePageState();
 }
 
-class _ChewieDemoState extends State<ChewieDemo> {
-  VideoPlayerController _videoPlayerController1;
+class _HomePageState extends State<HomePage> {
   Controller controller;
   @override
   void initState() {
     super.initState();
     controller = new Controller(
-        items: [
-          new PlayerItem(
-            title: 'video 1',
-            url:
-                'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-          ),
-          new PlayerItem(
-            startAt: Duration(seconds: 2),
-            title: 'video 2',
-            url:
-                'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-          ),
-          new PlayerItem(
-            title: 'video 3',
-            url:
-                'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-          ),
-        ],
-        autoPlay: true,
-        autoInitialize: true,
-        // isLooping: false,
-        aspectRatio: 16 / 9,
-        allowedScreenSleep: false,
-        // showControls: false,
-        // hasSubtitles: true,
-        // isLive: false,
-        // showSeekButtons: false,
-        // showSkipButtons: false,
-        // allowFullScreen: false,
-        // fullScreenByDefault: true,
-        placeholder: new Container(
-          color: Colors.grey,
+      items: [
+        new PlayerItem(
+          title: 'video 1',
+          url:
+              'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
         ),
-        isPlaying: (isPlaying) {
-          //
-          print(isPlaying);
-        },
-        playerItem: (playerItem) {
-          print('Player title: ' + playerItem.title);
-          print('position: ' + playerItem.position.inSeconds.toString());
-          print('Duration: ' + playerItem.duration.inSeconds.toString());
-        });
+        new PlayerItem(
+          startAt: Duration(seconds: 2),
+          title: 'video 2',
+          aspectRatio: 16 / 4,
+          url:
+              'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+        ),
+        new PlayerItem(
+          title: 'video 3',
+          aspectRatio: 16 / 9,
+          url:
+              'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+        ),
+      ],
+      progressColors: ProgressColors(playedColor: Colors.redAccent),
+      autoPlay: true,
+      errorBuilder: (context, message) {
+        return new Container(
+          child: new Text(message),
+        );
+      },
+      // index: 2,
+      autoInitialize: true,
+      // isLooping: false,
+      allowedScreenSleep: false,
+      // showControls: false,
+      // hasSubtitles: true,
+      // isLive: true,
+      // showSeekButtons: false,
+      // showSkipButtons: false,
+      // allowFullScreen: false,
+      fullScreenByDefault: true,
+      // placeholder: new Container(
+      //   color: Colors.grey,
+      // ),
+      isPlaying: (isPlaying) {
+        //
+        // print(isPlaying);
+      },
+
+      playerItem: (playerItem) {
+        // print('Player title: ' + playerItem.title);
+        // print('position: ' + playerItem.position.inSeconds.toString());
+        // print('Duration: ' + playerItem.duration.inSeconds.toString());
+      },
+      videosCompleted: (isCompleted) {
+        print(isCompleted);
+      },
+    );
   }
 
   @override
   void dispose() {
-    _videoPlayerController1.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: widget.title,
-      theme: ThemeData.dark(),
-      home: Scaffold(
-        backgroundColor: Colors.black,
-        body: Center(
-          child: VideoPlayerControls(
-            controller: controller,
-          ),
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Center(
+        child: VideoPlayerControls(
+          controller: controller,
         ),
       ),
     );

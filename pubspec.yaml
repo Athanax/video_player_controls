@@ -1,6 +1,6 @@
 name: video_player_controls
 description: Video player controls is a flutter video player package with more custom user interface and state management via flutter bloc
-version: 2.1.2
+version: 2.1.3
 homepage: https://github.com/Athanax/video_player_controls
 
 environment:
