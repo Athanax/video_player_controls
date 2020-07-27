@@ -13,7 +13,7 @@ class VideoPeriod extends StatefulWidget {
 
 class _VideoPeriodState extends State<VideoPeriod> {
   int _time = 0;
-  int _duration = 1;
+  int _duration = 0;
 
   @override
   Widget build(BuildContext context) {

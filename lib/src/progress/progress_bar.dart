@@ -45,10 +45,11 @@ class _ProgressBarState extends State<ProgressBar> {
             child: new Container(
               child: new Column(
                 children: <Widget>[
-                  VideoPeriod(),
-                  new ProgressSlider(
-                    progressColors: _controller.progressColors,
-                  ),
+                  if (_controller.isLive != true) VideoPeriod(),
+                  if (_controller.isLive != true)
+                    new ProgressSlider(
+                      progressColors: _controller.progressColors,
+                    ),
                   Row(
                     children: <Widget>[
                       Expanded(

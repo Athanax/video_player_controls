@@ -25,7 +25,6 @@ class _CoverState extends State<Cover> {
     _node = FocusNode(onKey: (node, event) {
       //
       if (event is RawKeyDownEvent) {
-        print(event.logicalKey);
         BlocProvider.of<ShowcontrolsBloc>(context)
             .add(ShowcontrolsEventStart());
         handleKeyEvent(node, event, context);
@@ -58,8 +57,6 @@ class _CoverState extends State<Cover> {
       iconSize: 30,
       icon: new Icon(widget.icon),
       onPressed: () {
-        print('tapped');
-
         widget.onTap();
       },
     );

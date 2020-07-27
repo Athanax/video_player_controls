@@ -218,10 +218,10 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        if (_videoPlayerController.value.hasError == false) {
-          BlocProvider.of<ShowcontrolsBloc>(this.context)
-              .add(ShowcontrolsEventStart());
-        }
+        // if (_videoPlayerController.value.hasError == false) {
+        BlocProvider.of<ShowcontrolsBloc>(this.context)
+            .add(ShowcontrolsEventStart());
+        // }
       },
       onDoubleTap: () {
         // mute video
@@ -239,9 +239,36 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
               child: new Center(
                 child: AspectRatio(
                   aspectRatio: _controller.items[_index].aspectRatio ?? 16 / 9,
-                  child: _videoPlayerController == null
-                      ? _controller.placeholder
-                      : VideoPlayer(_videoPlayerController),
+                  child: Stack(
+                    children: <Widget>[
+                      if (_videoPlayerController != null)
+                        if (_videoPlayerController.value.hasError == true)
+                          if (_controller.errorBuilder != null)
+                            _controller.errorBuilder(this.context,
+                                _videoPlayerController.value.errorDescription)
+                          else
+                            Center(
+                              child: Icon(
+                                Icons.error,
+                                color: Colors.white,
+                                size: 42,
+                              ),
+                            )
+                        else
+                          VideoPlayer(_videoPlayerController)
+                      else
+                        _controller.placeholder ??
+                            new Container(
+                              color: Colors.black,
+                            ),
+                      if (_videoPlayerController == null ||
+                          _videoPlayerController.value.isBuffering)
+                        new Center(
+                          child:
+                              _controller.loader ?? CircularProgressIndicator(),
+                        ),
+                    ],
+                  ),
                 ),
               ),
               listeners: [
@@ -312,7 +339,7 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
               ],
             ),
           ),
-          _controller.showControls == true && _controller.isLive == false
+          _controller.showControls == true
               ? _buildControls(context)
               : new Container(),
         ],
@@ -323,19 +350,11 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
   void enterFullScreen() {
     //
     SystemChrome.setEnabledSystemUIOverlays([]);
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]);
   }
 
   void exitFullScreen() {
     //
     SystemChrome.restoreSystemUIOverlays();
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
   }
 
   void initialize(String link, Skip skip) async {
@@ -489,11 +508,6 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
   }
 
   void listenables() {
-    if (widget.controller.onError != null) {
-      widget.controller
-          .onError({'hasError': _videoPlayerController.value.hasError});
-    }
-
     BlocProvider.of<VideoDurationBloc>(context).add(VideoDurationEventLoad(
         _videoPlayerController.value.duration.inSeconds));
     BlocProvider.of<VideoPositionBloc>(context).add(VideoPositionEventLoad(
@@ -510,15 +524,16 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
     if (widget.controller.playerItem != null) {
       widget.controller.playerItem(_playerItem);
     }
-
-    if (duration != null) {
-      if (_videoPlayerController.value.position.inSeconds == duration) {
-        if (_controller.isLooping == false) {
-          nextVideo();
-        }
-        if (_controller.items.length - 1 == _index) {
-          if (widget.controller.videosCompleted != null) {
-            widget.controller.videosCompleted(true);
+    if (_controller.isLive == false) {
+      if (duration != null) {
+        if (_videoPlayerController.value.position.inSeconds == duration) {
+          if (_controller.isLooping == false) {
+            nextVideo();
+          }
+          if (_controller.items.length - 1 == _index) {
+            if (widget.controller.videosCompleted != null) {
+              widget.controller.videosCompleted(true);
+            }
           }
         }
       }

@@ -65,17 +65,17 @@ class Controller extends Equatable {
   /// Returns the PlayerItem that is currently playing
   final ValueChanged<PlayerItem> playerItem;
 
-  /// Returns a Map with true the error message if an error occurs
-  final ValueChanged<Map<String, dynamic>> onError;
-  // int playingIndex;
-
   /// This is a callback function called when the last video is played
   final ValueChanged<bool> videosCompleted;
 
   /// this is a custom loading indicator widget
   final Widget loader;
 
+  ///
   final ProgressColors progressColors;
+
+  ///
+  final Widget Function(BuildContext context, String message) errorBuilder;
 
   Controller({
     this.showControls = true,
@@ -87,7 +87,7 @@ class Controller extends Equatable {
     this.showSkipButtons = true,
     this.isPlaying,
     this.videosCompleted,
-    this.onError,
+    this.errorBuilder,
     this.playerItem,
     this.progressColors,
     this.loader,
@@ -112,6 +112,7 @@ class Controller extends Equatable {
         isLive,
         hasSubtitles,
         index,
-        progressColors
+        progressColors,
+        errorBuilder,
       ];
 }

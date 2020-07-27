@@ -57,29 +57,30 @@ class _HomePageState extends State<HomePage> {
       ],
       progressColors: ProgressColors(playedColor: Colors.redAccent),
       autoPlay: true,
+      errorBuilder: (context, message) {
+        return new Container(
+          child: new Text(message),
+        );
+      },
       // index: 2,
       autoInitialize: true,
       // isLooping: false,
       allowedScreenSleep: false,
       // showControls: false,
       // hasSubtitles: true,
-      // isLive: false,
+      // isLive: true,
       // showSeekButtons: false,
       // showSkipButtons: false,
       // allowFullScreen: false,
-      // fullScreenByDefault: true,
-      placeholder: new Container(
-        color: Colors.grey,
-      ),
+      fullScreenByDefault: true,
+      // placeholder: new Container(
+      //   color: Colors.grey,
+      // ),
       isPlaying: (isPlaying) {
         //
         // print(isPlaying);
       },
-      onError: (error) {
-        //
-        // print(error['hasError']);
-        // print(error['message']);
-      },
+
       playerItem: (playerItem) {
         // print('Player title: ' + playerItem.title);
         // print('position: ' + playerItem.position.inSeconds.toString());
