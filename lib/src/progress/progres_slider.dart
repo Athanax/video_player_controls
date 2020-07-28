@@ -7,14 +7,11 @@ import 'package:video_player_controls/bloc/seek_video/seek_video_bloc.dart';
 import 'package:video_player_controls/bloc/show_controls/showcontrols_bloc.dart';
 import 'package:video_player_controls/bloc/video_duration/video_duration_bloc.dart';
 import 'package:video_player_controls/bloc/video_position/video_position_bloc.dart';
-import 'package:video_player_controls/data/progress_colors.dart';
 import 'package:video_player_controls/src/buttons/key_events.dart';
 
 class ProgressSlider extends StatefulWidget {
-  final ProgressColors progressColors;
   const ProgressSlider({
     Key key,
-    this.progressColors,
   }) : super(key: key);
 
   @override
@@ -81,9 +78,7 @@ class _ProgressSliderState extends State<ProgressSlider>
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: _node.hasFocus ? 0 : 20),
             child: Slider(
-              activeColor: widget.progressColors != null
-                  ? widget.progressColors.playedColor
-                  : Theme.of(context).buttonColor,
+              activeColor: Theme.of(context).accentColor,
               inactiveColor: Colors.white38,
               value: position,
               onChanged: (value) {

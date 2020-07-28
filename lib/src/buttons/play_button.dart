@@ -4,11 +4,14 @@ import 'package:video_player_controls/bloc/pause_video/pause_video_bloc.dart';
 import 'package:video_player_controls/bloc/play_video/play_video_bloc.dart';
 import 'package:video_player_controls/bloc/show_controls/showcontrols_bloc.dart';
 import 'package:video_player_controls/bloc/video_playing/video_playing_bloc.dart';
+import 'package:video_player_controls/data/controller.dart';
 import 'package:video_player_controls/src/buttons/key_events.dart';
 
 class PlayButton extends StatefulWidget {
+  final Controller controller;
   const PlayButton({
     Key key,
+    this.controller,
   }) : super(key: key);
   @override
   _PlayButtonState createState() => _PlayButtonState();
@@ -73,28 +76,11 @@ class _PlayButtonState extends State<PlayButton>
                 }
               }
             },
-            // child: BlocListener<PlayVideoBloc, PlayVideoState>(
-            //   listener: (context, state) {
-            //     if (state is PlayVideoLoaded) {
-            //       animationController.reverse();
-            //       setState(() {
-            //         isPlaying = true;
-            //       });
-            //     }
-            //   },
-            //   child: BlocListener<PauseVideoBloc, PauseVideoState>(
-            //     listener: (context, state) {
-            //       if (state is PauseVideoLoaded) {
-            //         animationController.forward();
-            //         setState(() {
-            //           isPlaying = false;
-            //         });
-            //       }
-            //     },
             child: new IconButton(
               autofocus: true,
               focusNode: _node,
-              color: _node.hasFocus ? Colors.redAccent : Colors.white,
+              color:
+                  _node.hasFocus ? Theme.of(context).accentColor : Colors.white,
               focusColor: Colors.transparent,
               iconSize: 30,
               icon: new AnimatedIcon(

@@ -15,7 +15,10 @@ class MyApp extends StatelessWidget {
         },
         child: MaterialApp(
             debugShowCheckedModeBanner: false,
-            theme: ThemeData.dark(),
+            theme: ThemeData(
+              brightness: Brightness.dark,
+              accentColor: Colors.redAccent,
+            ),
             home: new HomePage()));
   }
 }
@@ -55,7 +58,6 @@ class _HomePageState extends State<HomePage> {
               'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
         ),
       ],
-      progressColors: ProgressColors(playedColor: Colors.redAccent),
       autoPlay: true,
       errorBuilder: (context, message) {
         return new Container(
@@ -65,14 +67,14 @@ class _HomePageState extends State<HomePage> {
       // index: 2,
       autoInitialize: true,
       // isLooping: false,
-      allowedScreenSleep: false,
+      allowedScreenSleep: true,
       // showControls: false,
       // hasSubtitles: true,
       // isLive: true,
       // showSeekButtons: false,
       // showSkipButtons: false,
       // allowFullScreen: false,
-      fullScreenByDefault: true,
+      fullScreenByDefault: false,
       // placeholder: new Container(
       //   color: Colors.grey,
       // ),

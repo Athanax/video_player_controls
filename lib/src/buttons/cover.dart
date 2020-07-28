@@ -53,7 +53,7 @@ class _CoverState extends State<Cover> {
     return new IconButton(
       focusNode: _node,
       focusColor: Colors.transparent,
-      color: _node.hasFocus ? Colors.redAccent : Colors.white,
+      color: _node.hasFocus ? Theme.of(context).accentColor : Colors.white,
       iconSize: 30,
       icon: new Icon(widget.icon),
       onPressed: () {

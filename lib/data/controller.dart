@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:video_player_controls/data/progress_colors.dart';
 import 'package:video_player_controls/data/player_item.dart';
 
 enum VideoSource { NETWORK, ASSET }
@@ -72,9 +71,6 @@ class Controller extends Equatable {
   final Widget loader;
 
   ///
-  final ProgressColors progressColors;
-
-  ///
   final Widget Function(BuildContext context, String message) errorBuilder;
 
   Controller({
@@ -89,7 +85,6 @@ class Controller extends Equatable {
     this.videosCompleted,
     this.errorBuilder,
     this.playerItem,
-    this.progressColors,
     this.loader,
     this.index = 0,
     this.hasSubtitles = false,
@@ -112,7 +107,6 @@ class Controller extends Equatable {
         isLive,
         hasSubtitles,
         index,
-        progressColors,
         errorBuilder,
       ];
 }

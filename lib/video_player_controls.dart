@@ -2,7 +2,6 @@ library video_player_controls;
 
 export 'package:video_player_controls/data/controller.dart';
 export 'package:video_player_controls/data/player_item.dart';
-export 'package:video_player_controls/data/progress_colors.dart';
 
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -349,10 +348,12 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
 
   void enterFullScreen() {
     //
+    // SystemChrome.setEnabledSystemUIOverlays([]);
+    // SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     SystemChrome.setEnabledSystemUIOverlays([]);
   }
 
-  void exitFullScreen() {
+  void exitFullScreen() async {
     //
     SystemChrome.restoreSystemUIOverlays();
   }
