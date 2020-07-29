@@ -1,3 +1,7 @@
+## [2.1.5] - Mon July 29, 2020
+
+* Enable subtitles button
+
 ## [2.1.4] - Mon July 28, 2020
 
 * BREAKING: Remove Progress color class and use Theme colors

@@ -20,6 +20,7 @@ dependencies:
 
 * Able to play a list of videos from the first to the last.
 * Play and pause button
+* Ability to enable and disable vtt subtitles
 * Next and Previous button
 * Fast rewind and fast forward buttons
 * [Flutter_bloc](https://pub.dev/packages/flutter_bloc) state management
