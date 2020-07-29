@@ -8,7 +8,7 @@ class PlayerItem extends Equatable {
   /// URL of the video
   final String url;
 
-  /// Subtitles url of the video
+  /// Subtitles url of the video, the link should locate a vtt subtitle file
   final String subtitleUrl;
 
   /// Will fallback to fitting within the space allowed.

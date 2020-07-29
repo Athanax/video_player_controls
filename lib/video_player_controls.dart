@@ -7,6 +7,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:subtitle_wrapper_package/models/style/subtitle_border_style.dart';
+import 'package:subtitle_wrapper_package/models/style/subtitle_position.dart';
+import 'package:subtitle_wrapper_package/models/style/subtitle_style.dart';
+import 'package:subtitle_wrapper_package/subtitle_controller.dart';
+import 'package:subtitle_wrapper_package/subtitle_wrapper_package.dart';
+import 'package:toast/toast.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_player_controls/bloc/enter_full_screen/enter_full_screen_bloc.dart';
 import 'package:video_player_controls/bloc/exit_full_screen/exit_full_screen_bloc.dart';
@@ -20,6 +26,7 @@ import 'package:video_player_controls/bloc/player_item/player_item_bloc.dart';
 import 'package:video_player_controls/bloc/previous_video/previous_video_bloc.dart';
 import 'package:video_player_controls/bloc/seek_video/seek_video_bloc.dart';
 import 'package:video_player_controls/bloc/show_controls/showcontrols_bloc.dart';
+import 'package:video_player_controls/bloc/show_subtitles/show_subtitles_bloc.dart';
 import 'package:video_player_controls/bloc/video_duration/video_duration_bloc.dart';
 import 'package:video_player_controls/bloc/video_playing/video_playing_bloc.dart';
 import 'package:video_player_controls/bloc/video_position/video_position_bloc.dart';
@@ -46,6 +53,9 @@ class VideoPlayerControls extends StatelessWidget {
       providers: [
         BlocProvider<LoadPlayerBloc>(
           create: (context) => LoadPlayerBloc(),
+        ),
+        BlocProvider<ShowSubtitlesBloc>(
+          create: (context) => ShowSubtitlesBloc(),
         ),
         BlocProvider<PlayerItemBloc>(
           create: (context) => PlayerItemBloc(),
@@ -126,6 +136,8 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
   bool showControls = false;
   // control the player controls timeout
   Timer timer;
+
+  bool showSubtitles = false;
 
   @override
   void didChangeDependencies() {
@@ -254,7 +266,23 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
                               ),
                             )
                         else
-                          VideoPlayer(_videoPlayerController)
+                          SubTitleWrapper(
+                              subtitleStyle: new SubtitleStyle(
+                                  hasBorder: true,
+                                  textColor: Colors.white,
+                                  position: SubtitlePosition(bottom: 40)),
+                              videoPlayerController: _videoPlayerController,
+                              subtitleController: SubtitleController(
+                                subtitleUrl:
+                                    _controller.items[_index].subtitleUrl,
+                                showSubtitles:
+                                    (_controller.items[_index].subtitleUrl !=
+                                                null &&
+                                            showSubtitles == true)
+                                        ? true
+                                        : false,
+                              ),
+                              videoChild: VideoPlayer(_videoPlayerController))
                       else
                         _controller.placeholder ??
                             new Container(
@@ -278,6 +306,20 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
                     startPlayer();
                   }
                 }),
+                BlocListener<ShowcontrolsBloc, ShowcontrolsState>(
+                  listener: (context, state) {
+                    if (state is ShowcontrolsStarted) {
+                      cancelAndRestartTimer();
+                    }
+                  },
+                ),
+                BlocListener<ShowSubtitlesBloc, ShowSubtitlesState>(
+                  listener: (context, state) {
+                    if (state is ShowSubtitlesLoaded) {
+                      toggleSubtitles();
+                    }
+                  },
+                ),
                 BlocListener<EnterFullScreenBloc, EnterFullScreenState>(
                     listener: (context, state) {
                   if (state is EnterFullScreenLoaded) {
@@ -344,6 +386,25 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
         ],
       ),
     );
+  }
+
+  void toggleSubtitles() {
+    //
+    _videoPlayerController.pause();
+    setState(() {
+      showSubtitles = !showSubtitles;
+    });
+    _videoPlayerController.play();
+    if (showSubtitles == true) {
+      showToast('Subtitles enabled');
+    } else {
+      showToast('Subtitles disabled');
+    }
+  }
+
+  void showToast(String msg) {
+    Toast.show(msg, context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.CENTER);
   }
 
   void enterFullScreen() {
@@ -582,40 +643,31 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
       top: 0,
       left: 0,
       right: 0,
-      child: BlocListener<ShowcontrolsBloc, ShowcontrolsState>(
-        listener: (context, state) {
-          if (state is ShowcontrolsStarted) {
-            cancelAndRestartTimer();
-          }
-        },
-        child: AnimatedOpacity(
-          duration: new Duration(milliseconds: 200),
-          curve: Curves.decelerate,
-          opacity: showControls == false ? 0 : 1,
-          child: Container(
-            child: new Container(
-              decoration: new BoxDecoration(
-                gradient: new LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.black,
-                    Colors.transparent,
-                    Colors.transparent,
-                    Colors.black,
-                  ],
-                ),
-              ),
-              child: new Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  PlayerTopBar(),
-                  new Expanded(child: new Container()),
-                  new ProgressBar(
-                    controller: _controller,
-                  )
+      child: AnimatedOpacity(
+        duration: new Duration(milliseconds: 200),
+        curve: Curves.decelerate,
+        opacity: showControls == false ? 0 : 1,
+        child: Container(
+          child: new Container(
+            decoration: new BoxDecoration(
+              gradient: new LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.black,
+                  Colors.transparent,
+                  Colors.transparent,
+                  Colors.black,
                 ],
               ),
+            ),
+            child: new Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                PlayerTopBar(),
+                new Expanded(child: new Container()),
+                new ProgressBar(controller: _controller)
+              ],
             ),
           ),
         ),

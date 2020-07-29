@@ -39,10 +39,13 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     controller = new Controller(
       items: [
+        //
+
         new PlayerItem(
           title: 'video 1',
           url:
               'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
+          // subtitleUrl: "https://wecast.ch/posters/vt.vtt",
         ),
         new PlayerItem(
           startAt: Duration(seconds: 2),
@@ -50,12 +53,14 @@ class _HomePageState extends State<HomePage> {
           aspectRatio: 16 / 4,
           url:
               'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+          subtitleUrl: "https://wecast.ch/posters/vtt.vtt",
         ),
         new PlayerItem(
           title: 'video 3',
           aspectRatio: 16 / 9,
           url:
               'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+          subtitleUrl: "https://wecast.ch/posters/vtt.vtt",
         ),
       ],
       autoPlay: true,
@@ -69,7 +74,7 @@ class _HomePageState extends State<HomePage> {
       // isLooping: false,
       allowedScreenSleep: true,
       // showControls: false,
-      // hasSubtitles: true,
+      hasSubtitles: true,
       // isLive: true,
       // showSeekButtons: false,
       // showSkipButtons: false,
