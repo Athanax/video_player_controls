@@ -7,7 +7,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:subtitle_wrapper_package/models/style/subtitle_border_style.dart';
 import 'package:subtitle_wrapper_package/models/style/subtitle_position.dart';
 import 'package:subtitle_wrapper_package/models/style/subtitle_style.dart';
 import 'package:subtitle_wrapper_package/subtitle_controller.dart';
