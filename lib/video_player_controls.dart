@@ -7,8 +7,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:subtitle_wrapper_package/models/style/subtitle_position.dart';
-import 'package:subtitle_wrapper_package/models/style/subtitle_style.dart';
+import 'package:subtitle_wrapper_package/data/models/style/subtitle_style.dart';
 import 'package:subtitle_wrapper_package/subtitle_controller.dart';
 import 'package:subtitle_wrapper_package/subtitle_wrapper_package.dart';
 import 'package:toast/toast.dart';
@@ -267,9 +266,9 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
                         else
                           SubTitleWrapper(
                               subtitleStyle: new SubtitleStyle(
-                                  hasBorder: true,
-                                  textColor: Colors.white,
-                                  position: SubtitlePosition(bottom: 40)),
+                                hasBorder: true,
+                                textColor: Colors.white,
+                              ),
                               videoPlayerController: _videoPlayerController,
                               subtitleController: SubtitleController(
                                 subtitleUrl:
@@ -674,3 +673,5 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
     );
   }
 }
+
+class SubtitlePosition {}

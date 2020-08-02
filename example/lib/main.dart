@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage> {
       // index: 2,
       autoInitialize: true,
       // isLooping: false,
-      allowedScreenSleep: true,
+      allowedScreenSleep: false,
       // showControls: false,
       hasSubtitles: true,
       // isLive: true,
