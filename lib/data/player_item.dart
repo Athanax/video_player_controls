@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:video_player_controls/data/subtitle.dart';
 
 // ignore: must_be_immutable
 class PlayerItem extends Equatable {
@@ -9,7 +10,7 @@ class PlayerItem extends Equatable {
   final String url;
 
   /// Subtitles url of the video, the link should locate a vtt subtitle file
-  final String subtitleUrl;
+  final List<Subtitle> subtitles;
 
   /// Will fallback to fitting within the space allowed.
   final double aspectRatio;
@@ -31,11 +32,11 @@ class PlayerItem extends Equatable {
       this.url,
       this.startAt,
       this.aspectRatio,
-      this.subtitleUrl,
+      this.subtitles,
       this.customInfo})
       : assert(url != null, 'url must be provided in the PlayerItem class');
 
   @override
   //
-  List<Object> get props => [title, url, subtitleUrl, customInfo];
+  List<Object> get props => [title, url, subtitles, customInfo];
 }

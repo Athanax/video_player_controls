@@ -23,6 +23,7 @@ import 'package:video_player_controls/bloc/play_video/play_video_bloc.dart';
 import 'package:video_player_controls/bloc/player_item/player_item_bloc.dart';
 import 'package:video_player_controls/bloc/previous_video/previous_video_bloc.dart';
 import 'package:video_player_controls/bloc/seek_video/seek_video_bloc.dart';
+import 'package:video_player_controls/bloc/set_subtitle/set_subtitle_bloc.dart';
 import 'package:video_player_controls/bloc/show_controls/showcontrols_bloc.dart';
 import 'package:video_player_controls/bloc/show_subtitles/show_subtitles_bloc.dart';
 import 'package:video_player_controls/bloc/video_duration/video_duration_bloc.dart';
@@ -30,6 +31,8 @@ import 'package:video_player_controls/bloc/video_playing/video_playing_bloc.dart
 import 'package:video_player_controls/bloc/video_position/video_position_bloc.dart';
 import 'package:video_player_controls/data/controller.dart';
 import 'package:video_player_controls/data/player_item.dart';
+import 'package:video_player_controls/data/subtitle.dart';
+import 'package:video_player_controls/src/buttons/subtitle_cover.dart';
 import 'package:video_player_controls/src/progress/player_top_bar.dart';
 import 'package:video_player_controls/src/progress/progress_bar.dart';
 import 'package:wakelock/wakelock.dart';
@@ -97,6 +100,9 @@ class VideoPlayerControls extends StatelessWidget {
         BlocProvider<VideoPlayingBloc>(
           create: (context) => VideoPlayingBloc(),
         ),
+        BlocProvider<SetSubtitleBloc>(
+          create: (context) => SetSubtitleBloc(),
+        ),
       ],
       child: new VideoPlayerInterface(
         controller: controller,
@@ -121,6 +127,8 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
   // video player controller
   VideoPlayerController _videoPlayerController;
 
+  final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+
   int _index;
 
   // Controller
@@ -136,6 +144,8 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
   Timer timer;
 
   bool showSubtitles = false;
+
+  Subtitle _subtitle;
 
   @override
   void didChangeDependencies() {
@@ -196,6 +206,12 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
     }
     setState(() {
       _playerItem = _controller.items[_index];
+      // set subtitle to the first
+      if (_controller.items[_index].subtitles != null) {
+        if (_controller.items[_index].subtitles.length > 0) {
+          _subtitle = _controller.items[_index].subtitles[0];
+        }
+      }
       duration = _videoPlayerController.value.duration.inSeconds;
       _playerItem.duration = _videoPlayerController.value.duration;
     });
@@ -204,8 +220,6 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
 
     /// Show controls when the video starts
     BlocProvider.of<ShowcontrolsBloc>(context).add(ShowcontrolsEventStart());
-
-    // cancelAndRestartTimer();
   }
 
   // distructor
@@ -225,178 +239,233 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        // if (_videoPlayerController.value.hasError == false) {
-        BlocProvider.of<ShowcontrolsBloc>(this.context)
-            .add(ShowcontrolsEventStart());
-        // }
-      },
-      onDoubleTap: () {
-        // mute video
-        // BlocProvider.of<VideoDurationBloc>(context).add(VideoDurationEventLoad(
-        //     _videoPlayerController.value.duration.inSeconds));
-      },
-      child: Stack(
-        children: <Widget>[
-          new Positioned(
-            bottom: 0,
-            top: 0,
-            left: 0,
-            right: 0,
-            child: MultiBlocListener(
-              child: new Center(
-                child: AspectRatio(
-                  aspectRatio: _controller.items[_index].aspectRatio ?? 16 / 9,
-                  child: Stack(
+    return Scaffold(
+      key: scaffoldKey,
+      endDrawer: new Drawer(
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Expanded(
+                child: new Container(
+                  child: _controller.items[_index].subtitles == null
+                      ? new Container()
+                      : _controller.items[_index].subtitles.length < 1
+                          ? new Container()
+                          : ListView.builder(
+                              itemBuilder: (context, index) {
+                                //
+                                return new SubtitleCover(
+                                  subtitle: new Subtitle(
+                                      title: _controller.items[_index]
+                                          .subtitles[index].title),
+                                );
+                              },
+                              itemCount:
+                                  _controller.items[_index].subtitles.length),
+                ),
+              ),
+              new RawMaterialButton(
+                onPressed: () {
+                  //
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      if (_videoPlayerController != null)
-                        if (_videoPlayerController.value.hasError == true)
-                          if (_controller.errorBuilder != null)
-                            _controller.errorBuilder(this.context,
-                                _videoPlayerController.value.errorDescription)
-                          else
-                            Center(
-                              child: Icon(
-                                Icons.error,
-                                color: Colors.white,
-                                size: 42,
-                              ),
-                            )
-                        else
-                          SubTitleWrapper(
-                              subtitleStyle: new SubtitleStyle(
-                                hasBorder: true,
-                                textColor: Colors.white,
-                              ),
-                              videoPlayerController: _videoPlayerController,
-                              subtitleController: SubtitleController(
-                                subtitleUrl:
-                                    _controller.items[_index].subtitleUrl,
-                                showSubtitles:
-                                    (_controller.items[_index].subtitleUrl !=
-                                                null &&
-                                            showSubtitles == true)
-                                        ? true
-                                        : false,
-                              ),
-                              videoChild: VideoPlayer(_videoPlayerController))
-                      else
-                        _controller.placeholder ??
-                            new Container(
-                              color: Colors.black,
-                            ),
-                      if (_videoPlayerController == null ||
-                          _videoPlayerController.value.isBuffering)
-                        new Center(
-                          child:
-                              _controller.loader ?? CircularProgressIndicator(),
+                      new Container(
+                        alignment: Alignment.centerLeft,
+                        child: new Text(
+                          'Off',
+                          style: new TextStyle(fontSize: 17),
                         ),
+                      ),
+                      new Icon(Icons.close),
                     ],
                   ),
                 ),
               ),
-              listeners: [
-                BlocListener<LoadPlayerBloc, LoadPlayerState>(
-                    listener: (context, state) {
-                  if (state is LoadPlayerLoaded) {
-                    //
-                    startPlayer();
-                  }
-                }),
-                BlocListener<ShowcontrolsBloc, ShowcontrolsState>(
-                  listener: (context, state) {
-                    if (state is ShowcontrolsStarted) {
-                      cancelAndRestartTimer();
-                    }
-                  },
-                ),
-                BlocListener<ShowSubtitlesBloc, ShowSubtitlesState>(
-                  listener: (context, state) {
-                    if (state is ShowSubtitlesLoaded) {
-                      toggleSubtitles();
-                    }
-                  },
-                ),
-                BlocListener<EnterFullScreenBloc, EnterFullScreenState>(
-                    listener: (context, state) {
-                  if (state is EnterFullScreenLoaded) {
-                    //
-                    enterFullScreen();
-                  }
-                }),
-                BlocListener<ExitFullScreenBloc, ExitFullScreenState>(
-                    listener: (context, state) {
-                  if (state is ExitFullScreenLoaded) {
-                    //
-                    exitFullScreen();
-                  }
-                }),
-                BlocListener<NextVideoBloc, NextVideoState>(
-                    listener: (context, state) {
-                  if (state is NextVideoLoaded) {
-                    nextVideo();
-                  }
-                }),
-                BlocListener<PreviousVideoBloc, PreviousVideoState>(
-                    listener: (context, state) {
-                  if (state is PreviousVideoLoaded) {
-                    previousVideo();
-                  }
-                }),
-                BlocListener<FastFowardBloc, FastFowardState>(
-                    listener: (context, state) {
-                  if (state is FastFowardLoaded) {
-                    fastFoward();
-                  }
-                }),
-                BlocListener<FastRewindBloc, FastRewindState>(
-                    listener: (context, state) {
-                  if (state is FastRewindLoaded) {
-                    fastRewind();
-                  }
-                }),
-                BlocListener<PlayVideoBloc, PlayVideoState>(
-                    listener: (context, state) {
-                  if (state is PlayVideoLoaded) {
-                    playVideo();
-                  }
-                }),
-                BlocListener<PauseVideoBloc, PauseVideoState>(
-                    listener: (context, state) {
-                  if (state is PauseVideoLoaded) {
-                    pauseVideo();
-                  }
-                }),
-                BlocListener<SeekVideoBloc, SeekVideoState>(
-                    listener: (context, state) {
-                  //
-                  if (state is SeekVideoLoaded) {
-                    seek(state.time);
-                  }
-                })
-              ],
-            ),
+            ],
           ),
-          _controller.showControls == true
-              ? _buildControls(context)
-              : new Container(),
-        ],
+        ),
+      ),
+      body: GestureDetector(
+        onTap: () {
+          BlocProvider.of<ShowcontrolsBloc>(this.context)
+              .add(ShowcontrolsEventStart());
+        },
+        onDoubleTap: () {
+          // mute video
+          // BlocProvider.of<VideoDurationBloc>(context).add(VideoDurationEventLoad(
+          //     _videoPlayerController.value.duration.inSeconds));
+        },
+        child: Stack(
+          children: <Widget>[
+            new Positioned(
+              bottom: 0,
+              top: 0,
+              left: 0,
+              right: 0,
+              child: MultiBlocListener(
+                child: new Center(
+                  child: AspectRatio(
+                    aspectRatio:
+                        _controller.items[_index].aspectRatio ?? 16 / 9,
+                    child: Stack(
+                      children: <Widget>[
+                        if (_videoPlayerController != null)
+                          if (_videoPlayerController.value.hasError == true)
+                            if (_controller.errorBuilder != null)
+                              _controller.errorBuilder(this.context,
+                                  _videoPlayerController.value.errorDescription)
+                            else
+                              Center(
+                                child: Icon(
+                                  Icons.error,
+                                  color: Colors.white,
+                                  size: 42,
+                                ),
+                              )
+                          else
+                            SubTitleWrapper(
+                                subtitleStyle: new SubtitleStyle(
+                                  hasBorder: true,
+                                  textColor: Colors.white,
+                                ),
+                                videoPlayerController: _videoPlayerController,
+                                subtitleController: SubtitleController(
+                                  showSubtitles: showSubtitles,
+                                  // subtitleType: SubtitleType.webvtt,
+                                  subtitleUrl:
+                                      _subtitle != null ? _subtitle.url : null,
+                                ),
+                                videoChild: VideoPlayer(_videoPlayerController))
+                        else
+                          _controller.placeholder ??
+                              new Container(
+                                color: Colors.black,
+                              ),
+                        if (_videoPlayerController == null ||
+                            _videoPlayerController.value.isBuffering)
+                          new Center(
+                            child: _controller.loader ??
+                                CircularProgressIndicator(),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+                listeners: [
+                  BlocListener<LoadPlayerBloc, LoadPlayerState>(
+                      listener: (context, state) {
+                    if (state is LoadPlayerLoaded) {
+                      //
+                      startPlayer();
+                    }
+                  }),
+                  BlocListener<SetSubtitleBloc, SetSubtitleState>(
+                      listener: (context, state) {
+                    if (state is SetSubtitleLoaded) {
+                      //
+                      setSubtitle(state.subtitle);
+                    }
+                  }),
+                  BlocListener<ShowcontrolsBloc, ShowcontrolsState>(
+                    listener: (context, state) {
+                      if (state is ShowcontrolsStarted) {
+                        cancelAndRestartTimer();
+                      }
+                    },
+                  ),
+                  BlocListener<ShowSubtitlesBloc, ShowSubtitlesState>(
+                    listener: (context, state) {
+                      if (state is ShowSubtitlesLoaded) {
+                        showSubs();
+                      }
+                    },
+                  ),
+                  BlocListener<EnterFullScreenBloc, EnterFullScreenState>(
+                      listener: (context, state) {
+                    if (state is EnterFullScreenLoaded) {
+                      //
+                      enterFullScreen();
+                    }
+                  }),
+                  BlocListener<ExitFullScreenBloc, ExitFullScreenState>(
+                      listener: (context, state) {
+                    if (state is ExitFullScreenLoaded) {
+                      //
+                      exitFullScreen();
+                    }
+                  }),
+                  BlocListener<NextVideoBloc, NextVideoState>(
+                      listener: (context, state) {
+                    if (state is NextVideoLoaded) {
+                      nextVideo();
+                    }
+                  }),
+                  BlocListener<PreviousVideoBloc, PreviousVideoState>(
+                      listener: (context, state) {
+                    if (state is PreviousVideoLoaded) {
+                      previousVideo();
+                    }
+                  }),
+                  BlocListener<FastFowardBloc, FastFowardState>(
+                      listener: (context, state) {
+                    if (state is FastFowardLoaded) {
+                      fastFoward();
+                    }
+                  }),
+                  BlocListener<FastRewindBloc, FastRewindState>(
+                      listener: (context, state) {
+                    if (state is FastRewindLoaded) {
+                      fastRewind();
+                    }
+                  }),
+                  BlocListener<PlayVideoBloc, PlayVideoState>(
+                      listener: (context, state) {
+                    if (state is PlayVideoLoaded) {
+                      playVideo();
+                    }
+                  }),
+                  BlocListener<PauseVideoBloc, PauseVideoState>(
+                      listener: (context, state) {
+                    if (state is PauseVideoLoaded) {
+                      pauseVideo();
+                    }
+                  }),
+                  BlocListener<SeekVideoBloc, SeekVideoState>(
+                      listener: (context, state) {
+                    //
+                    if (state is SeekVideoLoaded) {
+                      seek(state.time);
+                    }
+                  })
+                ],
+              ),
+            ),
+            _controller.showControls == true
+                ? _buildControls(context)
+                : new Container(),
+          ],
+        ),
       ),
     );
   }
 
-  void toggleSubtitles() {
+  void showSubs() {
     //
-    _videoPlayerController.pause();
+    scaffoldKey.currentState.openEndDrawer();
+  }
+
+  void setSubtitle(Subtitle subtitle) {
     setState(() {
-      showSubtitles = !showSubtitles;
+      _subtitle = subtitle;
     });
-    _videoPlayerController.play();
-    if (showSubtitles == true) {
-      showToast('Subtitles enabled');
-    } else {
-      showToast('Subtitles disabled');
+    if (_subtitle != null) {
+      BlocProvider.of<SetSubtitleBloc>(context)
+          .add(SetSubtitleEventLoad(_subtitle));
     }
   }
 
@@ -663,7 +732,9 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 PlayerTopBar(),
-                new Expanded(child: new Container()),
+                new Expanded(
+                  child: new Container(),
+                ),
                 new ProgressBar(controller: _controller)
               ],
             ),
@@ -673,5 +744,3 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
     );
   }
 }
-
-class SubtitlePosition {}

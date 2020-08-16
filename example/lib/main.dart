@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:video_player_controls/data/subtitle.dart';
 import 'package:video_player_controls/video_player_controls.dart';
 
 void main() => runApp(MyApp());
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
-              brightness: Brightness.dark,
+              brightness: Brightness.light,
               accentColor: Colors.redAccent,
             ),
             home: new HomePage()));
@@ -40,12 +41,15 @@ class _HomePageState extends State<HomePage> {
     controller = new Controller(
       items: [
         //
-
         new PlayerItem(
           title: 'video 1',
           url:
               'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
-          // subtitleUrl: "https://wecast.ch/posters/vt.vtt",
+          subtitles: [
+            Subtitle(title: 'English'),
+            Subtitle(title: 'Spanish'),
+            Subtitle(title: 'French'),
+          ],
         ),
         new PlayerItem(
           startAt: Duration(seconds: 2),
@@ -53,14 +57,22 @@ class _HomePageState extends State<HomePage> {
           aspectRatio: 16 / 4,
           url:
               'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-          subtitleUrl: "https://wecast.ch/posters/vtt.vtt",
+          subtitles: [
+            Subtitle(title: 'Dutch'),
+            Subtitle(title: 'Kiswahili'),
+            Subtitle(title: 'Chinese'),
+          ],
         ),
         new PlayerItem(
           title: 'video 3',
           aspectRatio: 16 / 9,
           url:
               'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-          subtitleUrl: "https://wecast.ch/posters/vtt.vtt",
+          subtitles: [
+            Subtitle(title: 'Russian'),
+            Subtitle(title: 'Arabic'),
+            Subtitle(title: 'Amharic'),
+          ],
         ),
       ],
       autoPlay: true,
