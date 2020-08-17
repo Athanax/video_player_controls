@@ -12,6 +12,9 @@ class Controller extends Equatable {
   /// Play the video as soon as it's displayed
   final bool autoPlay;
 
+  /// Displays back button if true at top left, else hidden
+  final bool showBackButton;
+
   /// List of urls to play
   final List<PlayerItem> items;
 
@@ -81,6 +84,7 @@ class Controller extends Equatable {
     this.allowFullScreen = true,
     this.showSeekButtons = true,
     this.showSkipButtons = true,
+    this.showBackButton = true,
     this.isPlaying,
     this.videosCompleted,
     this.errorBuilder,

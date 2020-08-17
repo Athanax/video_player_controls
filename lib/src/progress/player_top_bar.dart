@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:video_player_controls/bloc/player_item/player_item_bloc.dart';
+import 'package:video_player_controls/src/buttons/back_button.dart';
+import 'package:video_player_controls/video_player_controls.dart';
 
 class PlayerTopBar extends StatefulWidget {
+  final Controller controller;
   const PlayerTopBar({
     Key key,
+    this.controller,
   }) : super(key: key);
 
   @override
@@ -17,6 +21,10 @@ class _PlayerTopBarState extends State<PlayerTopBar> {
   Widget build(BuildContext context) {
     return Row(
       children: <Widget>[
+        SafeArea(
+            child: widget.controller.showBackButton == true
+                ? new TopBackButton()
+                : new Container()),
         new Expanded(
             child: SafeArea(
           child: Padding(

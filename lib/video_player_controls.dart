@@ -23,7 +23,6 @@ import 'package:video_player_controls/bloc/play_video/play_video_bloc.dart';
 import 'package:video_player_controls/bloc/player_item/player_item_bloc.dart';
 import 'package:video_player_controls/bloc/previous_video/previous_video_bloc.dart';
 import 'package:video_player_controls/bloc/seek_video/seek_video_bloc.dart';
-import 'package:video_player_controls/bloc/set_subtitle/set_subtitle_bloc.dart';
 import 'package:video_player_controls/bloc/show_controls/showcontrols_bloc.dart';
 import 'package:video_player_controls/bloc/show_subtitles/show_subtitles_bloc.dart';
 import 'package:video_player_controls/bloc/video_duration/video_duration_bloc.dart';
@@ -99,9 +98,6 @@ class VideoPlayerControls extends StatelessWidget {
         ),
         BlocProvider<VideoPlayingBloc>(
           create: (context) => VideoPlayingBloc(),
-        ),
-        BlocProvider<SetSubtitleBloc>(
-          create: (context) => SetSubtitleBloc(),
         ),
       ],
       child: new VideoPlayerInterface(
@@ -256,6 +252,15 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
                               itemBuilder: (context, index) {
                                 //
                                 return new SubtitleCover(
+                                  focus: _subtitle ==
+                                              _controller.items[_index]
+                                                  .subtitles[index] &&
+                                          showSubtitles == true
+                                      ? true
+                                      : false,
+                                  callback: (subtitle) {
+                                    setSubtitle(subtitle);
+                                  },
                                   subtitle: new Subtitle(
                                       title: _controller.items[_index]
                                           .subtitles[index].title),
@@ -266,9 +271,8 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
                 ),
               ),
               new RawMaterialButton(
-                onPressed: () {
-                  //
-                },
+                onPressed: disableSubtitles,
+                autofocus: true,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
@@ -364,13 +368,6 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
                       startPlayer();
                     }
                   }),
-                  BlocListener<SetSubtitleBloc, SetSubtitleState>(
-                      listener: (context, state) {
-                    if (state is SetSubtitleLoaded) {
-                      //
-                      setSubtitle(state.subtitle);
-                    }
-                  }),
                   BlocListener<ShowcontrolsBloc, ShowcontrolsState>(
                     listener: (context, state) {
                       if (state is ShowcontrolsStarted) {
@@ -456,17 +453,8 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
 
   void showSubs() {
     //
+    pauseVideo();
     scaffoldKey.currentState.openEndDrawer();
-  }
-
-  void setSubtitle(Subtitle subtitle) {
-    setState(() {
-      _subtitle = subtitle;
-    });
-    if (_subtitle != null) {
-      BlocProvider.of<SetSubtitleBloc>(context)
-          .add(SetSubtitleEventLoad(_subtitle));
-    }
   }
 
   void showToast(String msg) {
@@ -484,6 +472,24 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
   void exitFullScreen() async {
     //
     SystemChrome.restoreSystemUIOverlays();
+  }
+
+  void setSubtitle(Subtitle subtitle) {
+    setState(() {
+      _subtitle = subtitle;
+      showSubtitles = true;
+    });
+    playVideo();
+    Navigator.pop(context);
+  }
+
+  void disableSubtitles() {
+    //
+    setState(() {
+      showSubtitles = false;
+    });
+    playVideo();
+    Navigator.pop(context);
   }
 
   void initialize(String link, Skip skip) async {
@@ -731,7 +737,7 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
             child: new Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                PlayerTopBar(),
+                PlayerTopBar(controller: _controller),
                 new Expanded(
                   child: new Container(),
                 ),
