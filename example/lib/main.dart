@@ -118,13 +118,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Center(
-        child: VideoPlayerControls(
-          controller: controller,
-        ),
-      ),
+    return VideoPlayerControls(
+      controller: controller,
     );
   }
 }
