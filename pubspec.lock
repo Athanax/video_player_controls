@@ -206,10 +206,12 @@ packages:
   subtitle_wrapper_package:
     dependency: "direct main"
     description:
-      name: subtitle_wrapper_package
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0"
+      path: "."
+      ref: HEAD
+      resolved-ref: bc6164b1fc9ed9406deaab5f6cb08bd6d9cdac7d
+      url: "https://github.com/cherlow/flutter_subtitle_wrapper.git"
+    source: git
+    version: "1.0.2"
   term_glyph:
     dependency: transitive
     description:
@@ -248,10 +250,12 @@ packages:
   video_player:
     dependency: "direct main"
     description:
-      name: video_player
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.10.11+2"
+      path: "."
+      ref: HEAD
+      resolved-ref: "205c3cc28e5ded1b2711806ddd3735669c7142be"
+      url: "https://github.com/cherlow/video_player.git"
+    source: git
+    version: "0.10.12"
   video_player_platform_interface:
     dependency: transitive
     description:

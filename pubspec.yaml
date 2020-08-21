@@ -9,12 +9,16 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  video_player: ^0.10.11+2
+  video_player:
+    git:
+      url: "https://github.com/cherlow/video_player.git"
   flutter_bloc: ^6.0.1
   equatable: ^1.2.3
   bloc: ^6.0.1
   wakelock: ^0.1.4+2
-  subtitle_wrapper_package: ^1.0.0
+  subtitle_wrapper_package:
+    git:
+      url: "https://github.com/cherlow/flutter_subtitle_wrapper.git"
   toast: ^0.1.5
 
 dev_dependencies:
