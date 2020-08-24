@@ -11,7 +11,8 @@ dependencies:
     sdk: flutter
   video_player:
     git:
-      url: "https://github.com/cherlow/video_player.git"
+      url: 'https://github.com/cherlow/plugins.git'
+      path: packages/video_player/video_player
 
   flutter_bloc: ^6.0.1
   equatable: ^1.2.3
