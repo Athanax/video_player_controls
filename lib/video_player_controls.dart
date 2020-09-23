@@ -5,13 +5,13 @@ export 'package:video_player_controls/data/player_item.dart';
 
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:subtitle_wrapper_package/data/models/style/subtitle_style.dart';
 import 'package:subtitle_wrapper_package/subtitle_controller.dart';
 import 'package:subtitle_wrapper_package/subtitle_wrapper_package.dart';
 import 'package:toast/toast.dart';
 import 'package:video_player/video_player.dart';
+import 'package:fullscreen/fullscreen.dart';
 import 'package:video_player_controls/bloc/enter_full_screen/enter_full_screen_bloc.dart';
 import 'package:video_player_controls/bloc/exit_full_screen/exit_full_screen_bloc.dart';
 import 'package:video_player_controls/bloc/fast_foward/fast_foward_bloc.dart';
@@ -120,6 +120,8 @@ enum Skip { NEXT, PREVIOUS, RESTART }
 class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
   // video player controller
   VideoPlayerController _videoPlayerController;
+
+  FullScreen fullScreen = new FullScreen();
 
   int _index;
 
@@ -271,6 +273,7 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
                               ),
                               videoPlayerController: _videoPlayerController,
                               subtitleController: SubtitleController(
+                                subtitleType: SubtitleType.srt,
                                 subtitleUrl:
                                     _controller.items[_index].subtitleUrl,
                                 showSubtitles:
@@ -394,7 +397,11 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
     });
     _videoPlayerController.play();
     if (showSubtitles == true) {
-      showToast('Subtitles enabled');
+      if (_controller.items[_index].subtitleUrl == null) {
+        showToast('no subtitle found');
+      } else {
+        showToast('Subtitles enabled');
+      }
     } else {
       showToast('Subtitles disabled');
     }
@@ -407,14 +414,12 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
 
   void enterFullScreen() {
     //
-    // SystemChrome.setEnabledSystemUIOverlays([]);
-    // SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
-    SystemChrome.setEnabledSystemUIOverlays([]);
+    fullScreen.enterFullScreen(FullScreenMode.EMERSIVE);
   }
 
   void exitFullScreen() async {
     //
-    SystemChrome.restoreSystemUIOverlays();
+    fullScreen.exitFullScreen();
   }
 
   void initialize(String link, Skip skip) async {
