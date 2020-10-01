@@ -22,35 +22,15 @@ class _ProgressSliderState extends State<ProgressSlider>
     with SingleTickerProviderStateMixin {
   double position = 0;
   double _duration = 1;
-  FocusNode _node;
 
   @override
   void initState() {
     //
     super.initState();
-    _node = FocusNode(onKey: (node, event) {
-      //
-      if (event is RawKeyDownEvent) {
-        BlocProvider.of<ShowcontrolsBloc>(context)
-            .add(ShowcontrolsEventStart());
-        handleKeyEvent(node, event, context);
-        handlArrowKeys(node, event, context);
-        return false;
-      }
-      return false;
-    });
-    _node.addListener(_onFocusChange);
-  }
-
-  void _onFocusChange() {
-    if (_node.hasFocus) {
-      BlocProvider.of<ShowcontrolsBloc>(context).add(ShowcontrolsEventStart());
-    }
   }
 
   @override
   void dispose() {
-    _node.dispose();
     super.dispose();
   }
 
@@ -74,9 +54,8 @@ class _ProgressSliderState extends State<ProgressSlider>
           }
         },
         child: Focus(
-          focusNode: _node,
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: _node.hasFocus ? 0 : 20),
+            padding: EdgeInsets.symmetric(horizontal: 20),
             child: Slider(
               activeColor: Theme.of(context).accentColor,
               inactiveColor: Colors.white38,
