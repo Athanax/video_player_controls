@@ -4,7 +4,6 @@ import 'package:video_player_controls/bloc/pause_video/pause_video_bloc.dart';
 import 'package:video_player_controls/bloc/play_video/play_video_bloc.dart';
 import 'package:video_player_controls/bloc/show_controls/showcontrols_bloc.dart';
 import 'package:video_player_controls/bloc/video_playing/video_playing_bloc.dart';
-import 'package:video_player_controls/data/controller.dart';
 import 'package:video_player_controls/src/buttons/key_events.dart';
 
 class PlayButton extends StatefulWidget {
