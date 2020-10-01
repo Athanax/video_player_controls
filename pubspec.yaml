@@ -23,6 +23,8 @@ dependencies:
       url: "https://github.com/cherlow/flutter_subtitle_wrapper.git"
   toast: ^0.1.5
   fullscreen: ^1.0.1
+  flutter_ui_mode_manager: ^1.0.0
+  step_progress_indicator: ^0.2.4+7
 
 dev_dependencies:
   flutter_test:

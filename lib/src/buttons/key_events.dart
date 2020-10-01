@@ -28,6 +28,14 @@ Future<bool> handleKeyEvent(FocusNode node, RawKeyEvent event, context) async {
   } else if (event.logicalKey == LogicalKeyboardKey.mediaTrackPrevious) {
     // Pause
     BlocProvider.of<PreviousVideoBloc>(context).add(PreviousVideoEventLoad());
+  } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+    // Pause
+    BlocProvider.of<FastRewindBloc>(context).add(FastRewindEventLoad());
+    return true;
+  } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+    // Pause
+    BlocProvider.of<FastFowardBloc>(context).add(FastFowardEventLoad());
+    return true;
   }
 
   return false;

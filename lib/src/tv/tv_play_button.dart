@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:video_player_controls/bloc/focus_play/focus_play_bloc.dart';
 import 'package:video_player_controls/bloc/pause_video/pause_video_bloc.dart';
 import 'package:video_player_controls/bloc/play_video/play_video_bloc.dart';
 import 'package:video_player_controls/bloc/show_controls/showcontrols_bloc.dart';
 import 'package:video_player_controls/bloc/video_playing/video_playing_bloc.dart';
-import 'package:video_player_controls/data/controller.dart';
 import 'package:video_player_controls/src/buttons/key_events.dart';
 
-class PlayButton extends StatefulWidget {
+class TvPlayButton extends StatefulWidget {
   @override
-  _PlayButtonState createState() => _PlayButtonState();
+  _TvPlayButtonState createState() => _TvPlayButtonState();
 }
 
-class _PlayButtonState extends State<PlayButton>
+class _TvPlayButtonState extends State<TvPlayButton>
     with SingleTickerProviderStateMixin {
   Animation animation;
   AnimationController animationController;
@@ -43,7 +43,6 @@ class _PlayButtonState extends State<PlayButton>
       //
       BlocProvider.of<ShowcontrolsBloc>(context).add(ShowcontrolsEventStart());
       handleKeyEvent(node, event, context);
-
       return false;
     });
     _node.addListener(_onFocusChange);
@@ -71,27 +70,36 @@ class _PlayButtonState extends State<PlayButton>
                 }
               }
             },
-            child: new IconButton(
-              autofocus: true,
-              focusNode: _node,
-              color:
-                  _node.hasFocus ? Theme.of(context).accentColor : Colors.white,
-              focusColor: Colors.transparent,
-              iconSize: 30,
-              icon: new AnimatedIcon(
-                  icon: AnimatedIcons.pause_play,
-                  progress: animationController),
-              onPressed: () {
-                BlocProvider.of<ShowcontrolsBloc>(this.context)
-                    .add(ShowcontrolsEventStart());
-                if (isPlaying == true) {
-                  BlocProvider.of<PauseVideoBloc>(context)
-                      .add(PauseVideoEventLoad());
-                } else {
-                  BlocProvider.of<PlayVideoBloc>(context)
-                      .add(PlayVideoEventLoad());
+            child: new BlocListener<FocusPlayBloc, FocusPlayState>(
+              listener: (context, state) {
+                //
+                if (state is FocusPlayLoaded) {
+                  _node.requestFocus();
                 }
               },
+              child: IconButton(
+                autofocus: true,
+                focusNode: _node,
+                color: _node.hasFocus
+                    ? Theme.of(context).accentColor
+                    : Colors.white,
+                focusColor: Colors.transparent,
+                iconSize: 30,
+                icon: new AnimatedIcon(
+                    icon: AnimatedIcons.pause_play,
+                    progress: animationController),
+                onPressed: () {
+                  BlocProvider.of<ShowcontrolsBloc>(this.context)
+                      .add(ShowcontrolsEventStart());
+                  if (isPlaying == true) {
+                    BlocProvider.of<PauseVideoBloc>(context)
+                        .add(PauseVideoEventLoad());
+                  } else {
+                    BlocProvider.of<PlayVideoBloc>(context)
+                        .add(PlayVideoEventLoad());
+                  }
+                },
+              ),
             ),
           ),
           // ),

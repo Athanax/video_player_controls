@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player_controls/data/player_item.dart';
+import 'package:video_player_controls/utils/contract.dart';
 
 enum VideoSource { NETWORK, ASSET }
 
@@ -11,6 +12,9 @@ class Controller extends Equatable {
 
   /// Play the video as soon as it's displayed
   final bool autoPlay;
+
+  /// Play the video as soon as it's displayed
+  final bool showBackButton;
 
   /// List of urls to play
   final List<PlayerItem> items;
@@ -73,6 +77,8 @@ class Controller extends Equatable {
   ///
   final Widget Function(BuildContext context, String message) errorBuilder;
 
+  Contract view;
+
   Controller({
     this.showControls = true,
     this.videoSource = VideoSource.NETWORK,
@@ -81,6 +87,7 @@ class Controller extends Equatable {
     this.allowFullScreen = true,
     this.showSeekButtons = true,
     this.showSkipButtons = true,
+    this.showBackButton = true,
     this.isPlaying,
     this.videosCompleted,
     this.errorBuilder,
@@ -109,4 +116,32 @@ class Controller extends Equatable {
         index,
         errorBuilder,
       ];
+
+  void pause() {
+    view.pause();
+  }
+
+  void play() {
+    view.play();
+  }
+
+  void foward() {
+    view.foward();
+  }
+
+  void rewind() {
+    view.rewind();
+  }
+
+  void next() {
+    view.next();
+  }
+
+  void previous() {
+    view.previous();
+  }
+
+  void setIndex(int index) {
+    view.setIndex(index);
+  }
 }

@@ -6,6 +6,7 @@ export 'package:video_player_controls/data/player_item.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_ui_mode_manager/flutter_ui_mode_manager.dart';
 import 'package:subtitle_wrapper_package/data/models/style/subtitle_style.dart';
 import 'package:subtitle_wrapper_package/subtitle_controller.dart';
 import 'package:subtitle_wrapper_package/subtitle_wrapper_package.dart';
@@ -16,6 +17,7 @@ import 'package:video_player_controls/bloc/enter_full_screen/enter_full_screen_b
 import 'package:video_player_controls/bloc/exit_full_screen/exit_full_screen_bloc.dart';
 import 'package:video_player_controls/bloc/fast_foward/fast_foward_bloc.dart';
 import 'package:video_player_controls/bloc/fast_rewind/fast_rewind_bloc.dart';
+import 'package:video_player_controls/bloc/focus_play/focus_play_bloc.dart';
 import 'package:video_player_controls/bloc/load_player/load_player_bloc.dart';
 import 'package:video_player_controls/bloc/next_video/next_video_bloc.dart';
 import 'package:video_player_controls/bloc/pause_video/pause_video_bloc.dart';
@@ -32,6 +34,9 @@ import 'package:video_player_controls/data/controller.dart';
 import 'package:video_player_controls/data/player_item.dart';
 import 'package:video_player_controls/src/progress/player_top_bar.dart';
 import 'package:video_player_controls/src/progress/progress_bar.dart';
+import 'package:video_player_controls/src/tv/tv_bottom_bar.dart';
+import 'package:video_player_controls/src/tv/tv_top_bar.dart';
+import 'package:video_player_controls/utils/contract.dart';
 import 'package:wakelock/wakelock.dart';
 
 class VideoPlayerControls extends StatelessWidget {
@@ -97,6 +102,9 @@ class VideoPlayerControls extends StatelessWidget {
         BlocProvider<VideoPlayingBloc>(
           create: (context) => VideoPlayingBloc(),
         ),
+        BlocProvider<FocusPlayBloc>(
+          create: (context) => FocusPlayBloc(),
+        ),
       ],
       child: new VideoPlayerInterface(
         controller: controller,
@@ -115,13 +123,20 @@ class VideoPlayerInterface extends StatefulWidget {
   _VideoPlayerInterfaceState createState() => _VideoPlayerInterfaceState();
 }
 
-enum Skip { NEXT, PREVIOUS, RESTART }
+enum Skip { NEXT, PREVIOUS, RESTART, SET_INDEX }
 
-class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
+class _VideoPlayerInterfaceState extends State<VideoPlayerInterface>
+    implements Contract {
   // video player controller
   VideoPlayerController _videoPlayerController;
 
   FullScreen fullScreen = new FullScreen();
+
+  bool isPlaying = false;
+
+  UiMode uiMode;
+
+  bool isLoading = true;
 
   int _index;
 
@@ -154,7 +169,9 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
   @override
   void initState() {
     super.initState();
+    loadDevice();
     _controller = widget.controller;
+    _controller.view = this;
     //
     if (_controller.allowedScreenSleep == false) {
       Wakelock.enable();
@@ -389,6 +406,13 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
     );
   }
 
+  void loadDevice() async {
+    uiMode = await FlutterUiModeManager.getDeviceUiMode;
+    setState(() {
+      isLoading = false;
+    });
+  }
+
   void toggleSubtitles() {
     //
     _videoPlayerController.pause();
@@ -414,7 +438,7 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
 
   void enterFullScreen() {
     //
-    fullScreen.enterFullScreen(FullScreenMode.EMERSIVE);
+    fullScreen.enterFullScreen(FullScreenMode.EMERSIVE_STICKY);
   }
 
   void exitFullScreen() async {
@@ -434,8 +458,10 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
       changeIndex(Skip.NEXT);
     } else if (skip == Skip.PREVIOUS) {
       changeIndex(Skip.PREVIOUS);
-    } else {
+    } else if (skip == Skip.RESTART) {
       changeIndex(Skip.RESTART);
+    } else if (skip == Skip.SET_INDEX) {
+      changeIndex(Skip.SET_INDEX);
     }
 
     initializeVideo(link);
@@ -458,7 +484,7 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
         // add one to the controller index
         _index = _index - 1;
       }
-    } else {
+    } else if (skip == Skip.RESTART) {
       _index = 0;
     }
   }
@@ -471,8 +497,10 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
         initialize(link, Skip.NEXT);
       } else if (skip == Skip.PREVIOUS) {
         initialize(link, Skip.PREVIOUS);
-      } else {
+      } else if (skip == Skip.RESTART) {
         initialize(link, Skip.RESTART);
+      } else if (skip == Skip.SET_INDEX) {
+        initialize(link, Skip.SET_INDEX);
       }
     } else {
       // If there was a controller, we need to dispose of the old one first
@@ -485,8 +513,10 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
           initialize(link, Skip.NEXT);
         } else if (skip == Skip.PREVIOUS) {
           initialize(link, Skip.PREVIOUS);
-        } else {
+        } else if (skip == Skip.RESTART) {
           initialize(link, Skip.RESTART);
+        } else if (skip == Skip.SET_INDEX) {
+          initialize(link, Skip.SET_INDEX);
         }
       });
 
@@ -508,6 +538,7 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
       setState(() {
         showControls = false;
       });
+      BlocProvider.of<FocusPlayBloc>(context).add(FocusPlayEventLoad());
     });
   }
 
@@ -573,19 +604,37 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
   }
 
   void listenables() {
-    BlocProvider.of<VideoDurationBloc>(context).add(VideoDurationEventLoad(
-        _videoPlayerController.value.duration.inSeconds));
-    BlocProvider.of<VideoPositionBloc>(context).add(VideoPositionEventLoad(
-        _videoPlayerController.value.position.inSeconds));
+    if (_videoPlayerController.value != null) {
+      if (_videoPlayerController.value.duration != null) {
+        BlocProvider.of<VideoDurationBloc>(context).add(VideoDurationEventLoad(
+            _videoPlayerController.value.duration.inSeconds));
+      }
+      if (_videoPlayerController.value.position != null) {
+        BlocProvider.of<VideoPositionBloc>(context).add(VideoPositionEventLoad(
+            _videoPlayerController.value.position.inSeconds));
+      }
 
-    if (widget.controller.isPlaying != null) {
-      widget.controller.isPlaying(_videoPlayerController.value.isPlaying);
+      if (widget.controller.isPlaying != null) {
+        widget.controller.isPlaying(_videoPlayerController.value.isPlaying);
+      }
+      BlocProvider.of<VideoPlayingBloc>(context)
+          .add(VideoPlayingEventLoad(_videoPlayerController.value.isPlaying));
+      setState(() {
+        isPlaying = _videoPlayerController.value.isPlaying;
+      });
+      if (_videoPlayerController.value.isPlaying == false) {
+        setState(() {
+          showControls = true;
+        });
+      }
+      if (_videoPlayerController.value.position != null &&
+          _playerItem != null) {
+        setState(() {
+          _playerItem.position = _videoPlayerController.value.position;
+        });
+      }
     }
-    BlocProvider.of<VideoPlayingBloc>(context)
-        .add(VideoPlayingEventLoad(_videoPlayerController.value.isPlaying));
-    setState(() {
-      _playerItem.position = _videoPlayerController.value.position;
-    });
+
     if (widget.controller.playerItem != null) {
       widget.controller.playerItem(_playerItem);
     }
@@ -631,6 +680,17 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
     }
   }
 
+  void setPlayingIndex(int index) {
+    //
+    if (index < _controller.items.length && index >= 0) {
+      String link = _controller.items[index].url;
+      changeVideo(link, Skip.SET_INDEX);
+      setState(() {
+        _index = index;
+      });
+    }
+  }
+
   void restartPlaylist() {
     //
     String link = _controller.items[0].url;
@@ -640,43 +700,102 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface> {
   // controls widget
   Widget _buildControls(context) {
     //
-
-    return new Positioned(
-      bottom: 0,
-      top: 0,
-      left: 0,
-      right: 0,
-      child: AnimatedOpacity(
-        duration: new Duration(milliseconds: 200),
-        curve: Curves.decelerate,
-        opacity: showControls == false ? 0 : 1,
-        child: Container(
-          child: new Container(
-            decoration: new BoxDecoration(
-              gradient: new LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Colors.black,
-                  Colors.transparent,
-                  Colors.transparent,
-                  Colors.black,
-                ],
+    if (isLoading == false) {
+      return new Positioned(
+        bottom: 0,
+        top: 0,
+        left: 0,
+        right: 0,
+        child: AnimatedOpacity(
+          duration: new Duration(milliseconds: 200),
+          curve: Curves.decelerate,
+          opacity: showControls == false ? 0 : 1,
+          child: Container(
+            child: new Container(
+              decoration: new BoxDecoration(
+                gradient: new LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.black,
+                    Colors.transparent,
+                    Colors.transparent,
+                    Colors.black,
+                  ],
+                ),
               ),
-            ),
-            child: new Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                PlayerTopBar(),
-                new Expanded(child: new Container()),
-                new ProgressBar(controller: _controller)
-              ],
+              child: uiMode == UiMode.UI_MODE_TYPE_TELEVISION
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TvTopBar(
+                          controller: _controller,
+                        ),
+                        new Expanded(child: new Container()),
+                        new TvBottomBar(),
+                      ],
+                    )
+                  : new Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        PlayerTopBar(),
+                        new Expanded(child: new Container()),
+                        new ProgressBar(controller: _controller)
+                      ],
+                    ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    } else {
+      return new Positioned(
+        bottom: 0,
+        top: 0,
+        left: 0,
+        right: 0,
+        child: new Container(),
+      );
+    }
+  }
+
+  @override
+  void pause() {
+    pauseVideo();
+  }
+
+  @override
+  void foward() {
+    //
+    fastFoward();
+  }
+
+  @override
+  void next() {
+    //
+    nextVideo();
+  }
+
+  @override
+  void play() {
+    //
+    play();
+  }
+
+  @override
+  void previous() {
+    //
+    previousVideo();
+  }
+
+  @override
+  void rewind() {
+    //
+    fastRewind();
+  }
+
+  @override
+  void setIndex(int index) {
+    //
+    setPlayingIndex(index);
   }
 }
-
-class SubtitlePosition {}
