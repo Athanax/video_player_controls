@@ -39,7 +39,6 @@ class _HomePageState extends State<HomePage> {
     controller = new Controller(
       items: [
         //
-
         new PlayerItem(
           title: 'video 1',
           url:
