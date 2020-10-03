@@ -41,7 +41,7 @@ class _PlayButtonState extends State<PlayButton>
     _node = FocusNode(onKey: (node, event) {
       //
       BlocProvider.of<ShowcontrolsBloc>(context).add(ShowcontrolsEventStart());
-      handleKeyEvent(node, event, context);
+      // handleKeyEvent(node, event, context);
 
       return false;
     });
