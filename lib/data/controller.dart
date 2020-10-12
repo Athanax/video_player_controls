@@ -117,30 +117,37 @@ class Controller extends Equatable {
         errorBuilder,
       ];
 
+  /// Pause a video
   void pause() {
     view.pause();
   }
 
+  /// Play a video
   void play() {
     view.play();
   }
 
+  /// Fast foward a video
   void foward() {
     view.foward();
   }
 
+  /// Fast rewird a video
   void rewind() {
     view.rewind();
   }
 
+  /// Play the next video in the list
   void next() {
     view.next();
   }
 
+  /// Play the previous video in the list
   void previous() {
     view.previous();
   }
 
+  /// skip to a specific video in the list
   void setIndex(int index) {
     view.setIndex(index);
   }

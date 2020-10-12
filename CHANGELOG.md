@@ -1,3 +1,8 @@
+## [2.1.7] - Mon October 12, 2020
+
+* Add next, previous, setIndex, pause, play, callbacks
+* Correct was called on null error
+
 ## [2.1.6] - Mon August 02, 2020
 
 * Update out of date packages
