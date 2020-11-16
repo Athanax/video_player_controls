@@ -117,7 +117,6 @@ controller = new Controller(
       // showControls: false,
       // hasSubtitles: true,
       // isLive: true,
-      // showSeekButtons: false,
       // showSkipButtons: false,
       // allowFullScreen: false,
       fullScreenByDefault: false,
@@ -168,6 +167,23 @@ To play the previous video,
 ``` dart
 
 controller.previous()
+
+```
+
+
+To seek the video 20 seconds foward, 
+
+``` dart
+
+controller.foward(20)
+
+```
+
+To seek the video 20 seconds backwards, 
+
+``` dart
+
+controller.rewind(20)
 
 ```
 

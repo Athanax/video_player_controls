@@ -1,3 +1,9 @@
+## [2.1.8] - Mon November 16, 2020
+
+* Add custom seek
+* Add seek gestures and remove buttons
+* Remove bool showSeekButtons controller member data
+
 ## [2.1.7] - Mon October 12, 2020
 
 * Add next, previous, setIndex, pause, play, callbacks
