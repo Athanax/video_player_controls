@@ -14,7 +14,7 @@ class FastRewindBloc extends Bloc<FastRewindEvent, FastRewindState> {
     //
     yield FastRewindLoading();
     if (event is FastRewindEventLoad) {
-      yield FastRewindLoaded();
+      yield FastRewindLoaded(event.seconds);
     }
   }
 }

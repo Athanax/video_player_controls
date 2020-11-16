@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:video_player_controls/src/buttons/fast_foward_button.dart';
-import 'package:video_player_controls/src/buttons/fast_rewind_button.dart';
 import 'package:video_player_controls/src/buttons/full_screen_button.dart';
-import 'package:video_player_controls/src/buttons/next_button.dart';
-import 'package:video_player_controls/src/buttons/play_button.dart';
-import 'package:video_player_controls/src/buttons/previous_button.dart';
 import 'package:video_player_controls/src/buttons/subtitle_button.dart';
 import 'package:video_player_controls/src/progress/progres_slider.dart';
 import 'package:video_player_controls/src/progress/video_period.dart';
@@ -45,39 +40,21 @@ class _ProgressBarState extends State<ProgressBar> {
             child: new Container(
               child: new Column(
                 children: <Widget>[
-                  if (_controller.isLive != true) VideoPeriod(),
+                  if (_controller.isLive != true)
+                    Row(
+                      children: [
+                        VideoPeriod(),
+                        new Expanded(child: new Container()),
+                        widget.controller.hasSubtitles == true
+                            ? SubtitleButton()
+                            : new Container(),
+                        widget.controller.fullScreenByDefault == true ||
+                                widget.controller.allowFullScreen == false
+                            ? new Container()
+                            : new FullScreenButton(),
+                      ],
+                    ),
                   if (_controller.isLive != true) new ProgressSlider(),
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            _controller.showSeekButtons == false
-                                ? new Container()
-                                : new FastRewindButton(),
-                            _controller.showSkipButtons == false
-                                ? new Container()
-                                : new PreviousButton(),
-                            new PlayButton(),
-                            _controller.showSkipButtons == false
-                                ? new Container()
-                                : new NextButton(),
-                            _controller.showSeekButtons == false
-                                ? new Container()
-                                : new FastFowardButton(),
-                          ],
-                        ),
-                      ),
-                      widget.controller.hasSubtitles == true
-                          ? SubtitleButton()
-                          : new Container(),
-                      widget.controller.fullScreenByDefault == true ||
-                              widget.controller.allowFullScreen == false
-                          ? new Container()
-                          : new FullScreenButton(),
-                    ],
-                  ),
                 ],
               ),
             ),

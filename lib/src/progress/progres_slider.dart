@@ -76,7 +76,6 @@ class _ProgressSliderState extends State<ProgressSlider>
         child: Focus(
           focusNode: _node,
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: _node.hasFocus ? 0 : 20),
             child: Slider(
               activeColor: Theme.of(context).accentColor,
               inactiveColor: Colors.white38,

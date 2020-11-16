@@ -17,7 +17,8 @@ class FastRewindLoading extends FastRewindState {
 }
 
 class FastRewindLoaded extends FastRewindState {
-  const FastRewindLoaded();
+  final int seconds;
+  const FastRewindLoaded(this.seconds);
   @override
   List<Object> get props => [];
 }

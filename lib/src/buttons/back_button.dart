@@ -5,7 +5,7 @@ class TopBackButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Cover(
-      icon: Icons.arrow_back,
+      icon: Icons.arrow_back_outlined,
       onTap: () {
         Navigator.pop(context);
       },

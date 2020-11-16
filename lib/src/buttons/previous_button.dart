@@ -8,7 +8,7 @@ class PreviousButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Cover(
-      icon: Icons.skip_previous,
+      icon: Icons.skip_previous_outlined,
       onTap: () {
         BlocProvider.of<ShowcontrolsBloc>(context)
             .add(ShowcontrolsEventStart());

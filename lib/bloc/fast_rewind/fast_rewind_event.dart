@@ -5,7 +5,8 @@ abstract class FastRewindEvent extends Equatable {
 }
 
 class FastRewindEventLoad extends FastRewindEvent {
-  const FastRewindEventLoad();
+  final int seconds;
+  const FastRewindEventLoad(this.seconds);
   @override
   //
   List<Object> get props => [];

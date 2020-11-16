@@ -14,7 +14,7 @@ class FastFowardBloc extends Bloc<FastFowardEvent, FastFowardState> {
     //
     yield FastFowardLoading();
     if (event is FastFowardEventLoad) {
-      yield FastFowardLoaded();
+      yield FastFowardLoaded(event.seconds);
     }
   }
 }

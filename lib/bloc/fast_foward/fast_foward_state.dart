@@ -17,7 +17,8 @@ class FastFowardLoading extends FastFowardState {
 }
 
 class FastFowardLoaded extends FastFowardState {
-  const FastFowardLoaded();
+  final int seconds;
+  const FastFowardLoaded(this.seconds);
   @override
   List<Object> get props => [];
 }

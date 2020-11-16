@@ -38,14 +38,14 @@ class _VideoPeriodState extends State<VideoPeriod> {
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 22),
           child: new Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               new Container(
                 child: new Text(
-                  '${formatDuration(new Duration(seconds: _time))}  ',
+                  '${formatDuration(new Duration(seconds: _time))} ',
                   style: new TextStyle(color: Colors.white),
                 ),
               ),
+              new Text('/ '),
               new Container(
                 child: new Text(
                   '${formatDuration(new Duration(seconds: _duration))}',
@@ -68,13 +68,23 @@ class _VideoPeriodState extends State<VideoPeriod> {
     var minutes = seconds ~/ 60;
     seconds = seconds % 60;
 
-    final hoursString = hours >= 10 ? '$hours' : hours == 0 ? '00' : '0$hours';
+    final hoursString = hours >= 10
+        ? '$hours'
+        : hours == 0
+            ? '00'
+            : '0$hours';
 
-    final minutesString =
-        minutes >= 10 ? '$minutes' : minutes == 0 ? '00' : '0$minutes';
+    final minutesString = minutes >= 10
+        ? '$minutes'
+        : minutes == 0
+            ? '00'
+            : '0$minutes';
 
-    final secondsString =
-        seconds >= 10 ? '$seconds' : seconds == 0 ? '00' : '0$seconds';
+    final secondsString = seconds >= 10
+        ? '$seconds'
+        : seconds == 0
+            ? '00'
+            : '0$seconds';
 
     final formattedTime =
         '${hoursString == '00' ? '' : hoursString + ':'}$minutesString:$secondsString';
