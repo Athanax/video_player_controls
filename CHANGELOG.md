@@ -1,3 +1,7 @@
+## [2.1.9] - Mon November 17, 2020
+
+* Perfect seek buttons 
+
 ## [2.1.8] - Mon November 16, 2020
 
 * Add custom seek

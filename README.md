@@ -27,7 +27,7 @@ dependencies:
 
 # Screenshot
 
-![Demo video](https://wecast.ch/storage/images/video.gif "Demo video")
+![Demo video](https://wecast.ch/player/2.1.9.gif "Demo video")
 
 # Features
 
