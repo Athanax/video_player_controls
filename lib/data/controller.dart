@@ -48,10 +48,6 @@ class Controller extends Equatable {
   /// Defines if the controls should be for live stream video
   final bool isLive;
 
-  /// Displays seek buttons if true alse hides them,
-  /// The buttons will show by default if not specified
-  final bool showSeekButtons;
-
   /// Displays skip next and previous buttons if true alse hides them,
   /// The buttons will show by default if not specified
   final bool showSkipButtons;
@@ -85,7 +81,6 @@ class Controller extends Equatable {
     this.items,
     this.fullScreenByDefault = false,
     this.allowFullScreen = true,
-    this.showSeekButtons = true,
     this.showSkipButtons = true,
     this.showBackButton = true,
     this.isPlaying,
@@ -117,30 +112,37 @@ class Controller extends Equatable {
         errorBuilder,
       ];
 
+  /// Pause a video
   void pause() {
     view.pause();
   }
 
+  /// Play a video
   void play() {
     view.play();
   }
 
-  void foward() {
-    view.foward();
+  /// Fast foward a video
+  void foward(int seconds) {
+    view.foward(seconds);
   }
 
-  void rewind() {
-    view.rewind();
+  /// Fast rewird a video
+  void rewind(int seconds) {
+    view.rewind(seconds);
   }
 
+  /// Play the next video in the list
   void next() {
     view.next();
   }
 
+  /// Play the previous video in the list
   void previous() {
     view.previous();
   }
 
+  /// skip to a specific video in the list
   void setIndex(int index) {
     view.setIndex(index);
   }

@@ -8,13 +8,13 @@ import 'package:video_player_controls/bloc/pause_video/pause_video_bloc.dart';
 import 'package:video_player_controls/bloc/play_video/play_video_bloc.dart';
 import 'package:video_player_controls/bloc/previous_video/previous_video_bloc.dart';
 
-bool handleKeyEvent(FocusNode node, RawKeyEvent event, context)  {
+bool handleKeyEvent(FocusNode node, RawKeyEvent event, context) {
   if (event.logicalKey == LogicalKeyboardKey.mediaRewind) {
     // Rewind
-    BlocProvider.of<FastRewindBloc>(context).add(FastRewindEventLoad());
+    BlocProvider.of<FastRewindBloc>(context).add(FastRewindEventLoad(10));
   } else if (event.logicalKey == LogicalKeyboardKey.mediaFastForward) {
     // Fast foward
-    BlocProvider.of<FastFowardBloc>(context).add(FastFowardEventLoad());
+    BlocProvider.of<FastFowardBloc>(context).add(FastFowardEventLoad(20));
   } else if (event.logicalKey == LogicalKeyboardKey.mediaPlay) {
     // Play
     BlocProvider.of<PlayVideoBloc>(context).add(PlayVideoEventLoad());
@@ -30,14 +30,25 @@ bool handleKeyEvent(FocusNode node, RawKeyEvent event, context)  {
     BlocProvider.of<PreviousVideoBloc>(context).add(PreviousVideoEventLoad());
   } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
     // Pause
-    BlocProvider.of<FastRewindBloc>(context).add(FastRewindEventLoad());
+    BlocProvider.of<FastRewindBloc>(context).add(FastRewindEventLoad(10));
     return true;
   } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
     // Pause
-    BlocProvider.of<FastFowardBloc>(context).add(FastFowardEventLoad());
+    BlocProvider.of<FastFowardBloc>(context).add(FastFowardEventLoad(20));
     return true;
   }
 
   return false;
 }
 
+Future<bool> handlArrowKeys(FocusNode node, RawKeyEvent event, context) async {
+  if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+    // Rewind
+    BlocProvider.of<FastRewindBloc>(context).add(FastRewindEventLoad(10));
+  } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+    // Fast foward
+    BlocProvider.of<FastFowardBloc>(context).add(FastFowardEventLoad(20));
+  }
+
+  return false;
+}

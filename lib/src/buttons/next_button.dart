@@ -8,7 +8,8 @@ class NextButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Cover(
-      icon: Icons.skip_next,
+      icon: Icons.skip_next_outlined,
+      iconSize: 40,
       onTap: () {
         BlocProvider.of<ShowcontrolsBloc>(context)
             .add(ShowcontrolsEventStart());

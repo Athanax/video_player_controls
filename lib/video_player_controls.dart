@@ -32,8 +32,7 @@ import 'package:video_player_controls/bloc/video_playing/video_playing_bloc.dart
 import 'package:video_player_controls/bloc/video_position/video_position_bloc.dart';
 import 'package:video_player_controls/data/controller.dart';
 import 'package:video_player_controls/data/player_item.dart';
-import 'package:video_player_controls/src/progress/player_top_bar.dart';
-import 'package:video_player_controls/src/progress/progress_bar.dart';
+import 'package:video_player_controls/src/phone/phone_home.dart';
 import 'package:video_player_controls/src/tv/tv_bottom_bar.dart';
 import 'package:video_player_controls/src/tv/tv_top_bar.dart';
 import 'package:video_player_controls/utils/contract.dart';
@@ -149,8 +148,14 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface>
 
   // control the opacity of the controls
   bool showControls = false;
+  bool showRewind = false;
+  bool showFoward = false;
   // control the player controls timeout
   Timer timer;
+  Timer fowardTimer;
+  Timer rewindTimer;
+  int fowardTime = 0;
+  int rewindTime = 0;
 
   bool showSubtitles = false;
 
@@ -246,15 +251,8 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface>
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // if (_videoPlayerController.value.hasError == false) {
-        BlocProvider.of<ShowcontrolsBloc>(this.context)
+        BlocProvider.of<ShowcontrolsBloc>(context)
             .add(ShowcontrolsEventStart());
-        // }
-      },
-      onDoubleTap: () {
-        // mute video
-        // BlocProvider.of<VideoDurationBloc>(context).add(VideoDurationEventLoad(
-        //     _videoPlayerController.value.duration.inSeconds));
       },
       child: Stack(
         children: <Widget>[
@@ -327,7 +325,13 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface>
                 BlocListener<ShowcontrolsBloc, ShowcontrolsState>(
                   listener: (context, state) {
                     if (state is ShowcontrolsStarted) {
-                      cancelAndRestartTimer();
+                      if (showControls == true) {
+                        setState(() {
+                          showControls = false;
+                        });
+                      } else {
+                        cancelAndRestartTimer();
+                      }
                     }
                   },
                 ),
@@ -367,13 +371,13 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface>
                 BlocListener<FastFowardBloc, FastFowardState>(
                     listener: (context, state) {
                   if (state is FastFowardLoaded) {
-                    fastFoward();
+                    fastFoward(state.seconds);
                   }
                 }),
                 BlocListener<FastRewindBloc, FastRewindState>(
                     listener: (context, state) {
                   if (state is FastRewindLoaded) {
-                    fastRewind();
+                    fastRewind(state.seconds);
                   }
                 }),
                 BlocListener<PlayVideoBloc, PlayVideoState>(
@@ -401,6 +405,92 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface>
           _controller.showControls == true
               ? _buildControls(context)
               : new Container(),
+          new Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            top: 0,
+            child: Center(
+              child: AspectRatio(
+                aspectRatio: _controller.items[_index].aspectRatio ?? 16 / 9,
+                child: new Row(
+                  children: [
+                    //
+                    new Expanded(
+                      flex: 1,
+                      child: new GestureDetector(
+                        onDoubleTap: () {
+                          setState(() {
+                            rewindTime = rewindTime + 10;
+                            showRewind = true;
+                          });
+                          BlocProvider.of<FastRewindBloc>(context)
+                              .add(FastRewindEventLoad(10));
+                        },
+                        child: new Container(
+                          color: showRewind == true
+                              ? Colors.black54
+                              : Colors.transparent,
+                          child: Center(
+                              child: showRewind == true
+                                  ? Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      // crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        new Icon(Icons.fast_rewind_outlined),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: new Text('-' +
+                                              rewindTime.toString() +
+                                              's'),
+                                        )
+                                      ],
+                                    )
+                                  : new Container()),
+                        ),
+                      ),
+                    ),
+                    new Expanded(child: Container(), flex: 2),
+                    new Expanded(
+                      flex: 1,
+                      child: new GestureDetector(
+                        onDoubleTap: () {
+                          setState(() {
+                            fowardTime = fowardTime + 20;
+                            showFoward = true;
+                          });
+                          BlocProvider.of<FastFowardBloc>(context)
+                              .add(FastFowardEventLoad(20));
+                        },
+                        child: new Container(
+                          color: showFoward == true
+                              ? Colors.black54
+                              : Colors.transparent,
+                          child: Center(
+                            child: showFoward == true
+                                ? Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    // crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      new Icon(Icons.fast_forward_outlined),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: new Text(
+                                            '+' + fowardTime.toString() + 's'),
+                                      )
+                                    ],
+                                  )
+                                : new Container(),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -534,7 +624,7 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface>
     });
     BlocProvider.of<PlayerItemBloc>(context)
         .add(PlayerItemEventLoad(_playerItem));
-    timer = new Timer(new Duration(seconds: 4), () {
+    timer = new Timer(new Duration(seconds: 2), () {
       setState(() {
         showControls = false;
       });
@@ -553,16 +643,56 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface>
     }
   }
 
-  void fastFoward() {
+  void fastFoward(int seconds) {
     //
-    int time = _videoPlayerController.value.position.inSeconds + 20;
+    int time = _videoPlayerController.value.position.inSeconds + seconds;
     this.seek(new Duration(seconds: time));
+    restartFowardTimer();
   }
 
-  void fastRewind() {
+  void fastRewind(int seconds) {
     //
-    int time = _videoPlayerController.value.position.inSeconds - 10;
+    int time = _videoPlayerController.value.position.inSeconds - seconds;
     this.seek(new Duration(seconds: time));
+    restartRewindTimer();
+  }
+
+  restartFowardTimer() {
+    if (fowardTimer != null) {
+      fowardTimer.cancel();
+      startFowardTimer();
+    } else {
+      startFowardTimer();
+    }
+  }
+
+  startFowardTimer() {
+    cancelAndRestartTimer();
+    fowardTimer = new Timer(new Duration(seconds: 1), () {
+      setState(() {
+        showFoward = false;
+        fowardTime = 0;
+      });
+    });
+  }
+
+  restartRewindTimer() {
+    if (rewindTimer != null) {
+      rewindTimer.cancel();
+      startRewindTimer();
+    } else {
+      startRewindTimer();
+    }
+  }
+
+  startRewindTimer() {
+    cancelAndRestartTimer();
+    rewindTimer = new Timer(new Duration(seconds: 1), () {
+      setState(() {
+        showRewind = false;
+        rewindTime = 0;
+      });
+    });
   }
 
   /// play the next video
@@ -710,20 +840,8 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface>
           duration: new Duration(milliseconds: 200),
           curve: Curves.decelerate,
           opacity: showControls == false ? 0 : 1,
-          child: Container(
-            child: new Container(
-              decoration: new BoxDecoration(
-                gradient: new LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.black,
-                    Colors.transparent,
-                    Colors.transparent,
-                    Colors.black,
-                  ],
-                ),
-              ),
+          child: new Container(
+              decoration: new BoxDecoration(color: Colors.black54),
               child: uiMode == UiMode.UI_MODE_TYPE_TELEVISION
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -735,16 +853,9 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface>
                         new TvBottomBar(),
                       ],
                     )
-                  : new Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        PlayerTopBar(),
-                        new Expanded(child: new Container()),
-                        new ProgressBar(controller: _controller)
-                      ],
-                    ),
-            ),
-          ),
+                  : new PhoneHome(
+                      controller: _controller,
+                    )),
         ),
       );
     } else {
@@ -753,7 +864,9 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface>
         top: 0,
         left: 0,
         right: 0,
-        child: new Container(),
+        child: new Center(
+          child: _controller.loader ?? CircularProgressIndicator(),
+        ),
       );
     }
   }
@@ -764,9 +877,9 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface>
   }
 
   @override
-  void foward() {
+  void foward(seconds) {
     //
-    fastFoward();
+    fastFoward(seconds);
   }
 
   @override
@@ -788,9 +901,9 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface>
   }
 
   @override
-  void rewind() {
+  void rewind(seconds) {
     //
-    fastRewind();
+    fastRewind(seconds);
   }
 
   @override

@@ -1,6 +1,19 @@
 # video_player_controls
 
 Video player controls is a flutter [Video player package](https://pub.dev/packages/video_player)  with more customizable user interface and state management via [Flutter bloc](https://pub.dev/packages/flutter_bloc).
+I have always tried to make the package as friedly as possible. My aim was to make The videoplayer package to play all video and audio codecs. it was so unfortunate that I had fork the original videoplayer package. I cant publish this package requiring dependencies from Github. But it works as expected. Except the video codecs.
+
+If you would like to achieve that, then require the package from my Github repository from the another branch
+
+
+``` dart 
+
+  video_player_controls:
+    git:
+      url: 'https://github.com/Athanax/video_player_controls.git'
+      ref: another
+
+```
 
 # Installation
 
@@ -14,7 +27,7 @@ dependencies:
 
 # Screenshot
 
-![Demo video](https://wecast.ch/storage/images/video.gif "Demo video")
+![Demo video](https://wecast.ch/player/2.1.9.gif "Demo video")
 
 # Features
 
@@ -25,6 +38,8 @@ dependencies:
 * Fast rewind and fast forward buttons
 * [Flutter_bloc](https://pub.dev/packages/flutter_bloc) state management
 * Ability to listen to player state, isPlaying, through a simple interface, which returns with true if the video is playing, else false
+
+As from version 2.1.7, you can make your own custom UI and use the available API to perform basic operations like next, previous, restart, pause, play, and so on, using the methods of the Controller class
 
 ``` dart
 
@@ -102,7 +117,6 @@ controller = new Controller(
       // showControls: false,
       // hasSubtitles: true,
       // isLive: true,
-      // showSeekButtons: false,
       // showSkipButtons: false,
       // allowFullScreen: false,
       fullScreenByDefault: false,
@@ -137,6 +151,65 @@ or
 ``` dart
   // use an asset video
   VideoSource.ASSET
+```
+
+To play the next video, 
+
+``` dart
+
+controller.next()
+
+```
+
+
+To play the previous video, 
+
+``` dart
+
+controller.previous()
+
+```
+
+
+To seek the video 20 seconds foward, 
+
+``` dart
+
+controller.foward(20)
+
+```
+
+To seek the video 20 seconds backwards, 
+
+``` dart
+
+controller.rewind(20)
+
+```
+
+
+Play video, 
+
+``` dart
+
+controller.play()
+
+```
+
+Pause video, 
+
+``` dart
+
+controller.pause()
+
+```
+
+skip video to an index in the list, eg. play the fifth video , setIndex(5)
+
+``` dart
+
+controller.setIndex()
+
 ```
 
 # Example in code

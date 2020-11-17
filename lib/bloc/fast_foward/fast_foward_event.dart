@@ -5,7 +5,8 @@ abstract class FastFowardEvent extends Equatable {
 }
 
 class FastFowardEventLoad extends FastFowardEvent {
-  const FastFowardEventLoad();
+  final int seconds;
+  const FastFowardEventLoad(this.seconds);
   @override
   //
   List<Object> get props => [];
