@@ -3,6 +3,7 @@ import 'package:video_player_controls/data/controller.dart';
 import 'package:video_player_controls/src/buttons/next_button.dart';
 import 'package:video_player_controls/src/buttons/play_button.dart';
 import 'package:video_player_controls/src/buttons/previous_button.dart';
+import 'package:video_player_controls/src/progress/player_top_bar.dart';
 import 'package:video_player_controls/src/progress/progress_bar.dart';
 
 class PhoneHome extends StatefulWidget {
@@ -33,21 +34,28 @@ class _PhoneHomeState extends State<PhoneHome> {
           top: 0,
           left: 0,
           right: 0,
-          child: Row(
-            children: <Widget>[
+          child: Column(
+            children: [
+              new PlayerTopBar(),
               Expanded(
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    _controller.showSkipButtons == false
-                        ? new Container()
-                        : new PreviousButton(),
-                    new SizedBox(width: 15),
-                    new PlayButton(),
-                    new SizedBox(width: 15),
-                    _controller.showSkipButtons == false
-                        ? new Container()
-                        : new NextButton(),
+                    Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          _controller.showSkipButtons == false
+                              ? new Container()
+                              : new PreviousButton(),
+                          new SizedBox(width: 15),
+                          new PlayButton(),
+                          new SizedBox(width: 15),
+                          _controller.showSkipButtons == false
+                              ? new Container()
+                              : new NextButton(),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
