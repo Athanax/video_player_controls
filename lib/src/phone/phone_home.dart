@@ -42,7 +42,9 @@ class _PhoneHomeState extends State<PhoneHome> {
                     _controller.showSkipButtons == false
                         ? new Container()
                         : new PreviousButton(),
+                    new SizedBox(width: 15),
                     new PlayButton(),
+                    new SizedBox(width: 15),
                     _controller.showSkipButtons == false
                         ? new Container()
                         : new NextButton(),

@@ -5,10 +5,12 @@ import 'package:video_player_controls/bloc/show_controls/showcontrols_bloc.dart'
 import 'package:video_player_controls/src/buttons/key_events.dart';
 
 class Cover extends StatefulWidget {
+  final double iconSize;
   final IconData icon;
   final Function onTap;
 
-  const Cover({Key key, @required this.icon, @required this.onTap})
+  const Cover(
+      {Key key, @required this.icon, @required this.onTap, this.iconSize})
       : super(key: key);
   @override
   _CoverState createState() => _CoverState();
@@ -17,10 +19,15 @@ class Cover extends StatefulWidget {
 class _CoverState extends State<Cover> {
   FocusNode _node;
 
+  double iconSize = 30;
+
   @override
   void initState() {
     //
     super.initState();
+    if (widget.iconSize != null) {
+      iconSize = widget.iconSize;
+    }
 
     _node = FocusNode(onKey: (node, event) {
       //
@@ -54,7 +61,7 @@ class _CoverState extends State<Cover> {
       focusNode: _node,
       focusColor: Colors.transparent,
       color: _node.hasFocus ? Theme.of(context).accentColor : Colors.white,
-      iconSize: 30,
+      iconSize: iconSize,
       icon: new Icon(widget.icon),
       onPressed: () {
         widget.onTap();

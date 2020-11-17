@@ -76,7 +76,7 @@ class _PlayButtonState extends State<PlayButton>
               color:
                   _node.hasFocus ? Theme.of(context).accentColor : Colors.white,
               focusColor: Colors.transparent,
-              iconSize: 30,
+              iconSize: 60,
               icon: new AnimatedIcon(
                   icon: AnimatedIcons.pause_play,
                   progress: animationController),

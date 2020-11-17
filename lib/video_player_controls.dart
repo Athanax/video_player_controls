@@ -152,6 +152,10 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface>
   bool showFoward = false;
   // control the player controls timeout
   Timer timer;
+  Timer fowardTimer;
+  Timer rewindTimer;
+  int fowardTime = 0;
+  int rewindTime = 0;
 
   bool showSubtitles = false;
 
@@ -417,6 +421,7 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface>
                       child: new GestureDetector(
                         onDoubleTap: () {
                           setState(() {
+                            rewindTime = rewindTime + 10;
                             showRewind = true;
                           });
                           BlocProvider.of<FastRewindBloc>(context)
@@ -428,7 +433,20 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface>
                               : Colors.transparent,
                           child: Center(
                               child: showRewind == true
-                                  ? new Icon(Icons.fast_rewind_outlined)
+                                  ? Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      // crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        new Icon(Icons.fast_rewind_outlined),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: new Text('-' +
+                                              rewindTime.toString() +
+                                              's'),
+                                        )
+                                      ],
+                                    )
                                   : new Container()),
                         ),
                       ),
@@ -439,6 +457,7 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface>
                       child: new GestureDetector(
                         onDoubleTap: () {
                           setState(() {
+                            fowardTime = fowardTime + 20;
                             showFoward = true;
                           });
                           BlocProvider.of<FastFowardBloc>(context)
@@ -450,7 +469,18 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface>
                               : Colors.transparent,
                           child: Center(
                             child: showFoward == true
-                                ? new Icon(Icons.fast_forward_outlined)
+                                ? Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    // crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      new Icon(Icons.fast_forward_outlined),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: new Text(
+                                            '+' + fowardTime.toString() + 's'),
+                                      )
+                                    ],
+                                  )
                                 : new Container(),
                           ),
                         ),
@@ -617,20 +647,50 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface>
     //
     int time = _videoPlayerController.value.position.inSeconds + seconds;
     this.seek(new Duration(seconds: time));
-    timer = new Timer(new Duration(milliseconds: 500), () {
-      setState(() {
-        showFoward = false;
-      });
-    });
+    restartFowardTimer();
   }
 
   void fastRewind(int seconds) {
     //
     int time = _videoPlayerController.value.position.inSeconds - seconds;
     this.seek(new Duration(seconds: time));
-    timer = new Timer(new Duration(milliseconds: 500), () {
+    restartRewindTimer();
+  }
+
+  restartFowardTimer() {
+    if (fowardTimer != null) {
+      fowardTimer.cancel();
+      startFowardTimer();
+    } else {
+      startFowardTimer();
+    }
+  }
+
+  startFowardTimer() {
+    cancelAndRestartTimer();
+    fowardTimer = new Timer(new Duration(seconds: 1), () {
+      setState(() {
+        showFoward = false;
+        fowardTime = 0;
+      });
+    });
+  }
+
+  restartRewindTimer() {
+    if (rewindTimer != null) {
+      rewindTimer.cancel();
+      startRewindTimer();
+    } else {
+      startRewindTimer();
+    }
+  }
+
+  startRewindTimer() {
+    cancelAndRestartTimer();
+    rewindTimer = new Timer(new Duration(seconds: 1), () {
       setState(() {
         showRewind = false;
+        rewindTime = 0;
       });
     });
   }
