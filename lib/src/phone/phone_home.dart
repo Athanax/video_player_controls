@@ -3,6 +3,8 @@ import 'package:video_player_controls/data/controller.dart';
 import 'package:video_player_controls/src/buttons/next_button.dart';
 import 'package:video_player_controls/src/buttons/play_button.dart';
 import 'package:video_player_controls/src/buttons/previous_button.dart';
+import 'package:video_player_controls/src/phone/brightness_slider.dart';
+import 'package:video_player_controls/src/phone/volume_slider.dart';
 import 'package:video_player_controls/src/progress/player_top_bar.dart';
 import 'package:video_player_controls/src/progress/progress_bar.dart';
 
@@ -30,7 +32,7 @@ class _PhoneHomeState extends State<PhoneHome> {
       children: [
         //
         Positioned(
-          bottom: 0,
+          bottom: 50,
           top: 0,
           left: 0,
           right: 0,
@@ -39,23 +41,24 @@ class _PhoneHomeState extends State<PhoneHome> {
               new PlayerTopBar(),
               Expanded(
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          _controller.showSkipButtons == false
-                              ? new Container()
-                              : new PreviousButton(),
-                          new SizedBox(width: 15),
-                          new PlayButton(),
-                          new SizedBox(width: 15),
-                          _controller.showSkipButtons == false
-                              ? new Container()
-                              : new NextButton(),
-                        ],
-                      ),
+                    // new Container(child: VolumeSlider()),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        _controller.showSkipButtons == false
+                            ? new Container()
+                            : new PreviousButton(),
+                        new SizedBox(width: 15),
+                        new PlayButton(),
+                        new SizedBox(width: 15),
+                        _controller.showSkipButtons == false
+                            ? new Container()
+                            : new NextButton(),
+                      ],
                     ),
+                    // new Container(child: BrightnessSlider()),
                   ],
                 ),
               ),
