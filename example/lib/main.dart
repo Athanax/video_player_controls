@@ -42,7 +42,7 @@ class _HomePageState extends State<HomePage> {
         new PlayerItem(
           title: 'video 1',
           url:
-              'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
+              'https://westream.ariablue.com/fe313e10-72a7-4c10-a978-aa28d15b4c12',
           // subtitleUrl: "https://wecast.ch/posters/vt.vtt",
         ),
         new PlayerItem(

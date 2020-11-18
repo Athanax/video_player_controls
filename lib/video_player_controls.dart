@@ -157,6 +157,8 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface>
   int fowardTime = 0;
   int rewindTime = 0;
 
+  double seekStart = 0;
+
   bool showSubtitles = false;
 
   @override
@@ -253,6 +255,32 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface>
       onTap: () {
         BlocProvider.of<ShowcontrolsBloc>(context)
             .add(ShowcontrolsEventStart());
+      },
+      onHorizontalDragStart: (d) {
+        //
+        BlocProvider.of<PauseVideoBloc>(context).add(PauseVideoEventLoad());
+        print(d.localPosition.dx.toString());
+        setState(() {
+          seekStart = d.localPosition.dx;
+        });
+        // print(d.kind.index.toString());
+      },
+      onHorizontalDragUpdate: (d) {
+        cancelAndRestartTimer();
+        if (d.delta.direction > 0.0) {
+          seekRewindDrag(((d.localPosition.dx - seekStart) /
+                  MediaQuery.of(context).size.width *
+                  100)
+              .toInt());
+        } else {
+          seekFowardDrag(((d.localPosition.dx - seekStart) /
+                  MediaQuery.of(context).size.width *
+                  100)
+              .toInt());
+        }
+      },
+      onHorizontalDragEnd: (d) {
+        BlocProvider.of<PlayVideoBloc>(context).add(PlayVideoEventLoad());
       },
       child: Stack(
         children: <Widget>[
@@ -455,6 +483,10 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface>
                     new Expanded(
                       flex: 1,
                       child: new GestureDetector(
+                        onVerticalDragStart: (d) {
+                          //
+                          print('started');
+                        },
                         onDoubleTap: () {
                           setState(() {
                             fowardTime = fowardTime + 20;
@@ -494,6 +526,41 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface>
         ],
       ),
     );
+  }
+
+  void seekFowardDrag(int percentage) {
+    //
+    if (duration != null) {
+      // Foward
+      int value = (80) * percentage ~/ 100;
+      if (value < duration) {
+        fastFoward(value);
+      } else {
+        fastFoward(duration);
+      }
+    }
+  }
+
+  void seekRewindDrag(int percentage) {
+    //
+    if (duration != null) {
+      // rewind
+      int value = ((80) * percentage ~/ 100).abs();
+      print(value.toString());
+      if (value < 0) {
+        fastRewind(0);
+      } else {
+        fastRewind(value);
+      }
+    }
+  }
+
+  void addVolume(int percentage) {
+    //
+  }
+
+  void addBrightness(int percentage) {
+    //
   }
 
   void loadDevice() async {
@@ -624,7 +691,7 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface>
     });
     BlocProvider.of<PlayerItemBloc>(context)
         .add(PlayerItemEventLoad(_playerItem));
-    timer = new Timer(new Duration(seconds: 2), () {
+    timer = new Timer(new Duration(seconds: 3), () {
       setState(() {
         showControls = false;
       });
