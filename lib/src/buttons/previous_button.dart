@@ -5,10 +5,12 @@ import 'package:video_player_controls/bloc/show_controls/showcontrols_bloc.dart'
 import 'package:video_player_controls/src/buttons/cover.dart';
 
 class PreviousButton extends StatelessWidget {
+  const PreviousButton({this.isRtl = false});
+  final bool isRtl;
   @override
   Widget build(BuildContext context) {
     return new Cover(
-      icon: Icons.skip_previous_outlined,
+      icon: isRtl ? Icons.skip_next_outlined : Icons.skip_previous_outlined,
       iconSize: 40,
       onTap: () {
         BlocProvider.of<ShowcontrolsBloc>(context)

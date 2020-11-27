@@ -39,7 +39,7 @@ class _TvTopBarState extends State<TvTopBar> {
           Container(
               child: widget.controller.showSkipButtons == false
                   ? new Container()
-                  : new NextButton()),
+                  : new NextButton(isRtl: widget.controller.isRtl)),
           new Expanded(
               child: SafeArea(
             child: Padding(

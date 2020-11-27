@@ -4,7 +4,7 @@ version: 2.1.9
 homepage: https://github.com/Athanax/video_player_controls
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.8.0 <3.0.0"
 
 dependencies:
   flutter:

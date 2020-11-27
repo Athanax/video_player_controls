@@ -73,6 +73,9 @@ class Controller extends Equatable {
   ///
   final Widget Function(BuildContext context, String message) errorBuilder;
 
+  ///will be user to determine the previous and next buttons
+  final bool isRtl;
+
   Contract view;
 
   Controller({
@@ -96,6 +99,7 @@ class Controller extends Equatable {
     this.placeholder,
     this.allowedScreenSleep = true,
     this.isLive = false,
+    this.isRtl = false,
   }) : assert(
             items != null, "urls must be provided in the controller instance");
   @override
