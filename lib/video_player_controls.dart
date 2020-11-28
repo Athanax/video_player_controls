@@ -466,7 +466,9 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface>
                                           MainAxisAlignment.center,
                                       // crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
-                                        new Icon(Icons.fast_rewind_outlined),
+                                        new Icon(_controller.isRtl
+                                            ? Icons.fast_forward_outlined
+                                            : Icons.fast_rewind_outlined),
                                         Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: new Text('-' +
@@ -505,7 +507,9 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface>
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     // crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
-                                      new Icon(Icons.fast_forward_outlined),
+                                      new Icon(_controller.isRtl
+                                          ? Icons.fast_rewind_outlined
+                                          : Icons.fast_forward_outlined),
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: new Text(
