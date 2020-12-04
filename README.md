@@ -83,21 +83,21 @@ import 'package:video_player_controls/video_player_controls.dart';
 ## Initialize the Controller
 
 ``` dart
-controller = new Controller(
+controller =  Controller(
       items: [
-        new PlayerItem(
+        PlayerItem(
           title: 'video 1',
           url:
               'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
         ),
-        new PlayerItem(
+        PlayerItem(
           startAt: Duration(seconds: 2),
           title: 'video 2',
           aspectRatio: 16 / 4,
           url:
               'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
         ),
-        new PlayerItem(
+        PlayerItem(
           title: 'video 3',
           aspectRatio: 16 / 9,
           url:
@@ -106,8 +106,8 @@ controller = new Controller(
       ],
       autoPlay: true,
       errorBuilder: (context, message) {
-        return new Container(
-          child: new Text(message),
+        return Container(
+          child: Text(message),
         );
       },
       // index: 2,
@@ -120,7 +120,7 @@ controller = new Controller(
       // showSkipButtons: false,
       // allowFullScreen: false,
       fullScreenByDefault: false,
-      // placeholder: new Container(
+      // placeholder: Container(
       //   color: Colors.grey,
       // ),
       isPlaying: (isPlaying) {
@@ -254,21 +254,21 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    controller = new Controller(
+    controller = Controller(
       items: [
-        new PlayerItem(
+        PlayerItem(
           title: 'video 1',
           url:
               'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
         ),
-        new PlayerItem(
+        PlayerItem(
           startAt: Duration(seconds: 2),
           title: 'video 2',
           aspectRatio: 16 / 4,
           url:
               'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
         ),
-        new PlayerItem(
+        PlayerItem(
           title: 'video 3',
           aspectRatio: 16 / 9,
           url:
@@ -277,8 +277,8 @@ class _HomePageState extends State<HomePage> {
       ],
       autoPlay: true,
       errorBuilder: (context, message) {
-        return new Container(
-          child: new Text(message),
+        return Container(
+          child: Text(message),
         );
       },
       // index: 2,
@@ -292,7 +292,7 @@ class _HomePageState extends State<HomePage> {
       // showSkipButtons: false,
       // allowFullScreen: false,
       fullScreenByDefault: false,
-      // placeholder: new Container(
+      // placeholder: Container(
       //   color: Colors.grey,
       // ),
       isPlaying: (isPlaying) {

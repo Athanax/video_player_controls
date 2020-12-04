@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
               brightness: Brightness.dark,
               accentColor: Colors.redAccent,
             ),
-            home: new HomePage()));
+            home: HomePage()));
   }
 }
 
@@ -36,37 +36,37 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    controller = new Controller(
+    controller = Controller(
       items: [
         //
-        new PlayerItem(
+        PlayerItem(
           title: 'video 1',
           url:
               'https://westream.ariablue.com/fe313e10-72a7-4c10-a978-aa28d15b4c12',
           // subtitleUrl: "https://wecast.ch/posters/vt.vtt",
         ),
-        new PlayerItem(
-          startAt: Duration(seconds: 2),
-          title: 'video 2',
-          aspectRatio: 16 / 4,
-          url:
-              'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-          subtitleUrl: "https://wecast.ch/posters/vtt.vtt",
-        ),
-        new PlayerItem(
-          title: 'video 3',
-          aspectRatio: 16 / 9,
-          url:
-              'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-          subtitleUrl: "https://wecast.ch/posters/vtt.vtt",
-        ),
+        // PlayerItem(
+        //   startAt: Duration(seconds: 2),
+        //   title: 'video 2',
+        //   aspectRatio: 16 / 4,
+        //   url:
+        //       'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+        //   subtitleUrl: "https://wecast.ch/posters/vtt.vtt",
+        // ),
+        // PlayerItem(
+        //   title: 'video 3',
+        //   aspectRatio: 16 / 9,
+        //   url:
+        //       'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+        //   subtitleUrl: "https://wecast.ch/posters/vtt.vtt",
+        // ),
       ],
       autoPlay: true,
-      errorBuilder: (context, message) {
-        return new Container(
-          child: new Text(message),
-        );
-      },
+      // errorBuilder: (context, message) {
+      //   return Container(
+      //     child: Text(message),
+      //   );
+      // },
       // index: 2,
       autoInitialize: true,
       // isLooping: false,
@@ -78,7 +78,7 @@ class _HomePageState extends State<HomePage> {
       // showSkipButtons: false,
       // allowFullScreen: false,
       fullScreenByDefault: false,
-      // placeholder: new Container(
+      // placeholder: Container(
       //   color: Colors.grey,
       // ),
       isPlaying: (isPlaying) {

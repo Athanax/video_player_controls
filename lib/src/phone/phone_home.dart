@@ -26,7 +26,7 @@ class _PhoneHomeState extends State<PhoneHome> {
 
   @override
   Widget build(BuildContext context) {
-    return new Stack(
+    return Stack(
       children: [
         //
         Positioned(
@@ -36,27 +36,27 @@ class _PhoneHomeState extends State<PhoneHome> {
           right: 0,
           child: Column(
             children: [
-              new PlayerTopBar(),
+              PlayerTopBar(),
               Expanded(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
-                    // new Container(child: VolumeSlider()),
+                    // Container(child: VolumeSlider()),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        _controller.showSkipButtons == false
-                            ? new Container()
-                            : new PreviousButton(isRtl: _controller.isRtl),
-                        new SizedBox(width: 15),
-                        new PlayButton(),
-                        new SizedBox(width: 15),
-                        _controller.showSkipButtons == false
-                            ? new Container()
-                            : new NextButton(isRtl: _controller.isRtl),
+                        !_controller.showSkipButtons
+                            ? Container()
+                            : PreviousButton(isRtl: _controller.isRtl),
+                        SizedBox(width: 15),
+                        PlayButton(),
+                        SizedBox(width: 15),
+                        !_controller.showSkipButtons
+                            ? Container()
+                            : NextButton(isRtl: _controller.isRtl),
                       ],
                     ),
-                    // new Container(child: BrightnessSlider()),
+                    // Container(child: BrightnessSlider()),
                   ],
                 ),
               ),
@@ -67,7 +67,7 @@ class _PhoneHomeState extends State<PhoneHome> {
           bottom: 0,
           left: 0,
           right: 0,
-          child: new ProgressBar(controller: _controller),
+          child: ProgressBar(controller: _controller),
         )
       ],
     );

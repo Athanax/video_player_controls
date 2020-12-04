@@ -18,12 +18,12 @@ class _TvBottomBarState extends State<TvBottomBar> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
-      child: new Row(
+      child: Row(
         children: [
-          new TvPlayButton(),
-          new PlaybackPosition(),
-          Expanded(child: new TvProgress()),
-          new PlayBackDuration()
+          TvPlayButton(),
+          PlaybackPosition(),
+          Expanded(child: TvProgress()),
+          PlayBackDuration()
         ],
       ),
     );

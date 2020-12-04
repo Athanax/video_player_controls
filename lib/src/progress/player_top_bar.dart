@@ -17,11 +17,11 @@ class _PlayerTopBarState extends State<PlayerTopBar> {
   Widget build(BuildContext context) {
     return Row(
       children: <Widget>[
-        new Expanded(
+        Expanded(
             child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.only(top: 4.0),
-            child: new Container(
+            child: Container(
               // margin: EdgeInsets.only(left: 30),
               padding: EdgeInsets.symmetric(horizontal: 22),
               child: BlocListener<PlayerItemBloc, PlayerItemState>(
@@ -34,7 +34,7 @@ class _PlayerTopBarState extends State<PlayerTopBar> {
                       });
                     }
                   },
-                  child: new Text(
+                  child: Text(
                     title,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(color: Colors.white, fontSize: 20),

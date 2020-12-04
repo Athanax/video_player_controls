@@ -32,14 +32,14 @@ class _SubtitleCoverState extends State<SubtitleCover> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            new Container(
+            Container(
               alignment: Alignment.centerLeft,
-              child: new Text(
+              child: Text(
                 widget.subtitle.title,
-                style: new TextStyle(fontSize: 17),
+                style: TextStyle(fontSize: 17),
               ),
             ),
-            widget.focus == true ? new Icon(Icons.check) : new Container(),
+            widget.focus ? Icon(Icons.check) : Container(),
           ],
         ),
       ),

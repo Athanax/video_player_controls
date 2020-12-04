@@ -13,8 +13,6 @@ class ShowSubtitlesBloc extends Bloc<ShowSubtitlesEvent, ShowSubtitlesState> {
   Stream<ShowSubtitlesState> mapEventToState(ShowSubtitlesEvent event) async* {
     //
     yield ShowSubtitlesLoading();
-    if (event is ShowSubtitlesEventLoad) {
-      yield ShowSubtitlesLoaded();
-    }
+    if (event is ShowSubtitlesEventLoad) yield ShowSubtitlesLoaded();
   }
 }

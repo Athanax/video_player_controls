@@ -15,16 +15,15 @@ class _PlayBackDurationState extends State<PlayBackDuration> {
     return BlocListener<VideoDurationBloc, VideoDurationState>(
       listener: (context, state) {
         //
-        if (state is VideoDurationLoaded) {
+        if (state is VideoDurationLoaded)
           setState(() {
             _duration = state.duration;
           });
-        }
       },
-      child: new Container(
-        child: new Text(
-          '${formatDuration(new Duration(seconds: _duration))}',
-          style: new TextStyle(color: Colors.white),
+      child: Container(
+        child: Text(
+          '${formatDuration(Duration(seconds: _duration))}',
+          style: TextStyle(color: Colors.white),
         ),
       ),
     );

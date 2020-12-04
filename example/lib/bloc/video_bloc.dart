@@ -13,8 +13,6 @@ class VideoBloc extends Bloc<VideoEvent, VideoState> {
   Stream<VideoState> mapEventToState(VideoEvent event) async* {
     //
     yield VideoLoading();
-    if (event is VideoEventLoad) {
-      yield VideoLoaded(event.pos);
-    }
+    if (event is VideoEventLoad) yield VideoLoaded(event.pos);
   }
 }

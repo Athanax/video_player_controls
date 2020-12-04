@@ -13,8 +13,7 @@ class VideoPositionBloc extends Bloc<VideoPositionEvent, VideoPositionState> {
   Stream<VideoPositionState> mapEventToState(VideoPositionEvent event) async* {
     //
     yield VideoPositionLoading();
-    if (event is VideoPositionEventLoad) {
+    if (event is VideoPositionEventLoad)
       yield VideoPositionLoaded(event.duration);
-    }
   }
 }

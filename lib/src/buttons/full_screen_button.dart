@@ -36,8 +36,8 @@ class _FullScreenButtonState extends State<FullScreenButton> {
             }
           }),
         ],
-        child: isFullScreen == true
-            ? new Cover(
+        child: isFullScreen
+            ? Cover(
                 icon: Icons.fullscreen_exit,
                 onTap: () {
                   BlocProvider.of<ShowcontrolsBloc>(context)
@@ -46,7 +46,7 @@ class _FullScreenButtonState extends State<FullScreenButton> {
                       .add(ExitFullScreenEventLoad());
                 },
               )
-            : new Cover(
+            : Cover(
                 icon: Icons.fullscreen,
                 onTap: () {
                   BlocProvider.of<ShowcontrolsBloc>(context)

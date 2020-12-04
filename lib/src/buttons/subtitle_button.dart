@@ -11,7 +11,7 @@ class SubtitleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: new Cover(
+      child: Cover(
         icon: Icons.closed_caption,
         onTap: () {
           BlocProvider.of<ShowcontrolsBloc>(context)

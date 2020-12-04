@@ -15,7 +15,7 @@ class _BrightnessSliderState extends State<BrightnessSlider> {
         children: [
           Padding(
             padding: const EdgeInsets.all(4.0),
-            child: new Icon(
+            child: Icon(
               Icons.brightness_7_outlined,
               color: Colors.white,
             ),
@@ -33,7 +33,7 @@ class _BrightnessSliderState extends State<BrightnessSlider> {
           ),
           Padding(
             padding: const EdgeInsets.all(4.0),
-            child: new Icon(
+            child: Icon(
               Icons.brightness_4_outlined,
               color: Colors.white,
             ),

@@ -26,18 +26,16 @@ class _TvPlayButtonState extends State<TvPlayButton>
   }
 
   void _onFocusChange() {
-    if (_node.hasFocus) {
-      //
+    if (_node.hasFocus)
       BlocProvider.of<ShowcontrolsBloc>(context).add(ShowcontrolsEventStart());
-    }
   }
 
   @override
   void initState() {
     //
     super.initState();
-    animationController = new AnimationController(
-        vsync: this, duration: Duration(milliseconds: 200));
+    animationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 200));
     animation = Tween<double>(begin: 0, end: 1).animate(animationController);
     _node = FocusNode(onKey: (node, event) {
       //
@@ -51,31 +49,25 @@ class _TvPlayButtonState extends State<TvPlayButton>
 
   @override
   Widget build(BuildContext context) {
-    return new Row(
+    return Row(
       children: <Widget>[
-        new Container(
+        Container(
           child: BlocListener<VideoPlayingBloc, VideoPlayingState>(
             listener: (context, state) {
               if (state is VideoPlayingLoaded) {
-                if (state.isPlaying == true) {
+                if (state.isPlaying)
                   animationController.reverse();
-                  setState(() {
-                    isPlaying = true;
-                  });
-                } else {
+                else
                   animationController.forward();
-                  setState(() {
-                    isPlaying = false;
-                  });
-                }
+                setState(() {
+                  isPlaying = state.isPlaying;
+                });
               }
             },
-            child: new BlocListener<FocusPlayBloc, FocusPlayState>(
+            child: BlocListener<FocusPlayBloc, FocusPlayState>(
               listener: (context, state) {
                 //
-                if (state is FocusPlayLoaded) {
-                  _node.requestFocus();
-                }
+                if (state is FocusPlayLoaded) _node.requestFocus();
               },
               child: IconButton(
                 autofocus: true,
@@ -85,19 +77,18 @@ class _TvPlayButtonState extends State<TvPlayButton>
                     : Colors.white,
                 focusColor: Colors.transparent,
                 iconSize: 30,
-                icon: new AnimatedIcon(
+                icon: AnimatedIcon(
                     icon: AnimatedIcons.pause_play,
                     progress: animationController),
                 onPressed: () {
                   BlocProvider.of<ShowcontrolsBloc>(this.context)
                       .add(ShowcontrolsEventStart());
-                  if (isPlaying == true) {
+                  if (isPlaying)
                     BlocProvider.of<PauseVideoBloc>(context)
                         .add(PauseVideoEventLoad());
-                  } else {
+                  else
                     BlocProvider.of<PlayVideoBloc>(context)
                         .add(PlayVideoEventLoad());
-                  }
                 },
               ),
             ),

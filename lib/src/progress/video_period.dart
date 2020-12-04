@@ -20,36 +20,34 @@ class _VideoPeriodState extends State<VideoPeriod> {
     return BlocListener<VideoPositionBloc, VideoPositionState>(
       listener: (context, state) {
         //
-        if (state is VideoPositionLoaded) {
+        if (state is VideoPositionLoaded)
           setState(() {
             _time = state.duration;
           });
-        }
       },
       child: BlocListener<VideoDurationBloc, VideoDurationState>(
         listener: (context, state) {
           //
-          if (state is VideoDurationLoaded) {
+          if (state is VideoDurationLoaded)
             setState(() {
               _duration = state.duration;
             });
-          }
         },
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 22),
-          child: new Row(
+          child: Row(
             children: <Widget>[
-              new Container(
-                child: new Text(
-                  '${formatDuration(new Duration(seconds: _time))} ',
-                  style: new TextStyle(color: Colors.white),
+              Container(
+                child: Text(
+                  '${formatDuration(Duration(seconds: _time))} ',
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
-              new Text('/ '),
-              new Container(
-                child: new Text(
-                  '${formatDuration(new Duration(seconds: _duration))}',
-                  style: new TextStyle(color: Colors.white),
+              Text('/ '),
+              Container(
+                child: Text(
+                  '${formatDuration(Duration(seconds: _duration))}',
+                  style: TextStyle(color: Colors.white),
                 ),
               )
             ],

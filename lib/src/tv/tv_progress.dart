@@ -31,20 +31,17 @@ class _TvProgressState extends State<TvProgress> {
   Widget build(BuildContext context) {
     return BlocListener<VideoPositionBloc, VideoPositionState>(
       listener: (context, state) {
-        if (state is VideoPositionLoaded) {
+        if (state is VideoPositionLoaded)
           setState(() {
             position = state.duration.toDouble();
           });
-        }
       },
       child: BlocListener<VideoDurationBloc, VideoDurationState>(
         listener: (context, state) {
-          //
-          if (state is VideoDurationLoaded) {
+          if (state is VideoDurationLoaded)
             setState(() {
               _duration = state.duration.toDouble();
             });
-          }
         },
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 8.0),

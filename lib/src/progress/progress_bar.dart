@@ -37,24 +37,24 @@ class _ProgressBarState extends State<ProgressBar> {
       child: Row(
         children: <Widget>[
           Expanded(
-            child: new Container(
-              child: new Column(
+            child: Container(
+              child: Column(
                 children: <Widget>[
                   if (_controller.isLive != true)
                     Row(
                       children: [
                         VideoPeriod(),
-                        new Expanded(child: new Container()),
-                        widget.controller.hasSubtitles == true
+                        Expanded(child: Container()),
+                        widget.controller.hasSubtitles
                             ? SubtitleButton()
-                            : new Container(),
-                        widget.controller.fullScreenByDefault == true ||
-                                widget.controller.allowFullScreen == false
-                            ? new Container()
-                            : new FullScreenButton(),
+                            : Container(),
+                        widget.controller.fullScreenByDefault ||
+                                !widget.controller.allowFullScreen
+                            ? Container()
+                            : FullScreenButton(),
                       ],
                     ),
-                  if (_controller.isLive != true) new ProgressSlider(),
+                  if (_controller.isLive != true) ProgressSlider(),
                 ],
               ),
             ),

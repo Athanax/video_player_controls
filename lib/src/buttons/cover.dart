@@ -57,12 +57,12 @@ class _CoverState extends State<Cover> {
 
   @override
   Widget build(BuildContext context) {
-    return new IconButton(
+    return IconButton(
       focusNode: _node,
       focusColor: Colors.transparent,
       color: _node.hasFocus ? Theme.of(context).accentColor : Colors.white,
       iconSize: iconSize,
-      icon: new Icon(widget.icon),
+      icon: Icon(widget.icon),
       onPressed: () {
         widget.onTap();
       },

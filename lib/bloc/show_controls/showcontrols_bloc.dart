@@ -13,9 +13,8 @@ class ShowcontrolsBloc extends Bloc<ShowcontrolsEvent, ShowcontrolsState> {
   Stream<ShowcontrolsState> mapEventToState(ShowcontrolsEvent event) async* {
     //
     yield ShowcontrolsLoading();
-    if (event is ShowcontrolsEventStart) {
-      yield ShowcontrolsStarted();
-    }
+    if (event is ShowcontrolsEventStart) yield ShowcontrolsStarted();
+
     //  else if (event is ShowcontrolsEventRestart) {
     //   yield ShowcontrolsRestarted();
     // }

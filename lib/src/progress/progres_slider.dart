@@ -67,11 +67,10 @@ class _ProgressSliderState extends State<ProgressSlider>
       child: BlocListener<VideoDurationBloc, VideoDurationState>(
         listener: (context, state) {
           //
-          if (state is VideoDurationLoaded) {
+          if (state is VideoDurationLoaded)
             setState(() {
               _duration = state.duration.toDouble();
             });
-          }
         },
         child: Focus(
           focusNode: _node,
@@ -84,8 +83,8 @@ class _ProgressSliderState extends State<ProgressSlider>
                 //
                 BlocProvider.of<ShowcontrolsBloc>(context)
                     .add(ShowcontrolsEventStart());
-                BlocProvider.of<SeekVideoBloc>(context).add(
-                    SeekVideoEventLoad(new Duration(seconds: value.toInt())));
+                BlocProvider.of<SeekVideoBloc>(context)
+                    .add(SeekVideoEventLoad(Duration(seconds: value.toInt())));
               },
               onChangeEnd: (duration) {
                 // set the video duration to the time

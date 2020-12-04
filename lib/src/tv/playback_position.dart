@@ -15,16 +15,15 @@ class _PlaybackPositionState extends State<PlaybackPosition> {
     return BlocListener<VideoPositionBloc, VideoPositionState>(
       listener: (context, state) {
         //
-        if (state is VideoPositionLoaded) {
+        if (state is VideoPositionLoaded)
           setState(() {
             _time = state.duration;
           });
-        }
       },
-      child: new Container(
-        child: new Text(
-          '${formatDuration(new Duration(seconds: _time))}  ',
-          style: new TextStyle(color: Colors.white),
+      child: Container(
+        child: Text(
+          '${formatDuration(Duration(seconds: _time))}  ',
+          style: TextStyle(color: Colors.white),
         ),
       ),
     );

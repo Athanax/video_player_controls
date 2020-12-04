@@ -15,7 +15,10 @@ class _VolumeSliderState extends State<VolumeSlider> {
         children: [
           Padding(
             padding: const EdgeInsets.all(4.0),
-            child: new Icon(Icons.volume_up_outlined, color: Colors.white,),
+            child: Icon(
+              Icons.volume_up_outlined,
+              color: Colors.white,
+            ),
           ),
           RotatedBox(
             quarterTurns: 3,
@@ -30,7 +33,10 @@ class _VolumeSliderState extends State<VolumeSlider> {
           ),
           Padding(
             padding: const EdgeInsets.all(4.0),
-            child: new Icon(Icons.volume_down_outlined, color: Colors.white,),
+            child: Icon(
+              Icons.volume_down_outlined,
+              color: Colors.white,
+            ),
           ),
         ],
       ),

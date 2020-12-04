@@ -9,7 +9,7 @@ class NextButton extends StatelessWidget {
   final bool isRtl;
   @override
   Widget build(BuildContext context) {
-    return new Cover(
+    return Cover(
       icon: isRtl ? Icons.skip_previous_outlined : Icons.skip_next_outlined,
       iconSize: 40,
       onTap: () {

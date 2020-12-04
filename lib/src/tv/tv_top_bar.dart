@@ -23,9 +23,9 @@ class _TvTopBarState extends State<TvTopBar> {
       child: Row(
         children: <Widget>[
           Container(
-            child: widget.controller.showBackButton == false
-                ? new Container()
-                : new Cover(
+            child: !widget.controller.showBackButton
+                ? Container()
+                : Cover(
                     icon: Icons.arrow_back,
                     onTap: () {
                       Navigator.pop(context);
@@ -33,31 +33,28 @@ class _TvTopBarState extends State<TvTopBar> {
                   ),
           ),
           Container(
-              child: widget.controller.hasSubtitles == false
-                  ? new Container()
-                  : new SubtitleButton()),
+              child: !widget.controller.hasSubtitles
+                  ? Container()
+                  : SubtitleButton()),
           Container(
-              child: widget.controller.showSkipButtons == false
-                  ? new Container()
-                  : new NextButton(isRtl: widget.controller.isRtl)),
-          new Expanded(
+              child: !widget.controller.showSkipButtons
+                  ? Container()
+                  : NextButton(isRtl: widget.controller.isRtl)),
+          Expanded(
               child: SafeArea(
             child: Padding(
               padding: const EdgeInsets.only(top: 4.0),
-              child: new Container(
+              child: Container(
                 // margin: EdgeInsets.only(left: 30),
                 padding: EdgeInsets.symmetric(horizontal: 22),
                 child: BlocListener<PlayerItemBloc, PlayerItemState>(
                     listener: (context, state) {
-                      if (state is PlayerItemLoaded) {
+                      if (state is PlayerItemLoaded)
                         setState(() {
-                          if (state.playerItem != null) {
-                            title = state.playerItem.title;
-                          }
+                          title = state?.playerItem?.title;
                         });
-                      }
                     },
-                    child: new Text(
+                    child: Text(
                       title,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(color: Colors.white, fontSize: 20),
