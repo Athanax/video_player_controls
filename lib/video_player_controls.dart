@@ -129,7 +129,6 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface>
   // video player controller
   VideoPlayerController _videoPlayerController;
 
-  FullScreen fullScreen = new FullScreen();
 
   bool isPlaying = false;
 
@@ -595,12 +594,12 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface>
 
   void enterFullScreen() {
     //
-    fullScreen.enterFullScreen(FullScreenMode.EMERSIVE_STICKY);
+    FullScreen.enterFullScreen(FullScreenMode.EMERSIVE_STICKY);
   }
 
   void exitFullScreen() async {
     //
-    fullScreen.exitFullScreen();
+    FullScreen.exitFullScreen();
   }
 
   void initialize(String link, Skip skip) async {
