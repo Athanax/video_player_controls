@@ -34,7 +34,6 @@ class _CoverState extends State<Cover> {
       if (event is RawKeyDownEvent) {
         BlocProvider.of<ShowcontrolsBloc>(context)
             .add(ShowcontrolsEventStart());
-        handleKeyEvent(node, event, context);
         return false;
       }
       return false;

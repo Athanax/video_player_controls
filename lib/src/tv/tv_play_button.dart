@@ -42,8 +42,7 @@ class _TvPlayButtonState extends State<TvPlayButton>
     _node = FocusNode(onKey: (node, event) {
       //
       BlocProvider.of<ShowcontrolsBloc>(context).add(ShowcontrolsEventStart());
-      handleKeyEvent(node, event, context);
-      return false;
+      return handleKeyEvent(node, event, context);
     });
     _node.addListener(_onFocusChange);
     // super.initState();

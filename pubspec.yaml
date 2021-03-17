@@ -1,6 +1,6 @@
 name: video_player_controls
 description: Video player controls is a flutter video player package with more custom user interface and state management via flutter bloc
-version: 2.1.9
+version: 2.1.6
 homepage: https://github.com/Athanax/video_player_controls
 
 environment:
@@ -9,14 +9,20 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  video_player: ^0.10.2+1
+  video_player:
+    git:
+      url: 'https://github.com/cherlow/plugins.git'
+      path: packages/video_player/video_player
+
   flutter_bloc: ^6.0.1
   equatable: ^1.2.3
   bloc: ^6.0.1
   wakelock: ^0.1.4+2
-  subtitle_wrapper_package: ^1.0.3
+  subtitle_wrapper_package:
+    git:
+      url: "https://github.com/cherlow/flutter_subtitle_wrapper.git"
   toast: ^0.1.5
-  fullscreen: ^1.0.1
+  fullscreen: ^1.0.3
   flutter_ui_mode_manager: ^1.0.0
   step_progress_indicator: ^0.2.4+7
 
