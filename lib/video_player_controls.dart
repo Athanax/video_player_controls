@@ -1,18 +1,17 @@
 library video_player_controls;
 
-export 'package:video_player_controls/data/controller.dart';
-export 'package:video_player_controls/data/player_item.dart';
-
 import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_ui_mode_manager/flutter_ui_mode_manager.dart';
+import 'package:fullscreen/fullscreen.dart';
 import 'package:subtitle_wrapper_package/data/models/style/subtitle_style.dart';
 import 'package:subtitle_wrapper_package/subtitle_controller.dart';
 import 'package:subtitle_wrapper_package/subtitle_wrapper_package.dart';
 import 'package:toast/toast.dart';
 import 'package:video_player/video_player.dart';
-import 'package:fullscreen/fullscreen.dart';
 import 'package:video_player_controls/bloc/enter_full_screen/enter_full_screen_bloc.dart';
 import 'package:video_player_controls/bloc/exit_full_screen/exit_full_screen_bloc.dart';
 import 'package:video_player_controls/bloc/fast_foward/fast_foward_bloc.dart';
@@ -37,6 +36,9 @@ import 'package:video_player_controls/src/tv/tv_bottom_bar.dart';
 import 'package:video_player_controls/src/tv/tv_top_bar.dart';
 import 'package:video_player_controls/utils/contract.dart';
 import 'package:wakelock/wakelock.dart';
+
+export 'package:video_player_controls/data/controller.dart';
+export 'package:video_player_controls/data/player_item.dart';
 
 class VideoPlayerControls extends StatelessWidget {
   final Controller controller;
@@ -193,11 +195,16 @@ class _VideoPlayerInterfaceState extends State<VideoPlayerInterface>
     if (_controller.videoSource == VideoSource.NETWORK) {
       _videoPlayerController = VideoPlayerController.network(url)
         ..addListener(() => listener());
+    } else if (_controller.videoSource == VideoSource.FILE) {
+      var file = File(url);
+      if (await file.exists()) {
+        _videoPlayerController = VideoPlayerController.file(file)
+          ..addListener(() => listener());
+      }
     } else {
       _videoPlayerController = VideoPlayerController.asset(url)
         ..addListener(() => listener());
     }
-
     //
 
     //

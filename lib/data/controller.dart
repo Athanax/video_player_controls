@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:video_player_controls/data/player_item.dart';
 import 'package:video_player_controls/utils/contract.dart';
 
-enum VideoSource { NETWORK, ASSET }
+enum VideoSource { NETWORK, ASSET, FILE }
 
 // ignore: must_be_immutable
 class Controller extends Equatable {
